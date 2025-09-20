@@ -1,1 +1,8 @@
-node_modules
+# Node modules
+node_modules/
+
+# dotenv files with secrets
+.env.local
+.env.dev
+.env.stage
+.env.prod
