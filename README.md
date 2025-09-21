@@ -10,7 +10,7 @@ docker run -d --name smartsme-mysql \
   -e MYSQL_DATABASE=smartsme \
   -e MYSQL_USER=smartsmeusr \
   -e MYSQL_PASSWORD='$m@rt$mepwd' \
-  -e MYSQL_ROOT_PASSWORD=rootpassword \
+  -e MYSQL_ROOT_PASSWORD=root \
   smartsme-mysql:8.0.23
 
 # Shorthand script to generate private/public key for JWT
