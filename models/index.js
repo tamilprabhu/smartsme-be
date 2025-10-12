@@ -6,6 +6,7 @@ const Permission = require("./permission");
 const UserRole = require("./userRole");
 const RolePermission = require("./rolePermission");
 const RoleAction = require("./roleAction");
+const Company = require("./company");
 
 // Associations
 User.belongsToMany(Role, { through: UserRole, foreignKey: 'userId' });
@@ -35,4 +36,5 @@ module.exports = {
     UserRole,
     RolePermission,
     RoleAction,
+    Company,
 };
