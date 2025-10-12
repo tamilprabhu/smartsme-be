@@ -55,6 +55,15 @@ INSERT INTO permissions (id, resource, action_id, name, description) VALUES
 (11, 'SECONDARY_PROCESS', 5, 'SECONDARY_PROCESS_APPROVE', 'Approve secondary process records'),
 (12, 'SECONDARY_PROCESS', 6, 'SECONDARY_PROCESS_EXPORT', 'Export secondary process data');
 
+-- Company Permissions
+INSERT INTO permissions (id, resource, action_id, name, description) VALUES
+(13, 'COMPANY', 1, 'COMPANY_CREATE', 'Create company records'),
+(14, 'COMPANY', 2, 'COMPANY_READ', 'View company records'),
+(15, 'COMPANY', 3, 'COMPANY_UPDATE', 'Update company records'),
+(16, 'COMPANY', 4, 'COMPANY_DELETE', 'Delete company records'),
+(17, 'COMPANY', 5, 'COMPANY_APPROVE', 'Approve company records'),
+(18, 'COMPANY', 6, 'COMPANY_EXPORT', 'Export company data');
+
 CREATE TABLE role_permissions (
   role_id BIGINT NOT NULL,
   permission_id BIGINT NOT NULL,
@@ -69,6 +78,24 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
 (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6),
 -- Secondary Process permissions
 (4, 7), (4, 8), (4, 9), (4, 10), (4, 11), (4, 12);
+
+-- OWNER (Role ID: 1) - All permissions
+INSERT INTO role_permissions (role_id, permission_id) VALUES
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6),
+(1, 7), (1, 8), (1, 9), (1, 10), (1, 11), (1, 12),
+(1, 13), (1, 14), (1, 15), (1, 16), (1, 17), (1, 18);
+
+-- ADMIN (Role ID: 2) - All permissions
+INSERT INTO role_permissions (role_id, permission_id) VALUES
+(2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6),
+(2, 7), (2, 8), (2, 9), (2, 10), (2, 11), (2, 12),
+(2, 13), (2, 14), (2, 15), (2, 16), (2, 17), (2, 18);
+
+-- PLANT_HEAD (Role ID: 3) - All except delete
+INSERT INTO role_permissions (role_id, permission_id) VALUES
+(3, 1), (3, 2), (3, 3), (3, 5), (3, 6),
+(3, 7), (3, 8), (3, 9), (3, 11), (3, 12),
+(3, 13), (3, 14), (3, 15), (3, 17), (3, 18);
 
 CREATE TABLE role_actions (
   role_id BIGINT NOT NULL,
@@ -86,7 +113,7 @@ CREATE TABLE user_roles (
   user_id BIGINT NOT NULL,
   role_id BIGINT NOT NULL,
   PRIMARY KEY (user_id, role_id),
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  -- FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
