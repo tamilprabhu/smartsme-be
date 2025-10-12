@@ -282,7 +282,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"companyId\": \"MSFT001\",\n    \"companyName\": \"Microsoft Corporation\",\n    \"businessCons\": \"corporation\",\n    \"companyType\": \"large scale\",\n    \"address\": \"One Microsoft Way, Redmond, WA\",\n    \"pincode\": 98052,\n    \"propName\": \"Satya Nadella\",\n    \"directPhone\": \"4258828080\",\n    \"officePhone\": \"4258828080\",\n    \"mailId\": \"contact@microsoft.com\",\n    \"natureOfBusiness\": \"technology\",\n    \"authPerson\": \"Satya Nadella\",\n    \"mobileNo\": \"4258828080\"\n}"
+							"raw": "{\n    \"companyId\": \"PIGE001\",\n    \"companyName\": \"Pigeon Ltd\",\n    \"businessCons\": \"corporation\",\n    \"companyType\": \"medium scale\",\n    \"address\": \"Pigeon House, Sector 62, Noida, UP\",\n    \"pincode\": 201301,\n    \"propName\": \"Gaurav Jain\",\n    \"directPhone\": \"1204567890\",\n    \"officePhone\": \"1204567890\",\n    \"mailId\": \"contact@pigeonindia.com\",\n    \"natureOfBusiness\": \"manufacturing\",\n    \"authPerson\": \"Gaurav Jain\",\n    \"mobileNo\": \"1204567890\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/companies",
@@ -303,7 +303,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"companyName\": \"Meta Platforms Inc - Updated\",\n    \"address\": \"1 Hacker Way, Menlo Park, CA - Updated\",\n    \"pincode\": 94026,\n    \"mailId\": \"updated@meta.com\"\n}"
+							"raw": "{\n    \"companyName\": \"Finolex Industries Ltd - Updated\",\n    \"address\": \"Finolex Bhavan, Pune-Bangalore Highway, Pune - Updated\",\n    \"pincode\": 411046,\n    \"mailId\": \"updated@finolex.com\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/companies/100000",

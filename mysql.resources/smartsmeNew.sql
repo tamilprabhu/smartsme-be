@@ -78,11 +78,11 @@ CREATE TABLE `company` (
 --
 
 INSERT INTO `company` (`company_id_seq`, `company_id`, `company_name`, `business_cons`, `company_type`, `address`, `pincode`, `prop_name`, `direct_phone`, `office_phone`, `mgmt_phone`, `mail_id`, `nature_of_business`, `auth_person`, `mobile_no`, `create_date`, `update_date`) VALUES
-(100000, 'META001', 'Meta Platforms Inc', 'corporation', 'large scale', '1 Hacker Way, Menlo Park, CA', 94025, 'Mark Zuckerberg', '6505434800', '6505434800', '6505434800', 'contact@meta.com', 'technology', 'Mark Zuckerberg', '6505434800', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
-(100001, 'AMZN001', 'Amazon.com Inc', 'corporation', 'large scale', '410 Terry Ave N, Seattle, WA', 98109, 'Andy Jassy', '2062661000', '2062661000', '2062661000', 'contact@amazon.com', 'technology', 'Andy Jassy', '2062661000', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
-(100002, 'AAPL001', 'Apple Inc', 'corporation', 'large scale', '1 Apple Park Way, Cupertino, CA', 95014, 'Tim Cook', '4089961010', '4089961010', '4089961010', 'contact@apple.com', 'technology', 'Tim Cook', '4089961010', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
-(100003, 'NFLX001', 'Netflix Inc', 'corporation', 'large scale', '100 Winchester Cir, Los Gatos, CA', 95032, 'Reed Hastings', '4085403700', '4085403700', '4085403700', 'contact@netflix.com', 'entertainment', 'Reed Hastings', '4085403700', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
-(100004, 'GOOGL001', 'Alphabet Inc', 'corporation', 'large scale', '1600 Amphitheatre Pkwy, Mountain View, CA', 94043, 'Sundar Pichai', '6502530000', '6502530000', '6502530000', 'contact@google.com', 'technology', 'Sundar Pichai', '6502530000', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
+(100000, 'FINO001', 'Finolex Industries Ltd', 'corporation', 'large scale', 'Finolex Bhavan, Pune-Bangalore Highway, Pune', 411045, 'Prakash P Chhabria', '2067121800', '2067121800', '2067121800', 'contact@finolex.com', 'manufacturing', 'Prakash P Chhabria', '2067121800', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(100001, 'PRES001', 'Prestige Smart Kitchen Ltd', 'corporation', 'large scale', 'TTK Prestige House, Bangalore', 560042, 'T T Jagannathan', '8025505555', '8025505555', '8025505555', 'contact@prestigesmartcooking.com', 'manufacturing', 'T T Jagannathan', '8025505555', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(100002, 'MILT001', 'Milton Industries Ltd', 'corporation', 'medium scale', 'Milton House, Rajkot, Gujarat', 360002, 'T M Louis', '2812234567', '2812234567', '2812234567', 'contact@milton.in', 'manufacturing', 'T M Louis', '2812234567', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(100003, 'BUTT001', 'Butterfly Gandhimathi Appliances Ltd', 'corporation', 'medium scale', 'No.1, Sardar Patel Road, Chennai', 600113, 'G Venkatesh', '4428156789', '4428156789', '4428156789', 'contact@butterflyindia.com', 'manufacturing', 'G Venkatesh', '4428156789', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(100004, 'HAWK001', 'Hawkins Cookers Ltd', 'corporation', 'medium scale', 'Hawkins House, Mumbai', 400013, 'Brahm Vasudeva', '2224567890', '2224567890', '2224567890', 'contact@hawkinscookers.com', 'manufacturing', 'Brahm Vasudeva', '2224567890', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
 
 -- --------------------------------------------------------
 
