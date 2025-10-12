@@ -1,5 +1,5 @@
 CREATE TABLE roles (
-  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(100) UNIQUE NOT NULL,      -- e.g. ADMIN, MANAGER, VIEWER
   description TEXT
 );
@@ -15,7 +15,7 @@ INSERT INTO roles (id, name, description) VALUES
 (8, 'ACCOUNTANT', 'Accountant managing despatch and billing');
 
 CREATE TABLE actions (
-  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(50) UNIQUE NOT NULL,        -- e.g. READ, CREATE, UPDATE, DELETE
   description TEXT
 );
@@ -29,9 +29,9 @@ INSERT INTO actions (id, name, description) VALUES
 (6, 'EXPORT', 'Export data');
 
 CREATE TABLE permissions (
-  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   resource VARCHAR(100) NOT NULL,          -- e.g. USER, ORDER, PRODUCT
-  action_id BIGINT NOT NULL,
+  action_id INT NOT NULL,
   name VARCHAR(150) UNIQUE NOT NULL,       -- e.g. USER_READ, ORDER_DELETE
   description TEXT,
   FOREIGN KEY (action_id) REFERENCES actions(id)
@@ -65,8 +65,8 @@ INSERT INTO permissions (id, resource, action_id, name, description) VALUES
 (18, 'COMPANY', 6, 'COMPANY_EXPORT', 'Export company data');
 
 CREATE TABLE role_permissions (
-  role_id BIGINT NOT NULL,
-  permission_id BIGINT NOT NULL,
+  role_id INT NOT NULL,
+  permission_id INT NOT NULL,
   PRIMARY KEY (role_id, permission_id),
   FOREIGN KEY (role_id) REFERENCES roles(id),
   FOREIGN KEY (permission_id) REFERENCES permissions(id)
@@ -98,8 +98,8 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
 (3, 13), (3, 14), (3, 15), (3, 17), (3, 18);
 
 CREATE TABLE role_actions (
-  role_id BIGINT NOT NULL,
-  action_id BIGINT NOT NULL,
+  role_id INT NOT NULL,
+  action_id INT NOT NULL,
   PRIMARY KEY (role_id, action_id),
   FOREIGN KEY (role_id) REFERENCES roles(id),
   FOREIGN KEY (action_id) REFERENCES actions(id)
@@ -110,10 +110,10 @@ INSERT INTO role_actions (role_id, action_id) VALUES
 (4, 1), (4, 2), (4, 3), (4, 5);
 
 CREATE TABLE user_roles (
-  user_id BIGINT NOT NULL,
-  role_id BIGINT NOT NULL,
+  user_id INT NOT NULL,
+  role_id INT NOT NULL,
   PRIMARY KEY (user_id, role_id),
-  -- FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
@@ -155,4 +155,19 @@ INSERT INTO user_roles (user_id, role_id) VALUES (12, 6);
 
 -- Kevin Wu (User ID: 13) - STORES_INCHARGE
 INSERT INTO user_roles (user_id, role_id) VALUES (13, 5);
+
+-- Rajesh Kumar (User ID: 14) - OWNER (Prestige)
+INSERT INTO user_roles (user_id, role_id) VALUES (14, 1);
+
+-- Priya Menon (User ID: 15) - PLANT_HEAD (Prestige)
+INSERT INTO user_roles (user_id, role_id) VALUES (15, 3);
+
+-- Amit Sharma (User ID: 16) - SHIFT_INCHARGE (Prestige)
+INSERT INTO user_roles (user_id, role_id) VALUES (16, 4);
+
+-- Sunita Singh (User ID: 17) - PRODUCTION_EMPLOYEE (Prestige)
+INSERT INTO user_roles (user_id, role_id) VALUES (17, 6);
+
+-- Vikram Reddy (User ID: 18) - ACCOUNTANT (Prestige)
+INSERT INTO user_roles (user_id, role_id) VALUES (18, 8);
 

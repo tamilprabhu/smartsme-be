@@ -5,7 +5,7 @@ const Action = sequelize.define(
     "Action",
     {
         id: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },

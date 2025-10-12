@@ -24,6 +24,53 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+    `id` INT NOT NULL AUTO_INCREMENT,  -- INT (signed)
+    `username` VARCHAR(50) NOT NULL UNIQUE,
+    `first_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+    `last_name` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `email` VARCHAR(150) NOT NULL UNIQUE,
+    `mobile` VARCHAR(10) NOT NULL UNIQUE,
+    `address` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+    `password` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `created_date` datetime DEFAULT NULL,
+    `updated_date` datetime DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`username`, `first_name`, `last_name`, `name`, `email`, `mobile`, `address`, `password`, `created_date`, `updated_date`) VALUES
+('tamil', 'Tamilselvan', 'M', 'Tamilselvan M', 'tamil@test.com', '7889043243', 'Medavakkam, Chennai', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', '2025-09-23 23:29:52', '2025-09-23 23:29:52'),
+('nandha', 'Nandhakumar', 'V', 'Nandhakumar V', 'nandha@test.com', '7798343227', 'Kovilambakkam, Chennai', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', '2025-09-23 23:32:02', '2025-09-23 23:32:02'),
+('alicej', 'Alice', 'Johnson', 'Alice Johnson', 'alice@example.com', '9812345670', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('bobsmith', 'Bob', 'Smith', 'Bob Smith', 'bob@example.com', '9912345671', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('charlieb', 'Charlie', 'Brown', 'Charlie Brown', 'charlie@example.com', '9712345672', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('dianap', 'Diana', 'Prince', 'Diana Prince', 'diana@example.com', '9812345673', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('ethanh', 'Ethan', 'Hunt', 'Ethan Hunt', 'ethan@example.com', '9912345674', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('fionag', 'Fiona', 'Gallagher', 'Fiona Gallagher', 'fiona@example.com', '9712345675', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('georgem', 'George', 'Miller', 'George Miller', 'george@example.com', '9812345676', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('hannahl', 'Hannah', 'Lee', 'Hannah Lee', 'hannah@example.com', '9912345677', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('ianc', 'Ian', 'Curtis', 'Ian Curtis', 'ian@example.com', '9712345678', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('jasminep', 'Jasmine', 'Patel', 'Jasmine Patel', 'jasmine@example.com', '9812345679', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('kevinw', 'Kevin', 'Wu', 'Kevin Wu', 'kevin@example.com', '9912345680', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('rajeshk', 'Rajesh', 'Kumar', 'Rajesh Kumar', 'rajesh@prestige.com', '9876543210', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('priyam', 'Priya', 'Menon', 'Priya Menon', 'priya@prestige.com', '9876543211', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('amits', 'Amit', 'Sharma', 'Amit Sharma', 'amit@prestige.com', '9876543212', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('sunitas', 'Sunita', 'Singh', 'Sunita Singh', 'sunita@prestige.com', '9876543213', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
+('vikramr', 'Vikram', 'Reddy', 'Vikram Reddy', 'vikram@prestige.com', '9876543214', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `buyer`
 --
 
@@ -121,25 +168,39 @@ INSERT INTO `dispatch` (`dispatch_id_seq`, `prod_id`, `company_id`, `order_id`, 
 
 CREATE TABLE `employee` (
   `employee_id_seq` int NOT NULL,
-  `employee_name` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mobile_no` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
-  `username` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `hash` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_id` INT NOT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `role_id` int DEFAULT NULL,
   `salary` int DEFAULT NULL,
   `active_flag` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_date` datetime NOT NULL,
-  `update_date` datetime NOT NULL
+  `update_date` datetime NOT NULL,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `employee`
 --
 
-INSERT INTO `employee` (`employee_id_seq`, `employee_name`, `mobile_no`, `username`, `hash`, `company_id`, `role_id`, `salary`, `active_flag`, `create_date`, `update_date`) VALUES
-(1000000, 'sakunthala', '8939642996', 'sa2996', '$2y$10$SUZF1NrulwM07qFMcZzrhu6YCGJH.JThjxIzDkbFyMXqnYwtr3mvu', 'ab1000000825', 1, 0, 'Y', '2025-08-17 16:13:27', '2025-08-17 16:41:22'),
-(1000001, 'test', '8870735098', 'te5098', '$2y$10$pjQ//CCX9SdS7ecL2XZNsOpFKFjLr1jvp8tIJaZ2ozc7yeeszC/DG', 'ab1000000825', 1, 5000, 'Y', '2025-08-17 16:43:30', '2025-08-17 16:49:40');
+INSERT INTO `employee` (`employee_id_seq`, `user_id`, `company_id`, `salary`, `active_flag`, `create_date`, `update_date`) VALUES
+-- Finolex Industries employees
+(1000000, 1, 'FINO001', 150000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000001, 3, 'FINO001', 100000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000002, 4, 'FINO001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000003, 5, 'FINO001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000004, 6, 'FINO001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000005, 7, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000006, 8, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000007, 9, 'FINO001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000008, 10, 'FINO001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000009, 11, 'FINO001', 60000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000010, 12, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000011, 13, 'FINO001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+-- Prestige Smart Kitchen employees
+(1000012, 14, 'PRES001', 140000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000013, 15, 'PRES001', 95000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000014, 16, 'PRES001', 75000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000015, 17, 'PRES001', 42000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(1000016, 18, 'PRES001', 58000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -383,48 +444,6 @@ CREATE TABLE `stock` (
 
 INSERT INTO `stock` (`stock_id_seq`, `company_id`, `seller_id`, `stock_id`, `stock_date`, `raw_material`, `no_of_bars`, `weight`, `create_date`, `update_date`) VALUES
 (1000000, 'ab1000000825', 'sl10000', 'st1000000', '2025-09-16 00:00:00', 'adc-12', 25, 1250.0000, '2025-09-16 07:15:59', '2025-09-16 07:15:59');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
-CREATE TABLE `users` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,  -- BIGINT (signed)
-    `username` VARCHAR(50) NOT NULL UNIQUE,
-    `first_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-    `last_name` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
-    `name` VARCHAR(100) NOT NULL,
-    `email` VARCHAR(150) NOT NULL UNIQUE,
-    `mobile` VARCHAR(10) NOT NULL UNIQUE,
-    `address` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-    `password` VARCHAR(255) NOT NULL,
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `created_date` datetime DEFAULT NULL,
-    `updated_date` datetime DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`username`, `first_name`, `last_name`, `name`, `email`, `mobile`, `address`, `password`, `created_date`, `updated_date`) VALUES
-('tamil', 'Tamilselvan', 'M', 'Tamilselvan M', 'tamil@test.com', '7889043243', 'Medavakkam, Chennai', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', '2025-09-23 23:29:52', '2025-09-23 23:29:52'),
-('nandha', 'Nandhakumar', 'V', 'Nandhakumar V', 'nandha@test.com', '7798343227', 'Kovilambakkam, Chennai', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', '2025-09-23 23:32:02', '2025-09-23 23:32:02'),
-('alicej', 'Alice', 'Johnson', 'Alice Johnson', 'alice@example.com', '9812345670', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
-('bobsmith', 'Bob', 'Smith', 'Bob Smith', 'bob@example.com', '9912345671', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
-('charlieb', 'Charlie', 'Brown', 'Charlie Brown', 'charlie@example.com', '9712345672', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
-('dianap', 'Diana', 'Prince', 'Diana Prince', 'diana@example.com', '9812345673', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
-('ethanh', 'Ethan', 'Hunt', 'Ethan Hunt', 'ethan@example.com', '9912345674', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
-('fionag', 'Fiona', 'Gallagher', 'Fiona Gallagher', 'fiona@example.com', '9712345675', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
-('georgem', 'George', 'Miller', 'George Miller', 'george@example.com', '9812345676', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
-('hannahl', 'Hannah', 'Lee', 'Hannah Lee', 'hannah@example.com', '9912345677', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
-('ianc', 'Ian', 'Curtis', 'Ian Curtis', 'ian@example.com', '9712345678', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
-('jasminep', 'Jasmine', 'Patel', 'Jasmine Patel', 'jasmine@example.com', '9812345679', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL),
-('kevinw', 'Kevin', 'Wu', 'Kevin Wu', 'kevin@example.com', '9912345680', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL);
 
 --
 -- Indexes for dumped tables

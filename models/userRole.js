@@ -4,8 +4,8 @@ const sequelize = require("../db/sequelize");
 const UserRole = sequelize.define(
     "UserRole",
     {
-        userId: { type: DataTypes.BIGINT, field: 'user_id', primaryKey: true },
-        roleId: { type: DataTypes.BIGINT, field: 'role_id', primaryKey: true },
+        userId: { type: DataTypes.INTEGER, field: 'user_id', primaryKey: true },
+        roleId: { type: DataTypes.INTEGER, field: 'role_id', primaryKey: true },
     },
     {
         tableName: "user_roles",
