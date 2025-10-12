@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const permissionsService = require("../services/permissions");
-const authenticate = require("../middlewares/authenticate");
+const optionalAuth = require("../middlewares/optionalAuth");
 
 // POST /permissions/check
-router.post("/check", authenticate, async (req, res) => {
+router.post("/check", optionalAuth, async (req, res) => {
     try {
         const { permissions } = req.body;
         const userRoles = req.user.roles || [];
@@ -23,7 +23,7 @@ router.post("/check", authenticate, async (req, res) => {
 });
 
 // GET /permissions/me
-router.get("/me", authenticate, async (req, res) => {
+router.get("/me", optionalAuth, async (req, res) => {
     try {
         const userRoles = req.user.roles || [];
         const roleIds = userRoles.map(role => role.id);

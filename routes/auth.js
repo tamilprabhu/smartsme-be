@@ -92,8 +92,8 @@ router.post("/logout", (req, res) => {
     res.json({ message: "Logout successful" });
 });
 
-// GET /auth/userinfo
-router.get("/userinfo", authenticate, async (req, res) => {
+// GET /auth/me
+router.get("/me", authenticate, async (req, res) => {
     logger.debug("User info request", { 
         userId: req.user?.id,
         username: req.user?.username 
