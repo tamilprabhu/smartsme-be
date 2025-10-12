@@ -387,7 +387,7 @@ INSERT INTO `stock` (`stock_id_seq`, `company_id`, `seller_id`, `stock_id`, `sto
 --
 
 CREATE TABLE `users` (
-    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `id` BIGINT NOT NULL AUTO_INCREMENT,  -- BIGINT (signed)
     `username` VARCHAR(50) NOT NULL UNIQUE,
     `first_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
     `last_name` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,

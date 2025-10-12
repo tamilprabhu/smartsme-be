@@ -8,6 +8,8 @@ var logger = require('./config/logger');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
+var permissionsRouter = require('./routes/permissions');
+var actionsRouter = require('./routes/actions');
 var app = express();
 
 // view engine setup
@@ -40,6 +42,8 @@ app.use((req, res, next) => {
 });
 
 app.use('/auth', authRouter);
+app.use('/permissions', permissionsRouter);
+app.use('/actions', actionsRouter);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 // catch 404 and forward to error handler

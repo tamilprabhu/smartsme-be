@@ -17,3 +17,19 @@ docker run -d --name smartsme-mysql \
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 ```
+
+### All User Logins Added:
+1. Tamil - OWNER (Role ID: 1)
+2. Nandha - ADMIN (Role ID: 2)
+3. Alice - PLANT_HEAD (Role ID: 3)
+4. Bob - SHIFT_INCHARGE (Role ID: 4)
+5. Charlie - SHIFT_INCHARGE (Role ID: 4)
+6. Diana - STORES_INCHARGE (Role ID: 5)
+7. Ethan - PRODUCTION_EMPLOYEE (Role ID: 6)
+8. Fiona - PRODUCTION_EMPLOYEE (Role ID: 6)
+9. George - SECONDARY_PROCESS_EMPLOYEE (Role ID: 7)
+10. Hannah - SECONDARY_PROCESS_EMPLOYEE (Role ID: 7)
+11. Ian - ACCOUNTANT (Role ID: 8)
+12. Jasmine - PRODUCTION_EMPLOYEE (Role ID: 6)
+13. Kevin - STORES_INCHARGE (Role ID: 5)
+
