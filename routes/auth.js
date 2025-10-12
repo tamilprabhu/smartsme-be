@@ -27,9 +27,12 @@ router.post("/login", async (req, res) => {
             user: {
                 id: user.id,
                 username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 name: user.name,
                 email: user.email,
                 mobile: user.mobile,
+                address: user.address,
             },
             accessToken,
             refreshToken,
@@ -110,9 +113,12 @@ router.get("/userinfo", authenticate, async (req, res) => {
         res.json({
             id: user.id,
             username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
             name: user.name,
             email: user.email,
             mobile: user.mobile,
+            address: user.address,
         });
     } catch (err) {
         logger.error("Error retrieving user info", { 
