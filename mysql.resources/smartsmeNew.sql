@@ -78,7 +78,11 @@ CREATE TABLE `company` (
 --
 
 INSERT INTO `company` (`company_id_seq`, `company_id`, `company_name`, `business_cons`, `company_type`, `address`, `pincode`, `prop_name`, `direct_phone`, `office_phone`, `mgmt_phone`, `mail_id`, `nature_of_business`, `auth_person`, `mobile_no`, `create_date`, `update_date`) VALUES
-(100000, 'ab1000000825', 'abc private limited', 'proprietor', 'small scale', 'chennai', 600106, 'sakunthala', '65483279', '65483279', 'ghs628hb', 'vinodeep123rrr@gmail.com', 'metal', 'sakunthala', '8939642996', '2025-08-17 16:13:27', '2025-08-17 16:13:27');
+(100000, 'META001', 'Meta Platforms Inc', 'corporation', 'large scale', '1 Hacker Way, Menlo Park, CA', 94025, 'Mark Zuckerberg', '6505434800', '6505434800', '6505434800', 'contact@meta.com', 'technology', 'Mark Zuckerberg', '6505434800', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(100001, 'AMZN001', 'Amazon.com Inc', 'corporation', 'large scale', '410 Terry Ave N, Seattle, WA', 98109, 'Andy Jassy', '2062661000', '2062661000', '2062661000', 'contact@amazon.com', 'technology', 'Andy Jassy', '2062661000', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(100002, 'AAPL001', 'Apple Inc', 'corporation', 'large scale', '1 Apple Park Way, Cupertino, CA', 95014, 'Tim Cook', '4089961010', '4089961010', '4089961010', 'contact@apple.com', 'technology', 'Tim Cook', '4089961010', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(100003, 'NFLX001', 'Netflix Inc', 'corporation', 'large scale', '100 Winchester Cir, Los Gatos, CA', 95032, 'Reed Hastings', '4085403700', '4085403700', '4085403700', 'contact@netflix.com', 'entertainment', 'Reed Hastings', '4085403700', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+(100004, 'GOOGL001', 'Alphabet Inc', 'corporation', 'large scale', '1600 Amphitheatre Pkwy, Mountain View, CA', 94043, 'Sundar Pichai', '6502530000', '6502530000', '6502530000', 'contact@google.com', 'technology', 'Sundar Pichai', '6502530000', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
 
 -- --------------------------------------------------------
 
