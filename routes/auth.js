@@ -27,9 +27,13 @@ router.post("/login", async (req, res) => {
             user: {
                 id: user.id,
                 username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 name: user.name,
                 email: user.email,
                 mobile: user.mobile,
+                address: user.address,
+                roles: user.Roles.map(role => ({ id: role.id, name: role.name })),
             },
             accessToken,
             refreshToken,
@@ -62,7 +66,7 @@ router.post("/refresh", async (req, res) => {
         });
         // Generate new access token
         const newAccessToken = jwt.sign(
-            { id: payload.id, username: payload.username },
+            { id: payload.id, username: payload.username, roles: payload.roles },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
         );
@@ -88,8 +92,8 @@ router.post("/logout", (req, res) => {
     res.json({ message: "Logout successful" });
 });
 
-// GET /auth/userinfo
-router.get("/userinfo", authenticate, async (req, res) => {
+// GET /auth/me
+router.get("/me", authenticate, async (req, res) => {
     logger.debug("User info request", { 
         userId: req.user?.id,
         username: req.user?.username 
@@ -110,9 +114,13 @@ router.get("/userinfo", authenticate, async (req, res) => {
         res.json({
             id: user.id,
             username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
             name: user.name,
             email: user.email,
             mobile: user.mobile,
+            address: user.address,
+            roles: user.Roles.map(role => ({ id: role.id, name: role.name })),
         });
     } catch (err) {
         logger.error("Error retrieving user info", { 

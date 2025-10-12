@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
-const { User } = require("../models");
+const { User, Role } = require("../models");
 const logger = require("../config/logger");
 
 // Service functions
@@ -19,6 +19,10 @@ const authService = {
                         { mobile: identifier }
                     ]
                 },
+                include: [{
+                    model: Role,
+                    attributes: ['id', 'name']
+                }]
             });
             if (!user) {
                 logger.warn("Login attempt for non-existent user", { identifier: identifier?.substring(0, 3) + "***" });
@@ -32,13 +36,14 @@ const authService = {
             }
             logger.debug("Password verified successfully", { userId: user.id, username: user.username });
             // Generate tokens
+            const roles = user.Roles.map(role => ({ id: role.id, name: role.name }));
             const accessToken = jwt.sign(
-                { id: user.id, username: user.username },
+                { id: user.id, username: user.username, roles },
                 process.env.JWT_SECRET,
                 { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
             );
             const refreshToken = jwt.sign(
-                { id: user.id, username: user.username },
+                { id: user.id, username: user.username, roles },
                 process.env.JWT_REFRESH_SECRET,
                 { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d" }
             );
@@ -57,7 +62,12 @@ const authService = {
     getUserById: async (id) => {
         logger.debug("getUserById service called", { userId: id });
         try {
-            const user = await User.findByPk(id);
+            const user = await User.findByPk(id, {
+                include: [{
+                    model: Role,
+                    attributes: ['id', 'name']
+                }]
+            });
             if (!user) {
                 logger.warn("User not found by ID", { userId: id });
                 return null;

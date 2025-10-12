@@ -1,0 +1,386 @@
+{
+	"info": {
+		"name": "SmartSME API - Complete",
+		"description": "Complete SmartSME API collection with authentication, permissions, actions, and guest access",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"version": "1.0.0"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "{{baseUrl}}",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Guest Access (No Auth)",
+			"description": "Test API endpoints without authentication - limited to read-only access",
+			"item": [
+				{
+					"name": "Guest - Check Permissions",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permissions\": [\n        \"PRODUCTION_READ\",\n        \"PRODUCTION_CREATE\",\n        \"SECONDARY_PROCESS_READ\",\n        \"SECONDARY_PROCESS_UPDATE\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/permissions/check",
+							"host": ["{{baseUrl}}"],
+							"path": ["permissions", "check"]
+						},
+						"description": "Check which permissions are available for guest users"
+					}
+				},
+				{
+					"name": "Guest - Get My Permissions",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/permissions/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["permissions", "me"]
+						},
+						"description": "Get all permissions available to guest users"
+					}
+				},
+				{
+					"name": "Guest - Check Actions",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"actions\": [\n        \"READ\",\n        \"CREATE\",\n        \"UPDATE\",\n        \"DELETE\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/actions/check",
+							"host": ["{{baseUrl}}"],
+							"path": ["actions", "check"]
+						},
+						"description": "Check which actions are available for guest users"
+					}
+				},
+				{
+					"name": "Guest - Get My Actions",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actions/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["actions", "me"]
+						},
+						"description": "Get all actions available to guest users"
+					}
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"description": "User authentication and session management",
+			"item": [
+				{
+					"name": "Login - OWNER (Tamil)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identifier\": \"tamil\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login as OWNER role with full permissions"
+					}
+				},
+				{
+					"name": "Login - SHIFT_INCHARGE (Bob)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identifier\": \"bobsmith\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login as SHIFT_INCHARGE with production and secondary process permissions"
+					}
+				},
+				{
+					"name": "Login - PRODUCTION_EMPLOYEE (Ethan)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identifier\": \"ethanh\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login as PRODUCTION_EMPLOYEE with limited permissions"
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "refresh"]
+						},
+						"description": "Refresh access token using refresh token"
+					}
+				},
+				{
+					"name": "Get User Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "me"]
+						},
+						"description": "Get current user information including roles"
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "logout"]
+						},
+						"description": "Logout current user session"
+					}
+				}
+			]
+		},
+		{
+			"name": "Permissions",
+			"description": "Role-based permission checking and management",
+			"item": [
+				{
+					"name": "Check Permissions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permissions\": [\n        \"PRODUCTION_CREATE\",\n        \"PRODUCTION_READ\",\n        \"SECONDARY_PROCESS_UPDATE\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/permissions/check",
+							"host": ["{{baseUrl}}"],
+							"path": ["permissions", "check"]
+						},
+						"description": "Check if current user has specific permissions"
+					}
+				},
+				{
+					"name": "Get My Permissions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/permissions/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["permissions", "me"]
+						},
+						"description": "Get all permissions for current user"
+					}
+				}
+			]
+		},
+		{
+			"name": "Actions",
+			"description": "Role-based action checking and management",
+			"item": [
+				{
+					"name": "Check Actions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"actions\": [\n        \"CREATE\",\n        \"READ\",\n        \"UPDATE\",\n        \"DELETE\",\n        \"APPROVE\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/actions/check",
+							"host": ["{{baseUrl}}"],
+							"path": ["actions", "check"]
+						},
+						"description": "Check if current user can perform specific actions"
+					}
+				},
+				{
+					"name": "Get My Actions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actions/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["actions", "me"]
+						},
+						"description": "Get all actions available to current user"
+					}
+				}
+			]
+		}
+	]
+}
