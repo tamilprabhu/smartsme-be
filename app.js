@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+const cors = require('cors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
@@ -12,6 +13,9 @@ var permissionsRouter = require('./routes/permissions');
 var actionsRouter = require('./routes/actions');
 var companyRouter = require('./routes/company');
 var app = express();
+
+// Method 1: Allow all origins (completely open - NOT RECOMMENDED for production)
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
