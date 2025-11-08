@@ -1,9 +1,9 @@
 {
 	"info": {
-		"name": "SmartSME API - Complete",
-		"description": "Complete SmartSME API collection with authentication, permissions, actions, and guest access",
+		"name": "SmartSME API - Complete Manufacturing ERP",
+		"description": "Complete SmartSME Manufacturing ERP API collection with all endpoints",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"version": "1.0.0"
+		"version": "2.0.0"
 	},
 	"auth": {
 		"type": "bearer",
@@ -34,96 +34,8 @@
 	],
 	"item": [
 		{
-			"name": "Guest Access (No Auth)",
-			"description": "Test API endpoints without authentication - limited to read-only access",
-			"item": [
-				{
-					"name": "Guest - Check Permissions",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"permissions\": [\n        \"PRODUCTION_READ\",\n        \"PRODUCTION_CREATE\",\n        \"SECONDARY_PROCESS_READ\",\n        \"SECONDARY_PROCESS_UPDATE\"\n    ]\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/permissions/check",
-							"host": ["{{baseUrl}}"],
-							"path": ["permissions", "check"]
-						},
-						"description": "Check which permissions are available for guest users"
-					}
-				},
-				{
-					"name": "Guest - Get My Permissions",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/permissions/me",
-							"host": ["{{baseUrl}}"],
-							"path": ["permissions", "me"]
-						},
-						"description": "Get all permissions available to guest users"
-					}
-				},
-				{
-					"name": "Guest - Check Actions",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"actions\": [\n        \"READ\",\n        \"CREATE\",\n        \"UPDATE\",\n        \"DELETE\"\n    ]\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/actions/check",
-							"host": ["{{baseUrl}}"],
-							"path": ["actions", "check"]
-						},
-						"description": "Check which actions are available for guest users"
-					}
-				},
-				{
-					"name": "Guest - Get My Actions",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/actions/me",
-							"host": ["{{baseUrl}}"],
-							"path": ["actions", "me"]
-						},
-						"description": "Get all actions available to guest users"
-					}
-				}
-			]
-		},
-		{
 			"name": "Authentication",
-			"description": "User authentication and session management",
+			"description": "User authentication endpoints for different roles",
 			"item": [
 				{
 					"name": "Login - OWNER (Tamil)",
@@ -159,7 +71,81 @@
 							"host": ["{{baseUrl}}"],
 							"path": ["auth", "login"]
 						},
-						"description": "Login as OWNER role with full permissions"
+						"description": "Login as OWNER with full system access"
+					}
+				},
+				{
+					"name": "Login - ADMIN (Nandha)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identifier\": \"nandha\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login as ADMIN with administrative access"
+					}
+				},
+				{
+					"name": "Login - PLANT_HEAD (Alice)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identifier\": \"alicej\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login as PLANT_HEAD with plant management access"
 					}
 				},
 				{
@@ -196,7 +182,44 @@
 							"host": ["{{baseUrl}}"],
 							"path": ["auth", "login"]
 						},
-						"description": "Login as SHIFT_INCHARGE with production and secondary process permissions"
+						"description": "Login as SHIFT_INCHARGE with production management access"
+					}
+				},
+				{
+					"name": "Login - STORES_INCHARGE (Diana)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identifier\": \"dianap\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login as STORES_INCHARGE with inventory management access"
 					}
 				},
 				{
@@ -233,7 +256,81 @@
 							"host": ["{{baseUrl}}"],
 							"path": ["auth", "login"]
 						},
-						"description": "Login as PRODUCTION_EMPLOYEE with limited permissions"
+						"description": "Login as PRODUCTION_EMPLOYEE with limited production access"
+					}
+				},
+				{
+					"name": "Login - SECONDARY_PROCESS_EMPLOYEE (George)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identifier\": \"georgem\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login as SECONDARY_PROCESS_EMPLOYEE with secondary process access"
+					}
+				},
+				{
+					"name": "Login - ACCOUNTANT (Ian)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"identifier\": \"ianc\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login as ACCOUNTANT with billing and accounting access"
 					}
 				},
 				{
@@ -282,7 +379,7 @@
 							"host": ["{{baseUrl}}"],
 							"path": ["auth", "me"]
 						},
-						"description": "Get current user information including roles"
+						"description": "Get current user information and roles"
 					}
 				},
 				{
@@ -295,7 +392,499 @@
 							"host": ["{{baseUrl}}"],
 							"path": ["auth", "logout"]
 						},
-						"description": "Logout current user session"
+						"description": "Logout current user and invalidate tokens"
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"description": "Product management endpoints",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": ["{{baseUrl}}"],
+							"path": ["products"]
+						},
+						"description": "Retrieve all products"
+					}
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/1000001",
+							"host": ["{{baseUrl}}"],
+							"path": ["products", "1000001"]
+						},
+						"description": "Retrieve a specific product by ID"
+					}
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"prodId\": \"TEST_PR_001\",\n    \"companyId\": \"FINO001\",\n    \"prodName\": \"Test Product\",\n    \"rawMaterial\": \"Aluminum\",\n    \"weight\": 5.5000,\n    \"wastage\": 10,\n    \"norms\": 0.55,\n    \"totalWeight\": 6.05,\n    \"cavity\": 4,\n    \"shotRate\": 2.50,\n    \"perItemRate\": 0.25,\n    \"incentiveLimit\": 100,\n    \"createDate\": \"2025-11-08T15:00:00.000Z\",\n    \"updateDate\": \"2025-11-08T15:00:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": ["{{baseUrl}}"],
+							"path": ["products"]
+						},
+						"description": "Create a new product"
+					}
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"prodName\": \"Updated Test Product\",\n    \"weight\": 6.0000,\n    \"updateDate\": \"2025-11-08T15:30:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/1000001",
+							"host": ["{{baseUrl}}"],
+							"path": ["products", "1000001"]
+						},
+						"description": "Update an existing product"
+					}
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/1000001",
+							"host": ["{{baseUrl}}"],
+							"path": ["products", "1000001"]
+						},
+						"description": "Delete a product"
+					}
+				}
+			]
+		},
+		{
+			"name": "Machines",
+			"description": "Machine management endpoints",
+			"item": [
+				{
+					"name": "Get All Machines",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/machines",
+							"host": ["{{baseUrl}}"],
+							"path": ["machines"]
+						},
+						"description": "Retrieve all machines"
+					}
+				},
+				{
+					"name": "Get Machine by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/machines/10001",
+							"host": ["{{baseUrl}}"],
+							"path": ["machines", "10001"]
+						},
+						"description": "Retrieve a specific machine by ID"
+					}
+				},
+				{
+					"name": "Create Machine",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"machineId\": \"TEST_MC_001\",\n    \"companyId\": \"FINO001\",\n    \"machineName\": \"Test Machine\",\n    \"machineType\": \"Production\",\n    \"capacity\": \"100T\",\n    \"model\": \"TM-100\",\n    \"activeFlag\": \"Y\",\n    \"createDate\": \"2025-11-08T15:00:00.000Z\",\n    \"updateDate\": \"2025-11-08T15:00:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/machines",
+							"host": ["{{baseUrl}}"],
+							"path": ["machines"]
+						},
+						"description": "Create a new machine"
+					}
+				},
+				{
+					"name": "Update Machine",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"machineName\": \"Updated Test Machine\",\n    \"capacity\": \"120T\",\n    \"updateDate\": \"2025-11-08T15:30:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/machines/10001",
+							"host": ["{{baseUrl}}"],
+							"path": ["machines", "10001"]
+						},
+						"description": "Update an existing machine"
+					}
+				},
+				{
+					"name": "Delete Machine",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/machines/10001",
+							"host": ["{{baseUrl}}"],
+							"path": ["machines", "10001"]
+						},
+						"description": "Delete a machine"
+					}
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"description": "Order management endpoints",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": ["{{baseUrl}}"],
+							"path": ["orders"]
+						},
+						"description": "Retrieve all orders"
+					}
+				},
+				{
+					"name": "Get Order by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/10001",
+							"host": ["{{baseUrl}}"],
+							"path": ["orders", "10001"]
+						},
+						"description": "Retrieve a specific order by ID"
+					}
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderId\": \"TEST_OR_001\",\n    \"companyId\": \"FINO001\",\n    \"prodId\": \"FINO_PR_001\",\n    \"buyerId\": \"FINO_BY_001\",\n    \"orderStatus\": \"SCHEDULED\",\n    \"orderDate\": \"2025-11-08T00:00:00.000Z\",\n    \"targetDate\": \"2025-11-20T00:00:00.000Z\",\n    \"orderQuantity\": 500,\n    \"price\": 30.00,\n    \"discount\": 2.50,\n    \"totalPrice\": 13750.00,\n    \"createDate\": \"2025-11-08T15:00:00.000Z\",\n    \"updateDate\": \"2025-11-08T15:00:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": ["{{baseUrl}}"],
+							"path": ["orders"]
+						},
+						"description": "Create a new order"
+					}
+				},
+				{
+					"name": "Update Order",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderStatus\": \"IN_PROGRESS\",\n    \"orderQuantity\": 600,\n    \"updateDate\": \"2025-11-08T15:30:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders/10001",
+							"host": ["{{baseUrl}}"],
+							"path": ["orders", "10001"]
+						},
+						"description": "Update an existing order"
+					}
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/10001",
+							"host": ["{{baseUrl}}"],
+							"path": ["orders", "10001"]
+						},
+						"description": "Delete an order"
+					}
+				}
+			]
+		},
+		{
+			"name": "Production Shifts",
+			"description": "Production shift management endpoints",
+			"item": [
+				{
+					"name": "Get All Production Shifts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/production-shift?page=1&limit=10&search=",
+							"host": ["{{baseUrl}}"],
+							"path": ["production-shift"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": ""
+								}
+							]
+						},
+						"description": "Retrieve all production shifts with pagination and search"
+					}
+				},
+				{
+					"name": "Get Production Shift by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/production-shift/10000001",
+							"host": ["{{baseUrl}}"],
+							"path": ["production-shift", "10000001"]
+						},
+						"description": "Retrieve a specific production shift by ID"
+					}
+				},
+				{
+					"name": "Create Production Shift",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderId\": \"FINO_OR_001\",\n    \"companyId\": \"FINO001\",\n    \"shiftId\": \"FINO_SH_003\",\n    \"prodName\": \"PVC Pipe 4 inch\",\n    \"machineId\": \"FINO_DC_001\",\n    \"shiftStartDate\": \"2025-11-08T06:00:00.000Z\",\n    \"shiftEndDate\": \"2025-11-08T14:00:00.000Z\",\n    \"entryType\": \"shift\",\n    \"shiftType\": \"1\",\n    \"operator1\": 1000005,\n    \"operator2\": 1000006,\n    \"operator3\": null,\n    \"supervisor\": 1000002,\n    \"openingCount\": 0,\n    \"closingCount\": 450,\n    \"production\": 450,\n    \"rejection\": 25,\n    \"netProduction\": 425,\n    \"incentive\": \"Y\",\n    \"less80Reason\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/production-shift",
+							"host": ["{{baseUrl}}"],
+							"path": ["production-shift"]
+						},
+						"description": "Create a new production shift"
+					}
+				},
+				{
+					"name": "Update Production Shift",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"closingCount\": 480,\n    \"production\": 480,\n    \"rejection\": 20,\n    \"netProduction\": 460,\n    \"incentive\": \"Y\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/production-shift/10000001",
+							"host": ["{{baseUrl}}"],
+							"path": ["production-shift", "10000001"]
+						},
+						"description": "Update an existing production shift"
+					}
+				},
+				{
+					"name": "Delete Production Shift",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/production-shift/10000001",
+							"host": ["{{baseUrl}}"],
+							"path": ["production-shift", "10000001"]
+						},
+						"description": "Delete a production shift"
+					}
+				}
+			]
+		},
+		{
+			"name": "Companies",
+			"description": "Company management endpoints",
+			"item": [
+				{
+					"name": "Get All Companies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/companies?page=1&limit=10&search=",
+							"host": ["{{baseUrl}}"],
+							"path": ["companies"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": ""
+								}
+							]
+						},
+						"description": "Retrieve all companies with pagination and search"
+					}
+				},
+				{
+					"name": "Get Company by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/companies/FINO001",
+							"host": ["{{baseUrl}}"],
+							"path": ["companies", "FINO001"]
+						},
+						"description": "Retrieve a specific company by ID"
+					}
+				},
+				{
+					"name": "Create Company",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"companyId\": \"TEST001\",\n    \"companyName\": \"Test Manufacturing Ltd\",\n    \"businessCons\": \"corporation\",\n    \"companyType\": \"medium scale\",\n    \"address\": \"Test Industrial Area, Chennai\",\n    \"pincode\": 600001,\n    \"propName\": \"Test Owner\",\n    \"directPhone\": \"4428123456\",\n    \"officePhone\": \"4428123456\",\n    \"mgmtPhone\": \"4428123456\",\n    \"mailId\": \"contact@testmfg.com\",\n    \"natureOfBusiness\": \"manufacturing\",\n    \"authPerson\": \"Test Owner\",\n    \"mobileNo\": \"9876543210\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/companies",
+							"host": ["{{baseUrl}}"],
+							"path": ["companies"]
+						},
+						"description": "Create a new company"
+					}
+				},
+				{
+					"name": "Update Company",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"companyName\": \"Updated Test Manufacturing Ltd\",\n    \"address\": \"Updated Industrial Area, Chennai\",\n    \"pincode\": 600002,\n    \"mailId\": \"updated@testmfg.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/companies/TEST001",
+							"host": ["{{baseUrl}}"],
+							"path": ["companies", "TEST001"]
+						},
+						"description": "Update an existing company"
+					}
+				},
+				{
+					"name": "Delete Company",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/companies/TEST001",
+							"host": ["{{baseUrl}}"],
+							"path": ["companies", "TEST001"]
+						},
+						"description": "Delete a company"
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"description": "User management endpoints",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["users"]
+						},
+						"description": "Retrieve all users"
 					}
 				}
 			]

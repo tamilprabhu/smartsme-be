@@ -1,51 +1,93 @@
-# SmartSME API - Postman Collections
+# SmartSME API - Postman Collection
 
-This directory contains Postman collections and environments for testing the SmartSME API.
+This directory contains the Postman collection and environment for testing the SmartSME Manufacturing ERP API.
 
 ## Quick Start
 
 1. **Import Collection**: Import `collections/smartsme-api.postman_collection.json` into Postman
 2. **Import Environment**: Import `environments/development.postman_environment.json`
 3. **Set Environment**: Select "SmartSME Development" environment in Postman
-4. **Test Guest Access**: Run requests in "Guest Access (No Auth)" folder first
-5. **Login**: Use any login request to authenticate and test role-based access
+4. **Login**: Use any login request to authenticate and test role-based access
+5. **Test Endpoints**: All manufacturing endpoints are organized by functionality
 
-## Collections
+## Collection
 
 ### `smartsme-api.postman_collection.json`
-Complete API collection with all endpoints organized by functionality:
+Complete Manufacturing ERP API collection with all endpoints:
 
-- **Guest Access (No Auth)**: Test API without authentication (read-only access)
-- **Authentication**: Login, logout, token refresh, user info
-- **Permissions**: Check and retrieve user permissions
-- **Actions**: Check and retrieve user actions
+- **Authentication**: User login for all 9 roles, token refresh, user info, logout
+- **Products**: CRUD operations for die-cast products
+- **Machines**: CRUD operations for manufacturing machines
+- **Orders**: CRUD operations for customer orders
+- **Production Shifts**: CRUD operations for production shift tracking
+- **Companies**: Company information retrieval
+- **Users**: User management endpoints
+- **Permissions**: Role-based permission checking
+- **Actions**: Role-based action checking
 
-## Environments
+## Environment
 
 ### `development.postman_environment.json`
 - **Base URL**: `http://127.0.0.1:8080`
 - **Environment**: `development`
 
-### `staging.postman_environment.json`
-- **Base URL**: `https://staging-api.smartsme.com`
-- **Environment**: `staging`
-
 ## Testing Workflow
 
-### 1. Guest Access Testing
-Run requests in "Guest Access (No Auth)" folder to test:
-- Guest users get only READ permissions
-- Guest users can only perform READ actions
-- No authentication required
+### 1. Manufacturing Endpoints Testing
+Test the manufacturing endpoints:
+
+**Products**:
+- GET `/products` - List all products
+- GET `/products/{id}` - Get specific product
+- POST `/products` - Create new product
+- PUT `/products/{id}` - Update product
+- DELETE `/products/{id}` - Delete product
+
+**Machines**:
+- GET `/machines` - List all machines
+- GET `/machines/{id}` - Get specific machine
+- POST `/machines` - Create new machine
+- PUT `/machines/{id}` - Update machine
+- DELETE `/machines/{id}` - Delete machine
+
+**Orders**:
+- GET `/orders` - List all orders
+- GET `/orders/{id}` - Get specific order
+- POST `/orders` - Create new order
+- PUT `/orders/{id}` - Update order
+- DELETE `/orders/{id}` - Delete order
+
+**Production Shifts**:
+- GET `/production-shift` - List all shifts (with pagination & search)
+- GET `/production-shift/{id}` - Get specific shift
+- POST `/production-shift` - Create new shift
+- PUT `/production-shift/{id}` - Update shift
+- DELETE `/production-shift/{id}` - Delete shift
+
+**Companies**:
+- GET `/companies` - List all companies (with pagination & search)
+- GET `/companies/{id}` - Get specific company
+- POST `/companies` - Create new company
+- PUT `/companies/{id}` - Update company
+- DELETE `/companies/{id}` - Delete company
+
+**Users**:
+- GET `/users` - List all users
 
 ### 2. Role-Based Testing
 1. **Login as different roles**:
-   - OWNER (Tamil): Full access
-   - SHIFT_INCHARGE (Bob): Production + Secondary Process
-   - PRODUCTION_EMPLOYEE (Ethan): Limited production access
+   - **OWNER (Tamil)**: Full system access - all CRUD operations
+   - **ADMIN (Nandha)**: Administrative access - most operations
+   - **PLANT_HEAD (Alice)**: Plant management - production oversight
+   - **SHIFT_INCHARGE (Bob)**: Production management - shift operations
+   - **STORES_INCHARGE (Diana)**: Inventory management - materials & stock
+   - **PRODUCTION_EMPLOYEE (Ethan)**: Limited production access - floor operations
+   - **SECONDARY_PROCESS_EMPLOYEE (George)**: Secondary process operations
+   - **ACCOUNTANT (Ian)**: Billing and accounting access - financial data
 
 2. **Test permissions**: Use "Check Permissions" to see role differences
 3. **Test actions**: Use "Check Actions" to see available actions per role
+4. **Role hierarchy**: Test access levels from OWNER (highest) to EMPLOYEE (lowest)
 
 ### 3. Token Management
 - Access tokens are automatically stored after login
@@ -72,16 +114,6 @@ Run requests in "Guest Access (No Auth)" folder to test:
 
 ## Permission Examples
 
-### Guest Permissions (No Auth)
-```json
-{
-  "permissions": [
-    {"name": "PRODUCTION_READ", "resource": "PRODUCTION"},
-    {"name": "SECONDARY_PROCESS_READ", "resource": "SECONDARY_PROCESS"}
-  ]
-}
-```
-
 ### SHIFT_INCHARGE Permissions
 ```json
 {
@@ -97,15 +129,6 @@ Run requests in "Guest Access (No Auth)" folder to test:
 ```
 
 ## Action Examples
-
-### Guest Actions (No Auth)
-```json
-{
-  "actions": [
-    {"name": "READ", "description": "View/Read records"}
-  ]
-}
-```
 
 ### SHIFT_INCHARGE Actions
 ```json
@@ -141,7 +164,7 @@ Run requests in "Guest Access (No Auth)" folder to test:
 - Check the Postman Console for request/response details
 - Verify JWT token payload at [jwt.io](https://jwt.io)
 - Use "Get User Info" to check current user's roles
-- Test guest access first to verify API is working
+- Test authentication first to verify API is working
 
 ## API Documentation
 

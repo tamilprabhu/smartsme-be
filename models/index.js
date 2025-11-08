@@ -8,6 +8,10 @@ const RolePermission = require("./rolePermission");
 const RoleAction = require("./roleAction");
 const Company = require("./company");
 const Employee = require("./employee");
+const ProductionShift = require("./productionShift");
+const Product = require("./product");
+const Machine = require("./machine");
+const Order = require("./order");
 
 // Associations
 User.belongsToMany(Role, { through: UserRole, foreignKey: 'userId' });
@@ -46,4 +50,8 @@ module.exports = {
     RoleAction,
     Company,
     Employee,
+    ProductionShift,
+    Product,
+    Machine,
+    Order,
 };

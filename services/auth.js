@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const { Op } = require("sequelize");
 const { User, Role } = require("../models");
 const logger = require("../config/logger");
@@ -28,25 +29,47 @@ const authService = {
                 logger.warn("Login attempt for non-existent user", { identifier: identifier?.substring(0, 3) + "***" });
                 throw new Error("User not found");
             }
-            logger.debug("User found for login", { userId: user.id, username: user.username });
-            const isMatch = await bcrypt.compare(password, user.password);
-            if (!isMatch) {
+
+            logger.debug("User found, verifying password", { userId: user.id, username: user.username });
+            // Verify password
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if (!isPasswordValid) {
                 logger.warn("Invalid password attempt", { userId: user.id, username: user.username });
                 throw new Error("Invalid password");
             }
             logger.debug("Password verified successfully", { userId: user.id, username: user.username });
-            // Generate tokens
+            
+            // Generate tokens with industry standards
             const roles = user.Roles.map(role => ({ id: role.id, name: role.name }));
+            
+            // Access token with roles (short-lived)
             const accessToken = jwt.sign(
-                { id: user.id, username: user.username, roles },
+                { 
+                    iss: "smartsme-api",
+                    aud: "smartsme-client",
+                    sub: user.id.toString(),
+                    jti: crypto.randomUUID(),
+                    username: user.username,
+                    roles: roles,
+                    type: "access"
+                },
                 process.env.JWT_SECRET,
                 { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
             );
+            
+            // Refresh token minimal (long-lived)
             const refreshToken = jwt.sign(
-                { id: user.id, username: user.username, roles },
+                { 
+                    iss: "smartsme-api",
+                    aud: "smartsme-client",
+                    sub: user.id.toString(),
+                    jti: crypto.randomUUID(),
+                    type: "refresh"
+                },
                 process.env.JWT_REFRESH_SECRET,
                 { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d" }
             );
+            
             logger.info("Tokens generated successfully", { userId: user.id, username: user.username });
             return { user, accessToken, refreshToken };
         } catch (error) {
@@ -58,6 +81,55 @@ const authService = {
             throw error;
         }
     },
+
+    // Refresh access token
+    refreshToken: async (refreshToken) => {
+        logger.debug("Refresh token service called");
+        try {
+            const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+            
+            // Validate token type
+            if (decoded.type !== "refresh") {
+                throw new Error("Invalid token type");
+            }
+
+            // Fetch fresh user data from database
+            const user = await User.findByPk(decoded.sub, {
+                include: [{
+                    model: Role,
+                    attributes: ['id', 'name']
+                }]
+            });
+
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            // Generate new access token with fresh roles
+            const roles = user.Roles.map(role => ({ id: role.id, name: role.name }));
+
+            const newAccessToken = jwt.sign(
+                { 
+                    iss: "smartsme-api",
+                    aud: "smartsme-client",
+                    sub: user.id.toString(),
+                    jti: crypto.randomUUID(),
+                    username: user.username,
+                    roles: roles,
+                    type: "access"
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
+            );
+
+            logger.info("Access token refreshed successfully", { userId: user.id });
+            return { accessToken: newAccessToken };
+        } catch (error) {
+            logger.error("Refresh token service error", { error: error.message });
+            throw error;
+        }
+    },
+
     // Find user by ID
     getUserById: async (id) => {
         logger.debug("getUserById service called", { userId: id });
@@ -69,36 +141,29 @@ const authService = {
                 }]
             });
             if (!user) {
-                logger.warn("User not found by ID", { userId: id });
-                return null;
+                logger.warn("User not found in getUserById", { userId: id });
+                throw new Error("User not found");
             }
-            logger.debug("User retrieved successfully", { userId: user.id, username: user.username });
+            logger.debug("User found successfully", { userId: user.id, username: user.username });
             return user;
         } catch (error) {
-            logger.error("getUserById service error", {
-                userId: id,
-                error: error.message,
-                stack: error.stack
-            });
+            logger.error("getUserById service error", { userId: id, error: error.message });
             throw error;
         }
     },
-    // Optional: hash password before creating user
-    hashPassword: async (password) => {
-        logger.debug("Password hashing requested");
+
+    // Logout (placeholder for token blacklisting)
+    logout: async (token) => {
+        logger.debug("Logout service called");
         try {
-            const saltRounds = 10;
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
-            logger.debug("Password hashed successfully");
-            return hashedPassword;
+            // TODO: Implement token blacklisting in Redis/Database
+            logger.info("User logged out successfully");
+            return { message: "Logged out successfully" };
         } catch (error) {
-            logger.error("Password hashing error", {
-                error: error.message,
-                stack: error.stack
-            });
+            logger.error("Logout service error", { error: error.message });
             throw error;
         }
-    },
+    }
 };
 
 module.exports = authService;

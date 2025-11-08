@@ -12,6 +12,10 @@ var authRouter = require('./routes/auth');
 var permissionsRouter = require('./routes/permissions');
 var actionsRouter = require('./routes/actions');
 var companyRouter = require('./routes/company');
+var productionShift = require('./routes/productionShift');
+var productRouter = require('./routes/product');
+var machineRouter = require('./routes/machine');
+var orderRouter = require('./routes/order');
 var app = express();
 
 // Method 1: Allow all origins (completely open - NOT RECOMMENDED for production)
@@ -50,6 +54,10 @@ app.use('/auth', authRouter);
 app.use('/permissions', permissionsRouter);
 app.use('/actions', actionsRouter);
 app.use('/companies', companyRouter);
+app.use('/production-shift', productionShift);
+app.use('/products', productRouter);
+app.use('/machines', machineRouter);
+app.use('/orders', orderRouter);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 // catch 404 and forward to error handler

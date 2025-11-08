@@ -58,19 +58,11 @@ router.post("/refresh", async (req, res) => {
         return res.status(400).json({ error: "Refresh token required" });
     }
     try {
-        const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+        const result = await authService.refreshToken(refreshToken);
         logger.info("Token refresh successful", { 
-            userId: payload.id, 
-            username: payload.username,
             ip: req.ip 
         });
-        // Generate new access token
-        const newAccessToken = jwt.sign(
-            { id: payload.id, username: payload.username, roles: payload.roles },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
-        );
-        res.json({ accessToken: newAccessToken });
+        res.json(result);
     } catch (err) {
         logger.warn("Token refresh failed", { 
             error: err.message,
@@ -95,14 +87,14 @@ router.post("/logout", (req, res) => {
 // GET /auth/me
 router.get("/me", authenticate, async (req, res) => {
     logger.debug("User info request", { 
-        userId: req.user?.id,
+        userId: req.user?.sub,
         username: req.user?.username 
     });
     try {
-        const user = await authService.getUserById(req.user.id);
+        const user = await authService.getUserById(req.user.sub);
         if (!user) {
             logger.warn("User info request for non-existent user", { 
-                requestedUserId: req.user.id,
+                requestedUserId: req.user.sub,
                 ip: req.ip 
             });
             return res.status(404).json({ error: "User not found" });
@@ -124,7 +116,7 @@ router.get("/me", authenticate, async (req, res) => {
         });
     } catch (err) {
         logger.error("Error retrieving user info", { 
-            userId: req.user?.id,
+            userId: req.user?.sub,
             error: err.message,
             stack: err.stack 
         });

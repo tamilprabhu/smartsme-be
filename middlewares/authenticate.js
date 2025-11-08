@@ -10,6 +10,17 @@ const authenticate = (req, res, next) => {
 
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // Validate token type
+        if (payload.type !== "access") {
+            return res.status(401).json({ error: "Invalid token type" });
+        }
+        
+        // Validate issuer and audience
+        if (payload.iss !== "smartsme-api" || payload.aud !== "smartsme-client") {
+            return res.status(401).json({ error: "Invalid token issuer or audience" });
+        }
+        
         req.user = payload;
         next();
     } catch (err) {
