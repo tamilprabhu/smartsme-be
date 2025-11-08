@@ -72,7 +72,11 @@ Test the manufacturing endpoints:
 - DELETE `/api/1.0.0/companies/{id}` - Delete company
 
 **Users**:
-- GET `/api/1.0.0/users` - List all users
+- GET `/api/1.0.0/users` - List all users (excludes passwords)
+- GET `/api/1.0.0/users/{id}` - Get specific user
+- POST `/api/1.0.0/users` - Create new user
+- PUT `/api/1.0.0/users/{id}` - Update user
+- DELETE `/api/1.0.0/users/{id}` - Delete user
 
 ### 2. Role-Based Testing
 1. **Login as different roles**:
