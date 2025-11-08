@@ -1,22 +1,22 @@
-var createError = require('http-errors');
-var express = require('express');
+const createError = require('http-errors');
+const express = require('express');
 const cors = require('cors');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var morgan = require('morgan');
-var logger = require('./config/logger');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+const logger = require('./config/logger');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var authRouter = require('./routes/auth');
-var permissionsRouter = require('./routes/permissions');
-var actionsRouter = require('./routes/actions');
-var companyRouter = require('./routes/company');
-var productionShift = require('./routes/productionShift');
-var productRouter = require('./routes/product');
-var machineRouter = require('./routes/machine');
-var orderRouter = require('./routes/order');
-var app = express();
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth');
+const permissionsRouter = require('./routes/permissions');
+const actionsRouter = require('./routes/actions');
+const companyRouter = require('./routes/company');
+const productionShift = require('./routes/productionShift');
+const productRouter = require('./routes/product');
+const machineRouter = require('./routes/machine');
+const orderRouter = require('./routes/order');
+const app = express();
 
 // Method 1: Allow all origins (completely open - NOT RECOMMENDED for production)
 app.use(cors());
@@ -50,16 +50,18 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/auth', authRouter);
-app.use('/permissions', permissionsRouter);
-app.use('/actions', actionsRouter);
-app.use('/companies', companyRouter);
-app.use('/production-shift', productionShift);
-app.use('/products', productRouter);
-app.use('/machines', machineRouter);
-app.use('/orders', orderRouter);
+// API v1.0.0 routes
+app.use('/api/1.0.0/auth', authRouter);
+app.use('/api/1.0.0/permissions', permissionsRouter);
+app.use('/api/1.0.0/actions', actionsRouter);
+app.use('/api/1.0.0/companies', companyRouter);
+app.use('/api/1.0.0/production-shift', productionShift);
+app.use('/api/1.0.0/products', productRouter);
+app.use('/api/1.0.0/machines', machineRouter);
+app.use('/api/1.0.0/orders', orderRouter);
+app.use('/api/1.0.0/users', usersRouter);
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     logger.warn('404 Not Found', {

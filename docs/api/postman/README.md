@@ -28,7 +28,7 @@ Complete Manufacturing ERP API collection with all endpoints:
 ## Environment
 
 ### `development.postman_environment.json`
-- **Base URL**: `http://127.0.0.1:8080`
+- **Base URL**: `http://127.0.0.1:8080/api/1.0.0`
 - **Environment**: `development`
 
 ## Testing Workflow
@@ -37,42 +37,42 @@ Complete Manufacturing ERP API collection with all endpoints:
 Test the manufacturing endpoints:
 
 **Products**:
-- GET `/products` - List all products
-- GET `/products/{id}` - Get specific product
-- POST `/products` - Create new product
-- PUT `/products/{id}` - Update product
-- DELETE `/products/{id}` - Delete product
+- GET `/api/1.0.0/products` - List all products
+- GET `/api/1.0.0/products/{id}` - Get specific product
+- POST `/api/1.0.0/products` - Create new product
+- PUT `/api/1.0.0/products/{id}` - Update product
+- DELETE `/api/1.0.0/products/{id}` - Delete product
 
 **Machines**:
-- GET `/machines` - List all machines
-- GET `/machines/{id}` - Get specific machine
-- POST `/machines` - Create new machine
-- PUT `/machines/{id}` - Update machine
-- DELETE `/machines/{id}` - Delete machine
+- GET `/api/1.0.0/machines` - List all machines
+- GET `/api/1.0.0/machines/{id}` - Get specific machine
+- POST `/api/1.0.0/machines` - Create new machine
+- PUT `/api/1.0.0/machines/{id}` - Update machine
+- DELETE `/api/1.0.0/machines/{id}` - Delete machine
 
 **Orders**:
-- GET `/orders` - List all orders
-- GET `/orders/{id}` - Get specific order
-- POST `/orders` - Create new order
-- PUT `/orders/{id}` - Update order
-- DELETE `/orders/{id}` - Delete order
+- GET `/api/1.0.0/orders` - List all orders
+- GET `/api/1.0.0/orders/{id}` - Get specific order
+- POST `/api/1.0.0/orders` - Create new order
+- PUT `/api/1.0.0/orders/{id}` - Update order
+- DELETE `/api/1.0.0/orders/{id}` - Delete order
 
 **Production Shifts**:
-- GET `/production-shift` - List all shifts (with pagination & search)
-- GET `/production-shift/{id}` - Get specific shift
-- POST `/production-shift` - Create new shift
-- PUT `/production-shift/{id}` - Update shift
-- DELETE `/production-shift/{id}` - Delete shift
+- GET `/api/1.0.0/production-shift` - List all shifts (with pagination & search)
+- GET `/api/1.0.0/production-shift/{id}` - Get specific shift
+- POST `/api/1.0.0/production-shift` - Create new shift
+- PUT `/api/1.0.0/production-shift/{id}` - Update shift
+- DELETE `/api/1.0.0/production-shift/{id}` - Delete shift
 
 **Companies**:
-- GET `/companies` - List all companies (with pagination & search)
-- GET `/companies/{id}` - Get specific company
-- POST `/companies` - Create new company
-- PUT `/companies/{id}` - Update company
-- DELETE `/companies/{id}` - Delete company
+- GET `/api/1.0.0/companies` - List all companies (with pagination & search)
+- GET `/api/1.0.0/companies/{id}` - Get specific company
+- POST `/api/1.0.0/companies` - Create new company
+- PUT `/api/1.0.0/companies/{id}` - Update company
+- DELETE `/api/1.0.0/companies/{id}` - Delete company
 
 **Users**:
-- GET `/users` - List all users
+- GET `/api/1.0.0/users` - List all users
 
 ### 2. Role-Based Testing
 1. **Login as different roles**:
