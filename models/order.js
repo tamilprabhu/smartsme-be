@@ -11,6 +11,7 @@ const Order = sequelize.define(
             field: 'order_id_seq'
         },
         orderId: { type: DataTypes.STRING(20), field: 'order_id' },
+        orderName: { type: DataTypes.STRING(50), field: 'order_name' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         prodId: { type: DataTypes.STRING(20), field: 'prod_id' },
         buyerId: { type: DataTypes.STRING(20), field: 'buyer_id' },

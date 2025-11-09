@@ -258,6 +258,7 @@ INSERT INTO `machine` (`machine_id_seq`, `machine_id`, `company_id`, `machine_na
 CREATE TABLE `order` (
   `order_id_seq` int NOT NULL,
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `order_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `prod_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `buyer_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -276,11 +277,11 @@ CREATE TABLE `order` (
 -- Dumping data for table `order`
 --
 
-INSERT INTO `order` (`order_id_seq`, `order_id`, `company_id`, `prod_id`, `buyer_id`, `order_status`, `order_date`, `target_date`, `order_quantity`, `price`, `discount`, `total_price`, `create_date`, `update_date`) VALUES
-(10001, 'FINO_OR_001', 'FINO001', 'FINO_PR_001', 'FINO_BY_001', 'IN_PROGRESS', '2025-02-01 00:00:00', '2025-02-15 00:00:00', 1000, 25.00, 2.00, 23000.00, NOW(), NOW()),
-(10002, 'FINO_OR_002', 'FINO001', 'FINO_PR_002', 'FINO_BY_002', 'SCHEDULED', '2025-02-05 00:00:00', '2025-02-20 00:00:00', 2000, 8.50, 1.00, 15000.00, NOW(), NOW()),
-(10003, 'PRES_OR_001', 'PRES001', 'PRES_PR_001', 'PRES_BY_001', 'IN_PROGRESS', '2025-02-03 00:00:00', '2025-02-18 00:00:00', 200, 120.00, 8.00, 22400.00, NOW(), NOW()),
-(10004, 'PRES_OR_002', 'PRES001', 'PRES_PR_002', 'PRES_BY_002', 'COMPLETED', '2025-01-28 00:00:00', '2025-02-10 00:00:00', 800, 35.00, 3.00, 25600.00, NOW(), NOW());
+INSERT INTO `order` (`order_id_seq`, `order_id`, `order_name`, `company_id`, `prod_id`, `buyer_id`, `order_status`, `order_date`, `target_date`, `order_quantity`, `price`, `discount`, `total_price`, `create_date`, `update_date`) VALUES
+(10001, 'FINO_OR_001', 'PVC Pipe 4 inch - Batch A', 'FINO001', 'FINO_PR_001', 'FINO_BY_001', 'IN_PROGRESS', '2025-02-01 00:00:00', '2025-02-15 00:00:00', 1000, 25.00, 2.00, 23000.00, NOW(), NOW()),
+(10002, 'FINO_OR_002', 'PVC Fitting Elbow - High Volume', 'FINO001', 'FINO_PR_002', 'FINO_BY_002', 'SCHEDULED', '2025-02-05 00:00:00', '2025-02-20 00:00:00', 2000, 8.50, 1.00, 15000.00, NOW(), NOW()),
+(10003, 'PRES_OR_001', 'Pressure Cooker Base - Premium', 'PRES001', 'PRES_PR_001', 'PRES_BY_001', 'IN_PROGRESS', '2025-02-03 00:00:00', '2025-02-18 00:00:00', 200, 120.00, 8.00, 22400.00, NOW(), NOW()),
+(10004, 'PRES_OR_002', 'Cooker Handle - Standard', 'PRES001', 'PRES_PR_002', 'PRES_BY_002', 'COMPLETED', '2025-01-28 00:00:00', '2025-02-10 00:00:00', 800, 35.00, 3.00, 25600.00, NOW(), NOW());
 
 -- --------------------------------------------------------
 
