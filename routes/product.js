@@ -4,24 +4,31 @@ const productService = require("../services/product");
 const authenticate = require("../middlewares/authenticate");
 const logger = require("../config/logger");
 
-// GET /products - Get all products
+// GET /products - Get all products with pagination
 router.get("/", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    
     logger.info(`ProductRoute: GET /products - Request started`, { 
         requestId: requestId,
+        page: page,
+        limit: limit,
         userId: req.user?.id,
         userAgent: req.get('User-Agent'),
         ip: req.ip
     });
     
     try {
-        const products = await productService.getAllProducts();
+        const result = await productService.getAllProducts(page, limit);
         logger.info(`ProductRoute: GET /products - Request completed successfully`, { 
             requestId: requestId,
-            productCount: products.length,
+            productCount: result.items.length,
+            totalCount: result.paging.totalItems,
+            page: page,
             userId: req.user?.id
         });
-        res.json(products);
+        res.json(result);
     } catch (error) {
         logger.error(`ProductRoute: GET /products - Request failed`, { 
             requestId: requestId,

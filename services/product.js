@@ -1,14 +1,29 @@
 const { Product } = require("../models");
 const logger = require("../config/logger");
+const ItemsPerPage = require("../constants/pagination");
 
 const productService = {
-    // Get all products
-    getAllProducts: async () => {
-        logger.info("ProductService: Fetching all products");
+    // Get all products with pagination
+    getAllProducts: async (page = 1, limit = ItemsPerPage.TEN) => {
+        const validLimit = ItemsPerPage.isValid(limit) ? limit : ItemsPerPage.TEN;
+        logger.info(`ProductService: Fetching products - page: ${page}, limit: ${validLimit}`);
         try {
-            const products = await Product.findAll();
-            logger.info(`ProductService: Successfully retrieved ${products.length} products`);
-            return products;
+            const offset = (page - 1) * validLimit;
+            const { count, rows } = await Product.findAndCountAll({
+                limit: validLimit,
+                offset: offset,
+                order: [['prodIdSeq', 'ASC']]
+            });
+            logger.info(`ProductService: Successfully retrieved ${rows.length} products out of ${count} total`);
+            return {
+                items: rows,
+                paging: {
+                    currentPage: page,
+                    totalPages: Math.ceil(count / validLimit),
+                    itemsPerPage: validLimit,
+                    totalItems: count
+                }
+            };
         } catch (error) {
             logger.error("ProductService: Failed to fetch products", { 
                 error: error.message, 
