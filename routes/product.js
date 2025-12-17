@@ -4,28 +4,31 @@ const productService = require("../services/product");
 const authenticate = require("../middlewares/authenticate");
 const logger = require("../config/logger");
 
-// GET /products - Get all products with pagination
+// GET /products - Get all products with pagination and search
 router.get("/", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
+    const search = req.query.search || '';
     
     logger.info(`ProductRoute: GET /products - Request started`, { 
         requestId: requestId,
         page: page,
-        limit: limit,
+        itemsPerPage: itemsPerPage,
+        search: search,
         userId: req.user?.id,
         userAgent: req.get('User-Agent'),
         ip: req.ip
     });
     
     try {
-        const result = await productService.getAllProducts(page, limit);
+        const result = await productService.getAllProducts(page, itemsPerPage, search);
         logger.info(`ProductRoute: GET /products - Request completed successfully`, { 
             requestId: requestId,
             productCount: result.items.length,
             totalCount: result.paging.totalItems,
             page: page,
+            search: search,
             userId: req.user?.id
         });
         res.json(result);

@@ -1,15 +1,28 @@
 const { Product } = require("../models");
+const { Op } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 
 const productService = {
-    // Get all products with pagination
-    getAllProducts: async (page = 1, limit = ItemsPerPage.TEN) => {
-        const validLimit = ItemsPerPage.isValid(limit) ? limit : ItemsPerPage.TEN;
-        logger.info(`ProductService: Fetching products - page: ${page}, limit: ${validLimit}`);
+    // Get all products with pagination and search
+    getAllProducts: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+        const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
+        logger.info(`ProductService: Fetching products - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
         try {
             const offset = (page - 1) * validLimit;
+            
+            // Build search conditions
+            const whereClause = search ? {
+                [Op.or]: [
+                    { prodName: { [Op.like]: `%${search}%` } },
+                    { prodId: { [Op.like]: `%${search}%` } },
+                    { rawMaterial: { [Op.like]: `%${search}%` } },
+                    { companyId: { [Op.like]: `%${search}%` } }
+                ]
+            } : {};
+            
             const { count, rows } = await Product.findAndCountAll({
+                where: whereClause,
                 limit: validLimit,
                 offset: offset,
                 order: [['prodIdSeq', 'ASC']]
