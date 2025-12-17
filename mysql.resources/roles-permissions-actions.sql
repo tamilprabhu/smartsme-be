@@ -120,14 +120,14 @@ CREATE TABLE user_roles (
 -- Tamil (User ID: 1) - OWNER
 INSERT INTO user_roles (user_id, role_id) VALUES (1, 1);
 
--- Nandha (User ID: 2) - ADMIN
-INSERT INTO user_roles (user_id, role_id) VALUES (2, 2);
+-- Nandha (User ID: 2) - OWNER
+INSERT INTO user_roles (user_id, role_id) VALUES (2, 1);
 
--- Alice Johnson (User ID: 3) - PLANT_HEAD
-INSERT INTO user_roles (user_id, role_id) VALUES (3, 3);
+-- Alice Johnson (User ID: 3) - ADMIN
+INSERT INTO user_roles (user_id, role_id) VALUES (3, 2);
 
--- Bob Smith (User ID: 4) - SHIFT_INCHARGE
-INSERT INTO user_roles (user_id, role_id) VALUES (4, 4);
+-- Bob Smith (User ID: 4) - PLANT_HEAD
+INSERT INTO user_roles (user_id, role_id) VALUES (4, 3);
 
 -- Charlie Brown (User ID: 5) - SHIFT_INCHARGE
 INSERT INTO user_roles (user_id, role_id) VALUES (5, 4);
@@ -156,18 +156,50 @@ INSERT INTO user_roles (user_id, role_id) VALUES (12, 6);
 -- Kevin Wu (User ID: 13) - STORES_INCHARGE
 INSERT INTO user_roles (user_id, role_id) VALUES (13, 5);
 
--- Rajesh Kumar (User ID: 14) - OWNER (Prestige)
-INSERT INTO user_roles (user_id, role_id) VALUES (14, 1);
+-- Rajesh Kumar (User ID: 14) - ADMIN
+INSERT INTO user_roles (user_id, role_id) VALUES (14, 2);
 
--- Priya Menon (User ID: 15) - PLANT_HEAD (Prestige)
+-- Priya Menon (User ID: 15) - PLANT_HEAD
 INSERT INTO user_roles (user_id, role_id) VALUES (15, 3);
 
--- Amit Sharma (User ID: 16) - SHIFT_INCHARGE (Prestige)
+-- Amit Sharma (User ID: 16) - SHIFT_INCHARGE
 INSERT INTO user_roles (user_id, role_id) VALUES (16, 4);
 
--- Sunita Singh (User ID: 17) - PRODUCTION_EMPLOYEE (Prestige)
+-- Sunita Singh (User ID: 17) - PRODUCTION_EMPLOYEE
 INSERT INTO user_roles (user_id, role_id) VALUES (17, 6);
 
--- Vikram Reddy (User ID: 18) - ACCOUNTANT (Prestige)
+-- Vikram Reddy (User ID: 18) - ACCOUNTANT
 INSERT INTO user_roles (user_id, role_id) VALUES (18, 8);
 
+-- Additional user roles for remaining users (19-37)
+INSERT INTO user_roles (user_id, role_id) VALUES 
+(19, 3), -- Sanjay Dutt - PLANT_HEAD
+(20, 3), -- Tanvi Mehta - PLANT_HEAD
+(21, 4), -- Uday Kiran - SHIFT_INCHARGE
+(22, 4), -- Varun Tej - SHIFT_INCHARGE
+(23, 4), -- Wajid Khan - SHIFT_INCHARGE
+(24, 4), -- Xavi Fernandez - SHIFT_INCHARGE
+(25, 5), -- Yamini Reddy - STORES_INCHARGE
+(26, 5), -- Zara Sheikh - STORES_INCHARGE
+(27, 5), -- Arjun Das - STORES_INCHARGE
+(28, 6), -- Bhavana Menon - PRODUCTION_EMPLOYEE
+(29, 6), -- Chetan Bhagat - PRODUCTION_EMPLOYEE
+(30, 6), -- Divya Bharti - PRODUCTION_EMPLOYEE
+(31, 6), -- Eshwar Prasad - PRODUCTION_EMPLOYEE
+(32, 6), -- Falguni Pathak - PRODUCTION_EMPLOYEE
+(33, 6), -- Gautam Adani - PRODUCTION_EMPLOYEE
+(34, 7), -- Hema Malini - SECONDARY_PROCESS_EMPLOYEE
+(35, 7), -- Ishaan Khatter - SECONDARY_PROCESS_EMPLOYEE
+(36, 7), -- Janhvi Kapoor - SECONDARY_PROCESS_EMPLOYEE
+(37, 7); -- Kartik Aaryan - SECONDARY_PROCESS_EMPLOYEE
+
+-- Role Distribution Summary:
+-- OWNER: 2 users (Tamil - FINO001, Nandha - PRES001)
+-- ADMIN: 2 users
+-- PLANT_HEAD: 4 users
+-- SHIFT_INCHARGE: 6 users
+-- STORES_INCHARGE: 5 users
+-- PRODUCTION_EMPLOYEE: 10 users
+-- SECONDARY_PROCESS_EMPLOYEE: 6 users
+-- ACCOUNTANT: 2 users
+-- Total: 37 users
