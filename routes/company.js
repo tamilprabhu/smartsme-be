@@ -16,12 +16,15 @@ const hasPermission = (userRoles, requiredPermission) => {
 
 // GET /companies - Get all companies (with guest access)
 router.get("/", optionalAuth, async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
+    const search = req.query.search || '';
+    
     try {
         if (!hasPermission(req.user.roles, 'COMPANY_READ')) {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const { page = 1, itemsPerPage = 10, search = '' } = req.query;
         const result = await companyService.getAllCompanies(page, itemsPerPage, search);
         res.json(result);
     } catch (err) {

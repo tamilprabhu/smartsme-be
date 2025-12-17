@@ -15,12 +15,14 @@ const hasPermission = (userRoles, requiredPermission) => {
 
 router.get("/", optionalAuth, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const { page = 1, limit = 10, search = '' } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
+    const search = req.query.search || '';
     
     logger.info(`ProductionShiftRoute: GET /production-shift - Request started`, { 
         requestId: requestId,
         page: page,
-        limit: limit,
+        itemsPerPage: itemsPerPage,
         search: search,
         userId: req.user?.id,
         userRoles: req.user?.roles?.map(r => r.name)
@@ -35,8 +37,6 @@ router.get("/", optionalAuth, async (req, res) => {
             });
             return res.status(403).json({ error: "Insufficient permissions" });
         }
-
-        const { page = 1, itemsPerPage = 10, search = '' } = req.query;
         
         const result = await productionShiftService.getAllProductionShifts(page, itemsPerPage, search);
         logger.info(`ProductionShiftRoute: GET /production-shift - Request completed successfully`, { 
