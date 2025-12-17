@@ -10,8 +10,14 @@ const Company = require("./company");
 const Employee = require("./employee");
 const ProductionShift = require("./productionShift");
 const Product = require("./product");
+const ProdHourly = require("./prodHourly");
 const Machine = require("./machine");
 const Order = require("./order");
+const OrderQuantity = require("./orderQuantity");
+const Buyer = require("./buyer");
+const Dispatch = require("./dispatch");
+const Seller = require("./seller");
+const Stock = require("./stock");
 
 // Associations
 User.belongsToMany(Role, { through: UserRole, foreignKey: 'userId' });
@@ -52,6 +58,12 @@ module.exports = {
     Employee,
     ProductionShift,
     Product,
+    ProdHourly,
     Machine,
     Order,
+    OrderQuantity,
+    Buyer,
+    Dispatch,
+    Seller,
+    Stock,
 };

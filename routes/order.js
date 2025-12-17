@@ -4,22 +4,30 @@ const orderService = require("../services/order");
 const authenticate = require("../middlewares/authenticate");
 const logger = require("../config/logger");
 
-// GET /orders - Get all orders
+// GET /orders - Get all orders with pagination and search
 router.get("/", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const page = parseInt(req.query.page) || 1;
+    const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
+    const search = req.query.search || '';
+    
     logger.info(`OrderRoute: GET /orders - Request started`, { 
         requestId: requestId,
+        page: page,
+        itemsPerPage: itemsPerPage,
+        search: search,
         userId: req.user?.id
     });
     
     try {
-        const orders = await orderService.getAllOrders();
+        const result = await orderService.getAllOrders(page, itemsPerPage, search);
         logger.info(`OrderRoute: GET /orders - Request completed successfully`, { 
             requestId: requestId,
-            orderCount: orders.length,
+            orderCount: result.items.length,
+            totalCount: result.paging.totalItems,
             userId: req.user?.id
         });
-        res.json(orders);
+        res.json(result);
     } catch (error) {
         logger.error(`OrderRoute: GET /orders - Request failed`, { 
             requestId: requestId,

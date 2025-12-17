@@ -1,14 +1,41 @@
 const { Order } = require("../models");
+const { Op } = require("sequelize");
 const logger = require("../config/logger");
+const ItemsPerPage = require("../constants/pagination");
 
 const orderService = {
-    // Get all orders
-    getAllOrders: async () => {
-        logger.info("OrderService: Fetching all orders");
+    // Get all orders with pagination and search
+    getAllOrders: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+        const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
+        logger.info(`OrderService: Fetching orders - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
         try {
-            const orders = await Order.findAll();
-            logger.info(`OrderService: Successfully retrieved ${orders.length} orders`);
-            return orders;
+            const offset = (page - 1) * validLimit;
+            
+            const whereClause = search ? {
+                [Op.or]: [
+                    { orderId: { [Op.like]: `%${search}%` } },
+                    { orderName: { [Op.like]: `%${search}%` } },
+                    { orderStatus: { [Op.like]: `%${search}%` } },
+                    { companyId: { [Op.like]: `%${search}%` } }
+                ]
+            } : {};
+            
+            const { count, rows } = await Order.findAndCountAll({
+                where: whereClause,
+                limit: validLimit,
+                offset: offset,
+                order: [['orderIdSeq', 'DESC']]
+            });
+            logger.info(`OrderService: Successfully retrieved ${rows.length} orders out of ${count} total`);
+            return {
+                items: rows,
+                paging: {
+                    currentPage: page,
+                    totalPages: Math.ceil(count / validLimit),
+                    itemsPerPage: validLimit,
+                    totalItems: count
+                }
+            };
         } catch (error) {
             logger.error("OrderService: Failed to fetch orders", { 
                 error: error.message, 

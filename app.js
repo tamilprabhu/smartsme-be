@@ -7,15 +7,23 @@ const morgan = require('morgan');
 const logger = require('./config/logger');
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const permissionsRouter = require('./routes/permissions');
 const actionsRouter = require('./routes/actions');
+const buyerRouter = require('./routes/buyer');
 const companyRouter = require('./routes/company');
-const productionShift = require('./routes/productionShift');
-const productRouter = require('./routes/product');
+const dispatchRouter = require('./routes/dispatch');
+const employeeRouter = require('./routes/employee');
 const machineRouter = require('./routes/machine');
 const orderRouter = require('./routes/order');
+const orderQuantityRouter = require('./routes/orderQuantity');
+const prodHourlyRouter = require('./routes/prodHourly');
+const productRouter = require('./routes/product');
+const productionShiftRouter = require('./routes/productionShift');
+const sellerRouter = require('./routes/seller');
+const stockRouter = require('./routes/stock');
+const usersRouter = require('./routes/users');
+
 const app = express();
 
 // Method 1: Allow all origins (completely open - NOT RECOMMENDED for production)
@@ -54,11 +62,19 @@ app.use((req, res, next) => {
 app.use('/api/1.0.0/auth', authRouter);
 app.use('/api/1.0.0/permissions', permissionsRouter);
 app.use('/api/1.0.0/actions', actionsRouter);
-app.use('/api/1.0.0/companies', companyRouter);
-app.use('/api/1.0.0/production-shift', productionShift);
-app.use('/api/1.0.0/products', productRouter);
-app.use('/api/1.0.0/machines', machineRouter);
-app.use('/api/1.0.0/orders', orderRouter);
+
+app.use('/api/1.0.0/buyer', buyerRouter);
+app.use('/api/1.0.0/company', companyRouter);
+app.use('/api/1.0.0/dispatch', dispatchRouter);
+app.use('/api/1.0.0/employee', employeeRouter);
+app.use('/api/1.0.0/machine', machineRouter);
+app.use('/api/1.0.0/order', orderRouter);
+app.use('/api/1.0.0/order-quantity', orderQuantityRouter);
+app.use('/api/1.0.0/production-hourly', prodHourlyRouter);
+app.use('/api/1.0.0/product', productRouter);
+app.use('/api/1.0.0/production-shift', productionShiftRouter);
+app.use('/api/1.0.0/seller', sellerRouter);
+app.use('/api/1.0.0/stock', stockRouter);
 app.use('/api/1.0.0/users', usersRouter);
 
 app.use('/', indexRouter);

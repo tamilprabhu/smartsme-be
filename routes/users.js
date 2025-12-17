@@ -4,17 +4,30 @@ const userService = require('../services/user');
 const authenticate = require('../middlewares/authenticate');
 const logger = require('../config/logger');
 
-// GET /users - Get all users
+// GET /users - Get all users with pagination and search
 router.get('/', authenticate, async (req, res) => {
     const requestId = req.requestId;
     const username = req.user?.username;
+    const page = parseInt(req.query.page) || 1;
+    const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
+    const search = req.query.search || '';
     
-    logger.info('GET /users - Fetching all users', { requestId, username });
+    logger.info('GET /users - Fetching users with pagination', { 
+        requestId, 
+        username, 
+        page, 
+        itemsPerPage,
+        search 
+    });
     
     try {
-        const users = await userService.getAllUsers();
-        logger.info(`GET /users - Successfully retrieved ${users.length} users`, { requestId, username });
-        res.json(users);
+        const result = await userService.getAllUsers(page, itemsPerPage, search);
+        logger.info(`GET /users - Successfully retrieved ${result.items.length} users`, { 
+            requestId, 
+            username,
+            totalCount: result.paging.totalItems
+        });
+        res.json(result);
     } catch (error) {
         logger.error('GET /users - Failed to fetch users', { 
             requestId, 

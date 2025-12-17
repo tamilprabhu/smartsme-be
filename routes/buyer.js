@@ -1,17 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const machineService = require("../services/machine");
+const buyerService = require("../services/buyer");
 const authenticate = require("../middlewares/authenticate");
 const logger = require("../config/logger");
 
-// GET /machines - Get all machines with pagination and search
+// GET /buyers - Get all buyers with pagination and search
 router.get("/", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
     
-    logger.info(`MachineRoute: GET /machines - Request started`, { 
+    logger.info(`BuyerRoute: GET /buyers - Request started`, { 
         requestId: requestId,
         page: page,
         itemsPerPage: itemsPerPage,
@@ -20,16 +20,16 @@ router.get("/", authenticate, async (req, res) => {
     });
     
     try {
-        const result = await machineService.getAllMachines(page, itemsPerPage, search);
-        logger.info(`MachineRoute: GET /machines - Request completed successfully`, { 
+        const result = await buyerService.getAllBuyers(page, itemsPerPage, search);
+        logger.info(`BuyerRoute: GET /buyers - Request completed successfully`, { 
             requestId: requestId,
-            machineCount: result.items.length,
+            buyerCount: result.items.length,
             totalCount: result.paging.totalItems,
             userId: req.user?.id
         });
         res.json(result);
     } catch (error) {
-        logger.error(`MachineRoute: GET /machines - Request failed`, { 
+        logger.error(`BuyerRoute: GET /buyers - Request failed`, { 
             requestId: requestId,
             error: error.message,
             userId: req.user?.id,
@@ -39,39 +39,39 @@ router.get("/", authenticate, async (req, res) => {
     }
 });
 
-// GET /machines/:id - Get machine by ID
+// GET /buyers/:id - Get buyer by ID
 router.get("/:id", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const machineId = req.params.id;
+    const buyerId = req.params.id;
     
-    logger.info(`MachineRoute: GET /machines/${machineId} - Request started`, { 
+    logger.info(`BuyerRoute: GET /buyers/${buyerId} - Request started`, { 
         requestId: requestId,
-        machineId: machineId,
+        buyerId: buyerId,
         userId: req.user?.id
     });
     
     try {
-        const machine = await machineService.getMachineById(machineId);
-        if (!machine) {
-            logger.warn(`MachineRoute: GET /machines/${machineId} - Machine not found`, { 
+        const buyer = await buyerService.getBuyerById(buyerId);
+        if (!buyer) {
+            logger.warn(`BuyerRoute: GET /buyers/${buyerId} - Buyer not found`, { 
                 requestId: requestId,
-                machineId: machineId,
+                buyerId: buyerId,
                 userId: req.user?.id
             });
-            return res.status(404).json({ error: "Machine not found" });
+            return res.status(404).json({ error: "Buyer not found" });
         }
         
-        logger.info(`MachineRoute: GET /machines/${machineId} - Request completed successfully`, { 
+        logger.info(`BuyerRoute: GET /buyers/${buyerId} - Request completed successfully`, { 
             requestId: requestId,
-            machineId: machineId,
-            machineName: machine.machineName,
+            buyerId: buyerId,
+            buyerName: buyer.buyerName,
             userId: req.user?.id
         });
-        res.json(machine);
+        res.json(buyer);
     } catch (error) {
-        logger.error(`MachineRoute: GET /machines/${machineId} - Request failed`, { 
+        logger.error(`BuyerRoute: GET /buyers/${buyerId} - Request failed`, { 
             requestId: requestId,
-            machineId: machineId,
+            buyerId: buyerId,
             error: error.message,
             userId: req.user?.id,
             stack: error.stack
@@ -80,28 +80,28 @@ router.get("/:id", authenticate, async (req, res) => {
     }
 });
 
-// POST /machines - Create new machine
+// POST /buyers - Create new buyer
 router.post("/", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
-    logger.info(`MachineRoute: POST /machines - Request started`, { 
+    logger.info(`BuyerRoute: POST /buyers - Request started`, { 
         requestId: requestId,
-        machineName: req.body.machineName,
-        machineType: req.body.machineType,
+        buyerName: req.body.buyerName,
+        companyId: req.body.companyId,
         userId: req.user?.id
     });
     
     try {
-        const machine = await machineService.createMachine(req.body);
-        logger.info(`MachineRoute: POST /machines - Request completed successfully`, { 
+        const buyer = await buyerService.createBuyer(req.body);
+        logger.info(`BuyerRoute: POST /buyers - Request completed successfully`, { 
             requestId: requestId,
-            machineId: machine.machineIdSeq,
-            machineName: machine.machineName,
+            buyerId: buyer.buyerIdSeq,
+            buyerName: buyer.buyerName,
             userId: req.user?.id
         });
-        res.status(201).json(machine);
+        res.status(201).json(buyer);
     } catch (error) {
-        logger.error(`MachineRoute: POST /machines - Request failed`, { 
+        logger.error(`BuyerRoute: POST /buyers - Request failed`, { 
             requestId: requestId,
             error: error.message,
             requestBody: req.body,
@@ -112,39 +112,39 @@ router.post("/", authenticate, async (req, res) => {
     }
 });
 
-// PUT /machines/:id - Update machine
+// PUT /buyers/:id - Update buyer
 router.put("/:id", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const machineId = req.params.id;
+    const buyerId = req.params.id;
     
-    logger.info(`MachineRoute: PUT /machines/${machineId} - Request started`, { 
+    logger.info(`BuyerRoute: PUT /buyers/${buyerId} - Request started`, { 
         requestId: requestId,
-        machineId: machineId,
+        buyerId: buyerId,
         updateFields: Object.keys(req.body),
         userId: req.user?.id
     });
     
     try {
-        const machine = await machineService.updateMachine(machineId, req.body);
-        logger.info(`MachineRoute: PUT /machines/${machineId} - Request completed successfully`, { 
+        const buyer = await buyerService.updateBuyer(buyerId, req.body);
+        logger.info(`BuyerRoute: PUT /buyers/${buyerId} - Request completed successfully`, { 
             requestId: requestId,
-            machineId: machineId,
-            machineName: machine.machineName,
+            buyerId: buyerId,
+            buyerName: buyer.buyerName,
             userId: req.user?.id
         });
-        res.json(machine);
+        res.json(buyer);
     } catch (error) {
-        if (error.message === "Machine not found") {
-            logger.warn(`MachineRoute: PUT /machines/${machineId} - Machine not found`, { 
+        if (error.message === "Buyer not found") {
+            logger.warn(`BuyerRoute: PUT /buyers/${buyerId} - Buyer not found`, { 
                 requestId: requestId,
-                machineId: machineId,
+                buyerId: buyerId,
                 userId: req.user?.id
             });
             return res.status(404).json({ error: error.message });
         }
-        logger.error(`MachineRoute: PUT /machines/${machineId} - Request failed`, { 
+        logger.error(`BuyerRoute: PUT /buyers/${buyerId} - Request failed`, { 
             requestId: requestId,
-            machineId: machineId,
+            buyerId: buyerId,
             error: error.message,
             userId: req.user?.id,
             stack: error.stack
@@ -153,37 +153,37 @@ router.put("/:id", authenticate, async (req, res) => {
     }
 });
 
-// DELETE /machines/:id - Delete machine
+// DELETE /buyers/:id - Delete buyer
 router.delete("/:id", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const machineId = req.params.id;
+    const buyerId = req.params.id;
     
-    logger.info(`MachineRoute: DELETE /machines/${machineId} - Request started`, { 
+    logger.info(`BuyerRoute: DELETE /buyers/${buyerId} - Request started`, { 
         requestId: requestId,
-        machineId: machineId,
+        buyerId: buyerId,
         userId: req.user?.id
     });
     
     try {
-        const result = await machineService.deleteMachine(machineId);
-        logger.info(`MachineRoute: DELETE /machines/${machineId} - Request completed successfully`, { 
+        const result = await buyerService.deleteBuyer(buyerId);
+        logger.info(`BuyerRoute: DELETE /buyers/${buyerId} - Request completed successfully`, { 
             requestId: requestId,
-            machineId: machineId,
+            buyerId: buyerId,
             userId: req.user?.id
         });
         res.json(result);
     } catch (error) {
-        if (error.message === "Machine not found") {
-            logger.warn(`MachineRoute: DELETE /machines/${machineId} - Machine not found`, { 
+        if (error.message === "Buyer not found") {
+            logger.warn(`BuyerRoute: DELETE /buyers/${buyerId} - Buyer not found`, { 
                 requestId: requestId,
-                machineId: machineId,
+                buyerId: buyerId,
                 userId: req.user?.id
             });
             return res.status(404).json({ error: error.message });
         }
-        logger.error(`MachineRoute: DELETE /machines/${machineId} - Request failed`, { 
+        logger.error(`BuyerRoute: DELETE /buyers/${buyerId} - Request failed`, { 
             requestId: requestId,
-            machineId: machineId,
+            buyerId: buyerId,
             error: error.message,
             userId: req.user?.id,
             stack: error.stack

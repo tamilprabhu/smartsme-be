@@ -1,16 +1,42 @@
 const { User } = require("../models");
+const { Op } = require("sequelize");
 const logger = require("../config/logger");
+const ItemsPerPage = require("../constants/pagination");
 
 const userService = {
-    // Get all users
-    getAllUsers: async () => {
-        logger.info("UserService: Fetching all users");
+    // Get all users with pagination and search
+    getAllUsers: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+        const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
+        logger.info(`UserService: Fetching users - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
         try {
-            const users = await User.findAll({
-                attributes: { exclude: ['password'] } // Exclude password from response
+            const offset = (page - 1) * validLimit;
+            
+            const whereClause = search ? {
+                [Op.or]: [
+                    { username: { [Op.like]: `%${search}%` } },
+                    { firstName: { [Op.like]: `%${search}%` } },
+                    { lastName: { [Op.like]: `%${search}%` } },
+                    { email: { [Op.like]: `%${search}%` } }
+                ]
+            } : {};
+            
+            const { count, rows } = await User.findAndCountAll({
+                where: whereClause,
+                attributes: { exclude: ['password'] },
+                limit: validLimit,
+                offset: offset,
+                order: [['id', 'ASC']]
             });
-            logger.info(`UserService: Successfully retrieved ${users.length} users`);
-            return users;
+            logger.info(`UserService: Successfully retrieved ${rows.length} users out of ${count} total`);
+            return {
+                items: rows,
+                paging: {
+                    currentPage: page,
+                    totalPages: Math.ceil(count / validLimit),
+                    itemsPerPage: validLimit,
+                    totalItems: count
+                }
+            };
         } catch (error) {
             logger.error("UserService: Failed to fetch users", { 
                 error: error.message, 

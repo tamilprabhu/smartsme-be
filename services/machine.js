@@ -1,14 +1,41 @@
 const { Machine } = require("../models");
+const { Op } = require("sequelize");
 const logger = require("../config/logger");
+const ItemsPerPage = require("../constants/pagination");
 
 const machineService = {
-    // Get all machines
-    getAllMachines: async () => {
-        logger.info("MachineService: Fetching all machines");
+    // Get all machines with pagination and search
+    getAllMachines: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+        const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
+        logger.info(`MachineService: Fetching machines - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
         try {
-            const machines = await Machine.findAll();
-            logger.info(`MachineService: Successfully retrieved ${machines.length} machines`);
-            return machines;
+            const offset = (page - 1) * validLimit;
+            
+            const whereClause = search ? {
+                [Op.or]: [
+                    { machineName: { [Op.like]: `%${search}%` } },
+                    { machineId: { [Op.like]: `%${search}%` } },
+                    { machineType: { [Op.like]: `%${search}%` } },
+                    { companyId: { [Op.like]: `%${search}%` } }
+                ]
+            } : {};
+            
+            const { count, rows } = await Machine.findAndCountAll({
+                where: whereClause,
+                limit: validLimit,
+                offset: offset,
+                order: [['machineIdSeq', 'ASC']]
+            });
+            logger.info(`MachineService: Successfully retrieved ${rows.length} machines out of ${count} total`);
+            return {
+                items: rows,
+                paging: {
+                    currentPage: page,
+                    totalPages: Math.ceil(count / validLimit),
+                    itemsPerPage: validLimit,
+                    totalItems: count
+                }
+            };
         } catch (error) {
             logger.error("MachineService: Failed to fetch machines", { 
                 error: error.message, 

@@ -21,8 +21,8 @@ router.get("/", optionalAuth, async (req, res) => {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const { page = 1, limit = 10, search = '' } = req.query;
-        const result = await companyService.getAll(page, limit, search);
+        const { page = 1, itemsPerPage = 10, search = '' } = req.query;
+        const result = await companyService.getAllCompanies(page, itemsPerPage, search);
         res.json(result);
     } catch (err) {
         res.status(500).json({ error: "Internal server error" });
@@ -36,7 +36,7 @@ router.get("/:id", optionalAuth, async (req, res) => {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const company = await companyService.getById(req.params.id);
+        const company = await companyService.getCompanyById(req.params.id);
         if (!company) {
             return res.status(404).json({ error: "Company not found" });
         }
@@ -53,7 +53,7 @@ router.post("/", authenticate, async (req, res) => {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const company = await companyService.create(req.body);
+        const company = await companyService.createCompany(req.body);
         res.status(201).json(company);
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -67,7 +67,7 @@ router.put("/:id", authenticate, async (req, res) => {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const company = await companyService.update(req.params.id, req.body);
+        const company = await companyService.updateCompany(req.params.id, req.body);
         res.json(company);
     } catch (err) {
         if (err.message === 'Company not found') {
@@ -84,7 +84,7 @@ router.delete("/:id", authenticate, async (req, res) => {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const result = await companyService.delete(req.params.id);
+        const result = await companyService.deleteCompany(req.params.id);
         res.json(result);
     } catch (err) {
         if (err.message === 'Company not found') {

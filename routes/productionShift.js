@@ -36,12 +36,14 @@ router.get("/", optionalAuth, async (req, res) => {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const result = await productionShiftService.getAll(page, limit, search);
+        const { page = 1, itemsPerPage = 10, search = '' } = req.query;
+        
+        const result = await productionShiftService.getAllProductionShifts(page, itemsPerPage, search);
         logger.info(`ProductionShiftRoute: GET /production-shift - Request completed successfully`, { 
             requestId: requestId,
-            shiftsReturned: result.shifts.length,
-            totalCount: result.totalCount,
-            page: result.currentPage,
+            shiftsReturned: result.items.length,
+            totalCount: result.paging.totalItems,
+            page: result.paging.currentPage,
             userId: req.user?.id
         });
         res.json(result);
@@ -76,7 +78,7 @@ router.get("/:id", optionalAuth, async (req, res) => {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const shift = await productionShiftService.getById(shiftId);
+        const shift = await productionShiftService.getProductionShiftById(shiftId);
         if (!shift) {
             logger.warn(`ProductionShiftRoute: GET /production-shift/${shiftId} - Shift not found`, { 
                 requestId: requestId,
@@ -126,7 +128,7 @@ router.post("/", authenticate, async (req, res) => {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const shift = await productionShiftService.create(req.body);
+        const shift = await productionShiftService.createProductionShift(req.body);
         logger.info(`ProductionShiftRoute: POST /production-shift - Request completed successfully`, { 
             requestId: requestId,
             shiftIdSeq: shift.shiftIdSeq,
@@ -167,7 +169,7 @@ router.put("/:id", authenticate, async (req, res) => {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const shift = await productionShiftService.update(shiftId, req.body);
+        const shift = await productionShiftService.updateProductionShift(shiftId, req.body);
         logger.info(`ProductionShiftRoute: PUT /production-shift/${shiftId} - Request completed successfully`, { 
             requestId: requestId,
             shiftId: shiftId,
@@ -215,7 +217,7 @@ router.delete("/:id", authenticate, async (req, res) => {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const result = await productionShiftService.delete(shiftId);
+        const result = await productionShiftService.deleteProductionShift(shiftId);
         logger.info(`ProductionShiftRoute: DELETE /production-shift/${shiftId} - Request completed successfully`, { 
             requestId: requestId,
             shiftId: shiftId,
