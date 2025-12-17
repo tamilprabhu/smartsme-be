@@ -1,0 +1,195 @@
+const express = require("express");
+const router = express.Router();
+const invoiceService = require("../services/invoice");
+const authenticate = require("../middlewares/authenticate");
+const logger = require("../config/logger");
+
+// GET /invoices - Get all invoices with pagination and search
+router.get("/", authenticate, async (req, res) => {
+    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const page = parseInt(req.query.page) || 1;
+    const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
+    const search = req.query.search || '';
+    
+    logger.info(`InvoiceRoute: GET /invoices - Request started`, { 
+        requestId: requestId,
+        page: page,
+        itemsPerPage: itemsPerPage,
+        search: search,
+        userId: req.user?.id
+    });
+    
+    try {
+        const result = await invoiceService.getAllInvoices(page, itemsPerPage, search);
+        logger.info(`InvoiceRoute: GET /invoices - Request completed successfully`, { 
+            requestId: requestId,
+            invoiceCount: result.items.length,
+            totalCount: result.paging.totalItems,
+            userId: req.user?.id
+        });
+        res.json(result);
+    } catch (error) {
+        logger.error(`InvoiceRoute: GET /invoices - Request failed`, { 
+            requestId: requestId,
+            error: error.message,
+            userId: req.user?.id,
+            stack: error.stack
+        });
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// GET /invoices/:id - Get invoice by ID
+router.get("/:id", authenticate, async (req, res) => {
+    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const invoiceId = req.params.id;
+    
+    logger.info(`InvoiceRoute: GET /invoices/${invoiceId} - Request started`, { 
+        requestId: requestId,
+        invoiceId: invoiceId,
+        userId: req.user?.id
+    });
+    
+    try {
+        const invoice = await invoiceService.getInvoiceById(invoiceId);
+        if (!invoice) {
+            logger.warn(`InvoiceRoute: GET /invoices/${invoiceId} - Invoice not found`, { 
+                requestId: requestId,
+                invoiceId: invoiceId,
+                userId: req.user?.id
+            });
+            return res.status(404).json({ error: "Invoice not found" });
+        }
+        
+        logger.info(`InvoiceRoute: GET /invoices/${invoiceId} - Request completed successfully`, { 
+            requestId: requestId,
+            invoiceId: invoiceId,
+            invoiceNumber: invoice.invoiceId,
+            userId: req.user?.id
+        });
+        res.json(invoice);
+    } catch (error) {
+        logger.error(`InvoiceRoute: GET /invoices/${invoiceId} - Request failed`, { 
+            requestId: requestId,
+            invoiceId: invoiceId,
+            error: error.message,
+            userId: req.user?.id,
+            stack: error.stack
+        });
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// POST /invoices - Create new invoice
+router.post("/", authenticate, async (req, res) => {
+    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    logger.info(`InvoiceRoute: POST /invoices - Request started`, { 
+        requestId: requestId,
+        invoiceId: req.body.invoiceId,
+        compId: req.body.compId,
+        userId: req.user?.id
+    });
+    
+    try {
+        const invoice = await invoiceService.createInvoice(req.body);
+        logger.info(`InvoiceRoute: POST /invoices - Request completed successfully`, { 
+            requestId: requestId,
+            invoiceSeq: invoice.invoiceSeq,
+            invoiceId: invoice.invoiceId,
+            userId: req.user?.id
+        });
+        res.status(201).json(invoice);
+    } catch (error) {
+        logger.error(`InvoiceRoute: POST /invoices - Request failed`, { 
+            requestId: requestId,
+            error: error.message,
+            requestBody: req.body,
+            userId: req.user?.id,
+            stack: error.stack
+        });
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// PUT /invoices/:id - Update invoice
+router.put("/:id", authenticate, async (req, res) => {
+    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const invoiceId = req.params.id;
+    
+    logger.info(`InvoiceRoute: PUT /invoices/${invoiceId} - Request started`, { 
+        requestId: requestId,
+        invoiceId: invoiceId,
+        updateFields: Object.keys(req.body),
+        userId: req.user?.id
+    });
+    
+    try {
+        const invoice = await invoiceService.updateInvoice(invoiceId, req.body);
+        logger.info(`InvoiceRoute: PUT /invoices/${invoiceId} - Request completed successfully`, { 
+            requestId: requestId,
+            invoiceId: invoiceId,
+            invoiceNumber: invoice.invoiceId,
+            userId: req.user?.id
+        });
+        res.json(invoice);
+    } catch (error) {
+        if (error.message === "Invoice not found") {
+            logger.warn(`InvoiceRoute: PUT /invoices/${invoiceId} - Invoice not found`, { 
+                requestId: requestId,
+                invoiceId: invoiceId,
+                userId: req.user?.id
+            });
+            return res.status(404).json({ error: error.message });
+        }
+        logger.error(`InvoiceRoute: PUT /invoices/${invoiceId} - Request failed`, { 
+            requestId: requestId,
+            invoiceId: invoiceId,
+            error: error.message,
+            userId: req.user?.id,
+            stack: error.stack
+        });
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// DELETE /invoices/:id - Delete invoice
+router.delete("/:id", authenticate, async (req, res) => {
+    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const invoiceId = req.params.id;
+    
+    logger.info(`InvoiceRoute: DELETE /invoices/${invoiceId} - Request started`, { 
+        requestId: requestId,
+        invoiceId: invoiceId,
+        userId: req.user?.id
+    });
+    
+    try {
+        const result = await invoiceService.deleteInvoice(invoiceId);
+        logger.info(`InvoiceRoute: DELETE /invoices/${invoiceId} - Request completed successfully`, { 
+            requestId: requestId,
+            invoiceId: invoiceId,
+            userId: req.user?.id
+        });
+        res.json(result);
+    } catch (error) {
+        if (error.message === "Invoice not found") {
+            logger.warn(`InvoiceRoute: DELETE /invoices/${invoiceId} - Invoice not found`, { 
+                requestId: requestId,
+                invoiceId: invoiceId,
+                userId: req.user?.id
+            });
+            return res.status(404).json({ error: error.message });
+        }
+        logger.error(`InvoiceRoute: DELETE /invoices/${invoiceId} - Request failed`, { 
+            requestId: requestId,
+            invoiceId: invoiceId,
+            error: error.message,
+            userId: req.user?.id,
+            stack: error.stack
+        });
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+module.exports = router;

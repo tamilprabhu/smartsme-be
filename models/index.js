@@ -18,6 +18,7 @@ const Buyer = require("./buyer");
 const Dispatch = require("./dispatch");
 const Seller = require("./seller");
 const Stock = require("./stock");
+const Invoice = require("./invoice");
 
 // Associations
 User.belongsToMany(Role, { through: UserRole, foreignKey: 'userId' });
@@ -66,4 +67,5 @@ module.exports = {
     Dispatch,
     Seller,
     Stock,
+    Invoice,
 };
