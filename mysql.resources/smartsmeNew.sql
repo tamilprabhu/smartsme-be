@@ -1042,7 +1042,7 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `prod_shift`
 --
 ALTER TABLE `prod_shift`
-  MODIFY `shift_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000001;
+  MODIFY `shift_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038;
 
 --
 -- AUTO_INCREMENT for table `seller`
