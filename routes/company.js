@@ -21,7 +21,7 @@ router.get("/", optionalAuth, async (req, res) => {
     const search = req.query.search || '';
     
     try {
-        if (!hasPermission(req.user.roles, 'COMPANY_READ')) {
+        if (!hasPermission(req.auth.roles, 'COMPANY_READ')) {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
@@ -35,7 +35,7 @@ router.get("/", optionalAuth, async (req, res) => {
 // GET /companies/:id - Get company by ID (with guest access)
 router.get("/:id", optionalAuth, async (req, res) => {
     try {
-        if (!hasPermission(req.user.roles, 'COMPANY_READ')) {
+        if (!hasPermission(req.auth.roles, 'COMPANY_READ')) {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
@@ -52,7 +52,7 @@ router.get("/:id", optionalAuth, async (req, res) => {
 // POST /companies - Create company (authenticated only)
 router.post("/", authenticate, async (req, res) => {
     try {
-        if (!hasPermission(req.user.roles, 'COMPANY_CREATE')) {
+        if (!hasPermission(req.auth.roles, 'COMPANY_CREATE')) {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
@@ -66,7 +66,7 @@ router.post("/", authenticate, async (req, res) => {
 // PUT /companies/:id - Update company (authenticated only)
 router.put("/:id", authenticate, async (req, res) => {
     try {
-        if (!hasPermission(req.user.roles, 'COMPANY_UPDATE')) {
+        if (!hasPermission(req.auth.roles, 'COMPANY_UPDATE')) {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
@@ -83,7 +83,7 @@ router.put("/:id", authenticate, async (req, res) => {
 // DELETE /companies/:id - Delete company (authenticated only)
 router.delete("/:id", authenticate, async (req, res) => {
     try {
-        if (!hasPermission(req.user.roles, 'COMPANY_DELETE')) {
+        if (!hasPermission(req.auth.roles, 'COMPANY_DELETE')) {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 

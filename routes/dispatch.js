@@ -16,7 +16,7 @@ router.get("/", authenticate, async (req, res) => {
         page: page,
         itemsPerPage: itemsPerPage,
         search: search,
-        userId: req.user?.id
+        userId: req.auth?.id
     });
     
     try {
@@ -25,14 +25,14 @@ router.get("/", authenticate, async (req, res) => {
             requestId: requestId,
             dispatchCount: result.items.length,
             totalCount: result.paging.totalItems,
-            userId: req.user?.id
+            userId: req.auth?.id
         });
         res.json(result);
     } catch (error) {
         logger.error(`DispatchRoute: GET /dispatches - Request failed`, { 
             requestId: requestId,
             error: error.message,
-            userId: req.user?.id,
+            userId: req.auth?.id,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });

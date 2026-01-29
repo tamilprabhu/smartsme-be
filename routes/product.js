@@ -16,7 +16,7 @@ router.get("/", authenticate, async (req, res) => {
         page: page,
         itemsPerPage: itemsPerPage,
         search: search,
-        userId: req.user?.id,
+        userId: req.auth?.id,
         userAgent: req.get('User-Agent'),
         ip: req.ip
     });
@@ -29,14 +29,14 @@ router.get("/", authenticate, async (req, res) => {
             totalCount: result.paging.totalItems,
             page: page,
             search: search,
-            userId: req.user?.id
+            userId: req.auth?.id
         });
         res.json(result);
     } catch (error) {
         logger.error(`ProductRoute: GET /products - Request failed`, { 
             requestId: requestId,
             error: error.message,
-            userId: req.user?.id,
+            userId: req.auth?.id,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -51,7 +51,7 @@ router.get("/:id", authenticate, async (req, res) => {
     logger.info(`ProductRoute: GET /products/${productId} - Request started`, { 
         requestId: requestId,
         productId: productId,
-        userId: req.user?.id
+        userId: req.auth?.id
     });
     
     try {
@@ -60,7 +60,7 @@ router.get("/:id", authenticate, async (req, res) => {
             logger.warn(`ProductRoute: GET /products/${productId} - Product not found`, { 
                 requestId: requestId,
                 productId: productId,
-                userId: req.user?.id
+                userId: req.auth?.id
             });
             return res.status(404).json({ error: "Product not found" });
         }
@@ -69,7 +69,7 @@ router.get("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             productId: productId,
             productName: product.prodName,
-            userId: req.user?.id
+            userId: req.auth?.id
         });
         res.json(product);
     } catch (error) {
@@ -77,7 +77,7 @@ router.get("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             productId: productId,
             error: error.message,
-            userId: req.user?.id,
+            userId: req.auth?.id,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -92,7 +92,7 @@ router.post("/", authenticate, async (req, res) => {
         requestId: requestId,
         productName: req.body.prodName,
         companyId: req.body.companyId,
-        userId: req.user?.id
+        userId: req.auth?.id
     });
     
     try {
@@ -101,7 +101,7 @@ router.post("/", authenticate, async (req, res) => {
             requestId: requestId,
             productId: product.prodIdSeq,
             productName: product.prodName,
-            userId: req.user?.id
+            userId: req.auth?.id
         });
         res.status(201).json(product);
     } catch (error) {
@@ -109,7 +109,7 @@ router.post("/", authenticate, async (req, res) => {
             requestId: requestId,
             error: error.message,
             requestBody: req.body,
-            userId: req.user?.id,
+            userId: req.auth?.id,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -125,7 +125,7 @@ router.put("/:id", authenticate, async (req, res) => {
         requestId: requestId,
         productId: productId,
         updateFields: Object.keys(req.body),
-        userId: req.user?.id
+        userId: req.auth?.id
     });
     
     try {
@@ -134,7 +134,7 @@ router.put("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             productId: productId,
             productName: product.prodName,
-            userId: req.user?.id
+            userId: req.auth?.id
         });
         res.json(product);
     } catch (error) {
@@ -142,7 +142,7 @@ router.put("/:id", authenticate, async (req, res) => {
             logger.warn(`ProductRoute: PUT /products/${productId} - Product not found`, { 
                 requestId: requestId,
                 productId: productId,
-                userId: req.user?.id
+                userId: req.auth?.id
             });
             return res.status(404).json({ error: error.message });
         }
@@ -150,7 +150,7 @@ router.put("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             productId: productId,
             error: error.message,
-            userId: req.user?.id,
+            userId: req.auth?.id,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -165,7 +165,7 @@ router.delete("/:id", authenticate, async (req, res) => {
     logger.info(`ProductRoute: DELETE /products/${productId} - Request started`, { 
         requestId: requestId,
         productId: productId,
-        userId: req.user?.id
+        userId: req.auth?.id
     });
     
     try {
@@ -173,7 +173,7 @@ router.delete("/:id", authenticate, async (req, res) => {
         logger.info(`ProductRoute: DELETE /products/${productId} - Request completed successfully`, { 
             requestId: requestId,
             productId: productId,
-            userId: req.user?.id
+            userId: req.auth?.id
         });
         res.json(result);
     } catch (error) {
@@ -181,7 +181,7 @@ router.delete("/:id", authenticate, async (req, res) => {
             logger.warn(`ProductRoute: DELETE /products/${productId} - Product not found`, { 
                 requestId: requestId,
                 productId: productId,
-                userId: req.user?.id
+                userId: req.auth?.id
             });
             return res.status(404).json({ error: error.message });
         }
@@ -189,7 +189,7 @@ router.delete("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             productId: productId,
             error: error.message,
-            userId: req.user?.id,
+            userId: req.auth?.id,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });

@@ -16,7 +16,7 @@ router.get("/", authenticate, async (req, res) => {
         page: page,
         itemsPerPage: itemsPerPage,
         search: search,
-        userId: req.user?.id
+        userId: req.auth?.id
     });
     
     try {
@@ -25,14 +25,14 @@ router.get("/", authenticate, async (req, res) => {
             requestId: requestId,
             invoiceCount: result.items.length,
             totalCount: result.paging.totalItems,
-            userId: req.user?.id
+            userId: req.auth?.id
         });
         res.json(result);
     } catch (error) {
         logger.error(`InvoiceRoute: GET /invoices - Request failed`, { 
             requestId: requestId,
             error: error.message,
-            userId: req.user?.id,
+            userId: req.auth?.id,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -47,7 +47,7 @@ router.get("/:id", authenticate, async (req, res) => {
     logger.info(`InvoiceRoute: GET /invoices/${invoiceId} - Request started`, { 
         requestId: requestId,
         invoiceId: invoiceId,
-        userId: req.user?.id
+        userId: req.auth?.id
     });
     
     try {
@@ -56,7 +56,7 @@ router.get("/:id", authenticate, async (req, res) => {
             logger.warn(`InvoiceRoute: GET /invoices/${invoiceId} - Invoice not found`, { 
                 requestId: requestId,
                 invoiceId: invoiceId,
-                userId: req.user?.id
+                userId: req.auth?.id
             });
             return res.status(404).json({ error: "Invoice not found" });
         }
@@ -65,7 +65,7 @@ router.get("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             invoiceId: invoiceId,
             invoiceNumber: invoice.invoiceId,
-            userId: req.user?.id
+            userId: req.auth?.id
         });
         res.json(invoice);
     } catch (error) {
@@ -73,7 +73,7 @@ router.get("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             invoiceId: invoiceId,
             error: error.message,
-            userId: req.user?.id,
+            userId: req.auth?.id,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -88,7 +88,7 @@ router.post("/", authenticate, async (req, res) => {
         requestId: requestId,
         invoiceId: req.body.invoiceId,
         compId: req.body.compId,
-        userId: req.user?.id
+        userId: req.auth?.id
     });
     
     try {
@@ -97,7 +97,7 @@ router.post("/", authenticate, async (req, res) => {
             requestId: requestId,
             invoiceSeq: invoice.invoiceSeq,
             invoiceId: invoice.invoiceId,
-            userId: req.user?.id
+            userId: req.auth?.id
         });
         res.status(201).json(invoice);
     } catch (error) {
@@ -105,7 +105,7 @@ router.post("/", authenticate, async (req, res) => {
             requestId: requestId,
             error: error.message,
             requestBody: req.body,
-            userId: req.user?.id,
+            userId: req.auth?.id,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -121,7 +121,7 @@ router.put("/:id", authenticate, async (req, res) => {
         requestId: requestId,
         invoiceId: invoiceId,
         updateFields: Object.keys(req.body),
-        userId: req.user?.id
+        userId: req.auth?.id
     });
     
     try {
@@ -130,7 +130,7 @@ router.put("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             invoiceId: invoiceId,
             invoiceNumber: invoice.invoiceId,
-            userId: req.user?.id
+            userId: req.auth?.id
         });
         res.json(invoice);
     } catch (error) {
@@ -138,7 +138,7 @@ router.put("/:id", authenticate, async (req, res) => {
             logger.warn(`InvoiceRoute: PUT /invoices/${invoiceId} - Invoice not found`, { 
                 requestId: requestId,
                 invoiceId: invoiceId,
-                userId: req.user?.id
+                userId: req.auth?.id
             });
             return res.status(404).json({ error: error.message });
         }
@@ -146,7 +146,7 @@ router.put("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             invoiceId: invoiceId,
             error: error.message,
-            userId: req.user?.id,
+            userId: req.auth?.id,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -161,7 +161,7 @@ router.delete("/:id", authenticate, async (req, res) => {
     logger.info(`InvoiceRoute: DELETE /invoices/${invoiceId} - Request started`, { 
         requestId: requestId,
         invoiceId: invoiceId,
-        userId: req.user?.id
+        userId: req.auth?.id
     });
     
     try {
@@ -169,7 +169,7 @@ router.delete("/:id", authenticate, async (req, res) => {
         logger.info(`InvoiceRoute: DELETE /invoices/${invoiceId} - Request completed successfully`, { 
             requestId: requestId,
             invoiceId: invoiceId,
-            userId: req.user?.id
+            userId: req.auth?.id
         });
         res.json(result);
     } catch (error) {
@@ -177,7 +177,7 @@ router.delete("/:id", authenticate, async (req, res) => {
             logger.warn(`InvoiceRoute: DELETE /invoices/${invoiceId} - Invoice not found`, { 
                 requestId: requestId,
                 invoiceId: invoiceId,
-                userId: req.user?.id
+                userId: req.auth?.id
             });
             return res.status(404).json({ error: error.message });
         }
@@ -185,7 +185,7 @@ router.delete("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             invoiceId: invoiceId,
             error: error.message,
-            userId: req.user?.id,
+            userId: req.auth?.id,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });

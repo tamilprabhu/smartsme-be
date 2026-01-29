@@ -7,7 +7,7 @@ const logger = require('../config/logger');
 // GET /users - Get all users with pagination and search
 router.get('/', authenticate, async (req, res) => {
     const requestId = req.requestId;
-    const username = req.user?.username;
+    const username = req.auth?.username;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
@@ -41,7 +41,7 @@ router.get('/', authenticate, async (req, res) => {
 // GET /users/:id - Get user by ID
 router.get('/:id', authenticate, async (req, res) => {
     const requestId = req.requestId;
-    const username = req.user?.username;
+    const username = req.auth?.username;
     const { id } = req.params;
     
     logger.info(`GET /users/${id} - Fetching user`, { requestId, username, userId: id });
@@ -69,7 +69,7 @@ router.get('/:id', authenticate, async (req, res) => {
 // POST /users - Create new user
 router.post('/', authenticate, async (req, res) => {
     const requestId = req.requestId;
-    const username = req.user?.username;
+    const username = req.auth?.username;
     
     logger.info('POST /users - Creating new user', { requestId, username, newUsername: req.body.username });
     
@@ -90,7 +90,7 @@ router.post('/', authenticate, async (req, res) => {
 // PUT /users/:id - Update user
 router.put('/:id', authenticate, async (req, res) => {
     const requestId = req.requestId;
-    const username = req.user?.username;
+    const username = req.auth?.username;
     const { id } = req.params;
     
     logger.info(`PUT /users/${id} - Updating user`, { requestId, username, userId: id });
@@ -118,7 +118,7 @@ router.put('/:id', authenticate, async (req, res) => {
 // DELETE /users/:id - Delete user
 router.delete('/:id', authenticate, async (req, res) => {
     const requestId = req.requestId;
-    const username = req.user?.username;
+    const username = req.auth?.username;
     const { id } = req.params;
     
     logger.info(`DELETE /users/${id} - Deleting user`, { requestId, username, userId: id });

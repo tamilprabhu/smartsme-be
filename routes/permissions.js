@@ -7,7 +7,7 @@ const optionalAuth = require("../middlewares/optionalAuth");
 router.post("/check", optionalAuth, async (req, res) => {
     try {
         const { permissions } = req.body;
-        const userRoles = req.user.roles || [];
+        const userRoles = req.auth.roles || [];
         
         if (!permissions || !Array.isArray(permissions)) {
             return res.status(400).json({ error: "permissions array required" });
@@ -25,7 +25,7 @@ router.post("/check", optionalAuth, async (req, res) => {
 // GET /permissions/me
 router.get("/me", optionalAuth, async (req, res) => {
     try {
-        const userRoles = req.user.roles || [];
+        const userRoles = req.auth.roles || [];
         const roleIds = userRoles.map(role => role.id);
         
         const permissions = await permissionsService.getUserPermissions(roleIds);

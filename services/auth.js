@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { Op } = require("sequelize");
-const { User, Role } = require("../models");
+const { User, Role, Employee } = require("../models");
 const logger = require("../config/logger");
 
 // Service functions
@@ -23,6 +23,9 @@ const authService = {
                 include: [{
                     model: Role,
                     attributes: ['id', 'name']
+                },{
+                    model: Employee,
+                    attributes: ['companyId']
                 }]
             });
             if (!user) {
@@ -51,6 +54,7 @@ const authService = {
                     jti: crypto.randomUUID(),
                     username: user.username,
                     roles: roles,
+                    companyId: user.Employee?.companyId,
                     type: "access"
                 },
                 process.env.JWT_SECRET,

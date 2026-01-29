@@ -87,14 +87,14 @@ router.post("/logout", (req, res) => {
 // GET /auth/me
 router.get("/me", authenticate, async (req, res) => {
     logger.debug("User info request", { 
-        userId: req.user?.sub,
-        username: req.user?.username 
+        userId: req.auth?.sub,
+        username: req.auth?.username 
     });
     try {
-        const user = await authService.getUserById(req.user.sub);
+        const user = await authService.getUserById(req.auth.sub);
         if (!user) {
             logger.warn("User info request for non-existent user", { 
-                requestedUserId: req.user.sub,
+                requestedUserId: req.auth.sub,
                 ip: req.ip 
             });
             return res.status(404).json({ error: "User not found" });
@@ -116,7 +116,7 @@ router.get("/me", authenticate, async (req, res) => {
         });
     } catch (err) {
         logger.error("Error retrieving user info", { 
-            userId: req.user?.sub,
+            userId: req.auth?.sub,
             error: err.message,
             stack: err.stack 
         });

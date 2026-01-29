@@ -7,7 +7,7 @@ const optionalAuth = require("../middlewares/optionalAuth");
 router.post("/check", optionalAuth, async (req, res) => {
     try {
         const { actions } = req.body;
-        const userRoles = req.user.roles || [];
+        const userRoles = req.auth.roles || [];
         
         if (!actions || !Array.isArray(actions)) {
             return res.status(400).json({ error: "actions array required" });
@@ -25,7 +25,7 @@ router.post("/check", optionalAuth, async (req, res) => {
 // GET /actions/me
 router.get("/me", optionalAuth, async (req, res) => {
     try {
-        const userRoles = req.user.roles || [];
+        const userRoles = req.auth.roles || [];
         const roleIds = userRoles.map(role => role.id);
         
         const actions = await actionsService.getUserActions(roleIds);
