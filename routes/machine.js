@@ -20,12 +20,14 @@ router.get("/", authenticate, async (req, res) => {
     });
     
     try {
-        const result = await machineService.getAllMachines(page, itemsPerPage, search);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const result = await machineService.getAllMachines(page, itemsPerPage, search, companyId);
         logger.info(`MachineRoute: GET /machines - Request completed successfully`, { 
             requestId: requestId,
             machineCount: result.items.length,
             totalCount: result.paging.totalItems,
-            userId: req.auth?.id
+            userId: req.auth?.id,
+            companyId: companyId
         });
         res.json(result);
     } catch (error) {

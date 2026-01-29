@@ -4,19 +4,31 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 
 const employeeService = {
-    getAllEmployees: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+    getAllEmployees: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`EmployeeService: Fetching employees - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
+        logger.info(`EmployeeService: Fetching employees - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
             const offset = (page - 1) * validLimit;
             
-            const whereClause = search ? {
-                [Op.or]: [
-                    { companyId: { [Op.like]: `%${search}%` } },
-                    { userId: { [Op.like]: `%${search}%` } },
-                    { salary: { [Op.like]: `%${search}%` } }
-                ]
-            } : {};
+            let whereClause = {};
+            
+            // Add company filter if provided
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            // Add search filter if provided
+            if (search) {
+                whereClause[Op.and] = [
+                    ...(companyId ? [{ companyId }] : []),
+                    {
+                        [Op.or]: [
+                            { userId: { [Op.like]: `%${search}%` } },
+                            { salary: { [Op.like]: `%${search}%` } }
+                        ]
+                    }
+                ];
+            }
             
             const { count, rows } = await Employee.findAndCountAll({
                 where: whereClause,
@@ -24,7 +36,7 @@ const employeeService = {
                 offset: offset,
                 order: [['employeeIdSeq', 'ASC']]
             });
-            logger.info(`EmployeeService: Successfully retrieved ${rows.length} employees out of ${count} total`);
+            logger.info(`EmployeeService: Successfully retrieved ${rows.length} employees out of ${count} total for company: ${companyId}`);
             return {
                 items: rows,
                 paging: {

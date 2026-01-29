@@ -5,20 +5,32 @@ const ItemsPerPage = require("../constants/pagination");
 
 const machineService = {
     // Get all machines with pagination and search
-    getAllMachines: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+    getAllMachines: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`MachineService: Fetching machines - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
+        logger.info(`MachineService: Fetching machines - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
             const offset = (page - 1) * validLimit;
             
-            const whereClause = search ? {
-                [Op.or]: [
-                    { machineName: { [Op.like]: `%${search}%` } },
-                    { machineId: { [Op.like]: `%${search}%` } },
-                    { machineType: { [Op.like]: `%${search}%` } },
-                    { companyId: { [Op.like]: `%${search}%` } }
-                ]
-            } : {};
+            let whereClause = {};
+            
+            // Add company filter if provided
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            // Add search filter if provided
+            if (search) {
+                whereClause[Op.and] = [
+                    ...(companyId ? [{ companyId }] : []),
+                    {
+                        [Op.or]: [
+                            { machineName: { [Op.like]: `%${search}%` } },
+                            { machineId: { [Op.like]: `%${search}%` } },
+                            { machineType: { [Op.like]: `%${search}%` } }
+                        ]
+                    }
+                ];
+            }
             
             const { count, rows } = await Machine.findAndCountAll({
                 where: whereClause,
@@ -26,7 +38,7 @@ const machineService = {
                 offset: offset,
                 order: [['machineIdSeq', 'ASC']]
             });
-            logger.info(`MachineService: Successfully retrieved ${rows.length} machines out of ${count} total`);
+            logger.info(`MachineService: Successfully retrieved ${rows.length} machines out of ${count} total for company: ${companyId}`);
             return {
                 items: rows,
                 paging: {

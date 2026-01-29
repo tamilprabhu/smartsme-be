@@ -37,6 +37,10 @@ const authenticate = (req, res, next) => {
             return res.status(401).json({ message: "Invalid authentication token" });
         }
         req.auth = decoded;
+        
+        // Add convenience method for primary company ID
+        req.auth.getPrimaryCompanyId = () => decoded.companies?.[0]?.companyId || null;
+        
         next();
     } catch (err) {
         logger.warn("JWT authentication failed", {

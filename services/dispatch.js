@@ -4,20 +4,32 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 
 const dispatchService = {
-    getAllDispatches: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+    getAllDispatches: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`DispatchService: Fetching dispatches - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
+        logger.info(`DispatchService: Fetching dispatches - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
             const offset = (page - 1) * validLimit;
             
-            const whereClause = search ? {
-                [Op.or]: [
-                    { dispatchId: { [Op.like]: `%${search}%` } },
-                    { orderId: { [Op.like]: `%${search}%` } },
-                    { prodId: { [Op.like]: `%${search}%` } },
-                    { companyId: { [Op.like]: `%${search}%` } }
-                ]
-            } : {};
+            let whereClause = {};
+            
+            // Add company filter if provided
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            // Add search filter if provided
+            if (search) {
+                whereClause[Op.and] = [
+                    ...(companyId ? [{ companyId }] : []),
+                    {
+                        [Op.or]: [
+                            { dispatchId: { [Op.like]: `%${search}%` } },
+                            { orderId: { [Op.like]: `%${search}%` } },
+                            { prodId: { [Op.like]: `%${search}%` } }
+                        ]
+                    }
+                ];
+            }
             
             const { count, rows } = await Dispatch.findAndCountAll({
                 where: whereClause,
@@ -25,7 +37,7 @@ const dispatchService = {
                 offset: offset,
                 order: [['dispatchIdSeq', 'DESC']]
             });
-            logger.info(`DispatchService: Successfully retrieved ${rows.length} dispatches out of ${count} total`);
+            logger.info(`DispatchService: Successfully retrieved ${rows.length} dispatches out of ${count} total for company: ${companyId}`);
             return {
                 items: rows,
                 paging: {

@@ -4,20 +4,32 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 
 const sellerService = {
-    getAllSellers: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+    getAllSellers: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`SellerService: Fetching sellers - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
+        logger.info(`SellerService: Fetching sellers - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
             const offset = (page - 1) * validLimit;
             
-            const whereClause = search ? {
-                [Op.or]: [
-                    { sellerName: { [Op.like]: `%${search}%` } },
-                    { sellerId: { [Op.like]: `%${search}%` } },
-                    { sellerEmail: { [Op.like]: `%${search}%` } },
-                    { companyId: { [Op.like]: `%${search}%` } }
-                ]
-            } : {};
+            let whereClause = {};
+            
+            // Add company filter if provided
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            // Add search filter if provided
+            if (search) {
+                whereClause[Op.and] = [
+                    ...(companyId ? [{ companyId }] : []),
+                    {
+                        [Op.or]: [
+                            { sellerName: { [Op.like]: `%${search}%` } },
+                            { sellerId: { [Op.like]: `%${search}%` } },
+                            { sellerEmail: { [Op.like]: `%${search}%` } }
+                        ]
+                    }
+                ];
+            }
             
             const { count, rows } = await Seller.findAndCountAll({
                 where: whereClause,
@@ -25,7 +37,7 @@ const sellerService = {
                 offset: offset,
                 order: [['sellerIdSeq', 'ASC']]
             });
-            logger.info(`SellerService: Successfully retrieved ${rows.length} sellers out of ${count} total`);
+            logger.info(`SellerService: Successfully retrieved ${rows.length} sellers out of ${count} total for company: ${companyId}`);
             return {
                 items: rows,
                 paging: {

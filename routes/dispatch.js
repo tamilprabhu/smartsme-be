@@ -20,12 +20,14 @@ router.get("/", authenticate, async (req, res) => {
     });
     
     try {
-        const result = await dispatchService.getAllDispatches(page, itemsPerPage, search);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const result = await dispatchService.getAllDispatches(page, itemsPerPage, search, companyId);
         logger.info(`DispatchRoute: GET /dispatches - Request completed successfully`, { 
             requestId: requestId,
             dispatchCount: result.items.length,
             totalCount: result.paging.totalItems,
-            userId: req.auth?.id
+            userId: req.auth?.id,
+            companyId: companyId
         });
         res.json(result);
     } catch (error) {

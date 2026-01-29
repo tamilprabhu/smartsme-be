@@ -11,7 +11,8 @@ router.get("/", authenticate, async (req, res) => {
     const search = req.query.search || '';
     
     try {
-        const result = await stockService.getAllStocks(page, itemsPerPage, search);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const result = await stockService.getAllStocks(page, itemsPerPage, search, companyId);
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });

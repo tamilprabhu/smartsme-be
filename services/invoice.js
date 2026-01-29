@@ -5,20 +5,32 @@ const ItemsPerPage = require("../constants/pagination");
 
 const invoiceService = {
     // Get all invoices with pagination and search
-    getAllInvoices: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+    getAllInvoices: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`InvoiceService: Fetching invoices - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
+        logger.info(`InvoiceService: Fetching invoices - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
             const offset = (page - 1) * validLimit;
             
-            const whereClause = search ? {
-                [Op.or]: [
-                    { invoiceId: { [Op.like]: `%${search}%` } },
-                    { compId: { [Op.like]: `%${search}%` } },
-                    { buyrId: { [Op.like]: `%${search}%` } },
-                    { prodId: { [Op.like]: `%${search}%` } }
-                ]
-            } : {};
+            let whereClause = {};
+            
+            // Add company filter if provided
+            if (companyId) {
+                whereClause.compId = companyId;
+            }
+            
+            // Add search filter if provided
+            if (search) {
+                whereClause[Op.and] = [
+                    ...(companyId ? [{ compId: companyId }] : []),
+                    {
+                        [Op.or]: [
+                            { invoiceId: { [Op.like]: `%${search}%` } },
+                            { buyrId: { [Op.like]: `%${search}%` } },
+                            { prodId: { [Op.like]: `%${search}%` } }
+                        ]
+                    }
+                ];
+            }
             
             const { count, rows } = await Invoice.findAndCountAll({
                 where: whereClause,
@@ -26,7 +38,7 @@ const invoiceService = {
                 offset: offset,
                 order: [['invoiceSeq', 'ASC']]
             });
-            logger.info(`InvoiceService: Successfully retrieved ${rows.length} invoices out of ${count} total`);
+            logger.info(`InvoiceService: Successfully retrieved ${rows.length} invoices out of ${count} total for company: ${companyId}`);
             return {
                 items: rows,
                 paging: {

@@ -10,7 +10,8 @@ router.get('/', authenticateToken, async (req, res) => {
         const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
         const search = req.query.search || '';
         
-        const result = await employeeService.getAllEmployees(page, itemsPerPage, search);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const result = await employeeService.getAllEmployees(page, itemsPerPage, search, companyId);
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -12,7 +12,8 @@ router.get("/", authenticate, async (req, res) => {
     const search = req.query.search || '';
     
     try {
-        const result = await sellerService.getAllSellers(page, itemsPerPage, search);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const result = await sellerService.getAllSellers(page, itemsPerPage, search, companyId);
         res.json(result);
     } catch (error) {
         logger.error(`SellerRoute: GET /sellers - Request failed`, { 

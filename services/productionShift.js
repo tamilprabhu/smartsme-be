@@ -5,21 +5,27 @@ const ItemsPerPage = require("../constants/pagination");
 
 const productionShiftService = {
     // Get all production shifts with pagination and search
-    getAllProductionShifts: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+    getAllProductionShifts: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`ProductionShiftService: Fetching shifts - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
+        logger.info(`ProductionShiftService: Fetching shifts - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
             const offset = (page - 1) * validLimit;
             
-            const whereClause = search ? {
-                [Op.or]: [
+            const whereClause = {};
+            
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            if (search) {
+                whereClause[Op.or] = [
                     { orderId: { [Op.like]: `%${search}%` } },
                     { shiftId: { [Op.like]: `%${search}%` } },
                     { prodName: { [Op.like]: `%${search}%` } },
                     { machineId: { [Op.like]: `%${search}%` } },
                     { shiftType: { [Op.like]: `%${search}%` } }
-                ]
-            } : {};
+                ];
+            }
             
             const { count, rows } = await ProductionShift.findAndCountAll({
                 where: whereClause,

@@ -38,7 +38,8 @@ router.get("/", optionalAuth, async (req, res) => {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
         
-        const result = await productionShiftService.getAllProductionShifts(page, itemsPerPage, search);
+        const companyId = req.auth?.companies?.[0]?.companyId;
+        const result = await productionShiftService.getAllProductionShifts(page, itemsPerPage, search, companyId);
         logger.info(`ProductionShiftRoute: GET /production-shift - Request completed successfully`, { 
             requestId: requestId,
             shiftsReturned: result.items.length,
