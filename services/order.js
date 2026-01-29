@@ -5,20 +5,22 @@ const ItemsPerPage = require("../constants/pagination");
 
 const orderService = {
     // Get all orders with pagination and search
-    getAllOrders: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+    getAllOrders: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`OrderService: Fetching orders - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
+        logger.info(`OrderService: Fetching orders - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
             const offset = (page - 1) * validLimit;
             
-            const whereClause = search ? {
-                [Op.or]: [
-                    { orderId: { [Op.like]: `%${search}%` } },
-                    { orderName: { [Op.like]: `%${search}%` } },
-                    { orderStatus: { [Op.like]: `%${search}%` } },
-                    { companyId: { [Op.like]: `%${search}%` } }
-                ]
-            } : {};
+            const whereClause = {
+                companyId: companyId,
+                ...(search && {
+                    [Op.or]: [
+                        { orderId: { [Op.like]: `%${search}%` } },
+                        { orderName: { [Op.like]: `%${search}%` } },
+                        { orderStatus: { [Op.like]: `%${search}%` } }
+                    ]
+                })
+            };
             
             const { count, rows } = await Order.findAndCountAll({
                 where: whereClause,
@@ -26,7 +28,7 @@ const orderService = {
                 offset: offset,
                 order: [['orderIdSeq', 'DESC']]
             });
-            logger.info(`OrderService: Successfully retrieved ${rows.length} orders out of ${count} total`);
+            logger.info(`OrderService: Successfully retrieved ${rows.length} orders out of ${count} total for company ${companyId}`);
             return {
                 items: rows,
                 paging: {
@@ -39,6 +41,7 @@ const orderService = {
         } catch (error) {
             logger.error("OrderService: Failed to fetch orders", { 
                 error: error.message, 
+                companyId: companyId,
                 stack: error.stack 
             });
             throw error;
@@ -46,22 +49,27 @@ const orderService = {
     },
 
     // Get order by ID
-    getOrderById: async (id) => {
-        logger.info(`OrderService: Fetching order with ID: ${id}`);
+    getOrderById: async (id, companyId) => {
+        logger.info(`OrderService: Fetching order with ID: ${id} for company: ${companyId}`);
         try {
-            const order = await Order.findByPk(id);
+            const order = await Order.findOne({
+                where: {
+                    orderIdSeq: id,
+                    companyId: companyId
+                }
+            });
             if (order) {
-                logger.info(`OrderService: Successfully retrieved order: ${order.orderId} (ID: ${id})`, {
+                logger.info(`OrderService: Successfully retrieved order: ${order.orderId} (ID: ${id}) for company: ${companyId}`, {
                     orderStatus: order.orderStatus,
                     orderQuantity: order.orderQuantity,
                     totalPrice: order.totalPrice
                 });
             } else {
-                logger.warn(`OrderService: Order not found with ID: ${id}`);
+                logger.warn(`OrderService: Order not found with ID: ${id} for company: ${companyId}`);
             }
             return order;
         } catch (error) {
-            logger.error(`OrderService: Failed to fetch order with ID: ${id}`, { 
+            logger.error(`OrderService: Failed to fetch order with ID: ${id} for company: ${companyId}`, { 
                 error: error.message, 
                 stack: error.stack 
             });
@@ -70,24 +78,31 @@ const orderService = {
     },
 
     // Create new order
-    createOrder: async (orderData) => {
-        logger.info(`OrderService: Creating new order: ${orderData.orderId}`, { 
-            companyId: orderData.companyId,
+    createOrder: async (orderData, companyId, userId) => {
+        logger.info(`OrderService: Creating new order: ${orderData.orderId} for company: ${companyId} by user: ${userId}`, { 
             prodId: orderData.prodId,
             orderQuantity: orderData.orderQuantity,
             totalPrice: orderData.totalPrice
         });
         try {
-            const order = await Order.create(orderData);
-            logger.info(`OrderService: Successfully created order: ${order.orderId} (ID: ${order.orderIdSeq})`, {
+            const enrichedOrderData = {
+                ...orderData,
+                companyId: companyId,
+                createdBy: userId,
+                updatedBy: userId
+            };
+            
+            const order = await Order.create(enrichedOrderData);
+            logger.info(`OrderService: Successfully created order: ${order.orderId} (ID: ${order.orderIdSeq}) for company: ${companyId}`, {
                 orderId: order.orderIdSeq,
                 companyId: order.companyId,
                 orderStatus: order.orderStatus,
-                orderValue: order.totalPrice
+                orderValue: order.totalPrice,
+                createdBy: order.createdBy
             });
             return order;
         } catch (error) {
-            logger.error(`OrderService: Failed to create order: ${orderData.orderId}`, { 
+            logger.error(`OrderService: Failed to create order: ${orderData.orderId} for company: ${companyId}`, { 
                 error: error.message, 
                 orderData: orderData,
                 stack: error.stack 

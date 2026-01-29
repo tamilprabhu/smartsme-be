@@ -52,14 +52,19 @@ const productionShiftService = {
         }
     },
 
-    getProductionShiftById: async (id) => {
-        logger.info(`ProductionShiftService: Fetching shift with ID: ${id}`);
+    getProductionShiftById: async (id, companyId) => {
+        logger.info(`ProductionShiftService: Fetching shift with ID: ${id}, companyId: ${companyId}`);
         try {
-            const shift = await ProductionShift.findByPk(id);
+            const whereClause = { shiftIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const shift = await ProductionShift.findOne({ where: whereClause });
             if (shift) {
                 logger.info(`ProductionShiftService: Successfully retrieved shift: ${shift.shiftId} (ID: ${id})`);
             } else {
-                logger.warn(`ProductionShiftService: Shift not found with ID: ${id}`);
+                logger.warn(`ProductionShiftService: Shift not found with ID: ${id}, companyId: ${companyId}`);
             }
             return shift;
         } catch (error) {
@@ -71,11 +76,14 @@ const productionShiftService = {
         }
     },
 
-    createProductionShift: async (shiftData) => {
-        logger.info(`ProductionShiftService: Creating new shift: ${shiftData.shiftId}`);
+    createProductionShift: async (shiftData, companyId, userId) => {
+        logger.info(`ProductionShiftService: Creating new shift: ${shiftData.shiftId}, companyId: ${companyId}, userId: ${userId}`);
         try {
             const shift = await ProductionShift.create({
                 ...shiftData,
+                companyId: companyId,
+                createdBy: userId,
+                updatedBy: userId,
                 createDate: new Date(),
                 updateDate: new Date()
             });
@@ -91,20 +99,26 @@ const productionShiftService = {
         }
     },
 
-    updateProductionShift: async (id, shiftData) => {
-        logger.info(`ProductionShiftService: Updating shift with ID: ${id}`, { updateData: shiftData });
+    updateProductionShift: async (id, shiftData, companyId, userId) => {
+        logger.info(`ProductionShiftService: Updating shift with ID: ${id}, companyId: ${companyId}, userId: ${userId}`, { updateData: shiftData });
         try {
+            const whereClause = { shiftIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
             const [updatedRows] = await ProductionShift.update({
                 ...shiftData,
+                updatedBy: userId,
                 updateDate: new Date()
             }, {
-                where: { shiftIdSeq: id }
+                where: whereClause
             });
             if (updatedRows === 0) {
-                logger.warn(`ProductionShiftService: No shift found to update with ID: ${id}`);
-                throw new Error("Production shift not found");
+                logger.warn(`ProductionShiftService: No shift found to update with ID: ${id}, companyId: ${companyId}`);
+                throw new Error("Shift not found");
             }
-            const updatedShift = await ProductionShift.findByPk(id);
+            const updatedShift = await ProductionShift.findOne({ where: whereClause });
             logger.info(`ProductionShiftService: Successfully updated shift: ${updatedShift.shiftId} (ID: ${id})`);
             return updatedShift;
         } catch (error) {
@@ -117,16 +131,19 @@ const productionShiftService = {
         }
     },
 
-    deleteProductionShift: async (id) => {
-        logger.info(`ProductionShiftService: Deleting shift with ID: ${id}`);
+    deleteProductionShift: async (id, companyId) => {
+        logger.info(`ProductionShiftService: Deleting shift with ID: ${id}, companyId: ${companyId}`);
         try {
-            const shift = await ProductionShift.findByPk(id);
-            const deletedRows = await ProductionShift.destroy({
-                where: { shiftIdSeq: id }
-            });
+            const whereClause = { shiftIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const shift = await ProductionShift.findOne({ where: whereClause });
+            const deletedRows = await ProductionShift.destroy({ where: whereClause });
             if (deletedRows === 0) {
-                logger.warn(`ProductionShiftService: No shift found to delete with ID: ${id}`);
-                throw new Error("Production shift not found");
+                logger.warn(`ProductionShiftService: No shift found to delete with ID: ${id}, companyId: ${companyId}`);
+                throw new Error("Shift not found");
             }
             logger.info(`ProductionShiftService: Successfully deleted shift: ${shift?.shiftId || 'Unknown'} (ID: ${id})`);
             return { message: "Production shift deleted successfully" };

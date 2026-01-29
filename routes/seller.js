@@ -30,7 +30,8 @@ router.get("/:id", authenticate, async (req, res) => {
     const sellerId = req.params.id;
     
     try {
-        const seller = await sellerService.getSellerById(sellerId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const seller = await sellerService.getSellerById(sellerId, companyId);
         if (!seller) {
             return res.status(404).json({ error: "Seller not found" });
         }
@@ -43,7 +44,9 @@ router.get("/:id", authenticate, async (req, res) => {
 // POST /sellers - Create new seller
 router.post("/", authenticate, async (req, res) => {
     try {
-        const seller = await sellerService.createSeller(req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const seller = await sellerService.createSeller(req.body, companyId, userId);
         res.status(201).json(seller);
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
@@ -55,7 +58,9 @@ router.put("/:id", authenticate, async (req, res) => {
     const sellerId = req.params.id;
     
     try {
-        const seller = await sellerService.updateSeller(sellerId, req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const seller = await sellerService.updateSeller(sellerId, req.body, companyId, userId);
         res.json(seller);
     } catch (error) {
         if (error.message === "Seller not found") {
@@ -70,7 +75,8 @@ router.delete("/:id", authenticate, async (req, res) => {
     const sellerId = req.params.id;
     
     try {
-        const result = await sellerService.deleteSeller(sellerId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const result = await sellerService.deleteSeller(sellerId, companyId);
         res.json(result);
     } catch (error) {
         if (error.message === "Seller not found") {

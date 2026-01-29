@@ -53,7 +53,8 @@ router.get("/:id", authenticate, async (req, res) => {
     });
     
     try {
-        const invoice = await invoiceService.getInvoiceById(invoiceId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const invoice = await invoiceService.getInvoiceById(invoiceId, companyId);
         if (!invoice) {
             logger.warn(`InvoiceRoute: GET /invoices/${invoiceId} - Invoice not found`, { 
                 requestId: requestId,
@@ -94,7 +95,9 @@ router.post("/", authenticate, async (req, res) => {
     });
     
     try {
-        const invoice = await invoiceService.createInvoice(req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const invoice = await invoiceService.createInvoice(req.body, companyId, userId);
         logger.info(`InvoiceRoute: POST /invoices - Request completed successfully`, { 
             requestId: requestId,
             invoiceSeq: invoice.invoiceSeq,
@@ -127,7 +130,9 @@ router.put("/:id", authenticate, async (req, res) => {
     });
     
     try {
-        const invoice = await invoiceService.updateInvoice(invoiceId, req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const invoice = await invoiceService.updateInvoice(invoiceId, req.body, companyId, userId);
         logger.info(`InvoiceRoute: PUT /invoices/${invoiceId} - Request completed successfully`, { 
             requestId: requestId,
             invoiceId: invoiceId,
@@ -167,7 +172,9 @@ router.delete("/:id", authenticate, async (req, res) => {
     });
     
     try {
-        const result = await invoiceService.deleteInvoice(invoiceId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const result = await invoiceService.deleteInvoice(invoiceId, companyId, userId);
         logger.info(`InvoiceRoute: DELETE /invoices/${invoiceId} - Request completed successfully`, { 
             requestId: requestId,
             invoiceId: invoiceId,

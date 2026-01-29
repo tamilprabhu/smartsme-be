@@ -38,8 +38,9 @@ const authenticate = (req, res, next) => {
         }
         req.auth = decoded;
         
-        // Add convenience method for primary company ID
+        // Add convenience methods for multi-tenant operations
         req.auth.getPrimaryCompanyId = () => decoded.companies?.[0]?.companyId || null;
+        req.auth.getUserId = () => decoded.sub || null;
         
         next();
     } catch (err) {

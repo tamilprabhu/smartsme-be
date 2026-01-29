@@ -56,83 +56,128 @@ const dispatchService = {
         }
     },
 
-    getDispatchById: async (id) => {
-        logger.info(`DispatchService: Fetching dispatch with ID: ${id}`);
+    getDispatchById: async (id, companyId = null) => {
+        logger.info(`DispatchService: Fetching dispatch with ID: ${id}, companyId: ${companyId}`);
         try {
-            const dispatch = await Dispatch.findByPk(id);
+            let whereClause = { dispatchIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const dispatch = await Dispatch.findOne({ where: whereClause });
             if (dispatch) {
-                logger.info(`DispatchService: Successfully retrieved dispatch: ${dispatch.dispatchId} (ID: ${id})`);
+                logger.info(`DispatchService: Successfully retrieved dispatch: ${dispatch.dispatchId} (ID: ${id}) for company: ${companyId}`);
             } else {
-                logger.warn(`DispatchService: Dispatch not found with ID: ${id}`);
+                logger.warn(`DispatchService: Dispatch not found with ID: ${id} for company: ${companyId}`);
             }
             return dispatch;
         } catch (error) {
             logger.error(`DispatchService: Failed to fetch dispatch with ID: ${id}`, { 
                 error: error.message, 
+                companyId: companyId,
                 stack: error.stack 
             });
             throw error;
         }
     },
 
-    createDispatch: async (dispatchData) => {
+    createDispatch: async (dispatchData, companyId = null, userId = null) => {
         logger.info(`DispatchService: Creating new dispatch: ${dispatchData.dispatchId}`, { 
             orderId: dispatchData.orderId,
-            quantity: dispatchData.quantity 
+            quantity: dispatchData.quantity,
+            companyId: companyId,
+            userId: userId
         });
         try {
-            const dispatch = await Dispatch.create(dispatchData);
-            logger.info(`DispatchService: Successfully created dispatch: ${dispatch.dispatchId} (ID: ${dispatch.dispatchIdSeq})`);
+            const enrichedData = { ...dispatchData };
+            if (companyId) {
+                enrichedData.companyId = companyId;
+            }
+            if (userId) {
+                enrichedData.createdBy = userId;
+                enrichedData.updatedBy = userId;
+            }
+            
+            const dispatch = await Dispatch.create(enrichedData);
+            logger.info(`DispatchService: Successfully created dispatch: ${dispatch.dispatchId} (ID: ${dispatch.dispatchIdSeq}) for company: ${companyId}`);
             return dispatch;
         } catch (error) {
             logger.error(`DispatchService: Failed to create dispatch: ${dispatchData.dispatchId}`, { 
                 error: error.message, 
                 dispatchData: dispatchData,
+                companyId: companyId,
+                userId: userId,
                 stack: error.stack 
             });
             throw error;
         }
     },
 
-    updateDispatch: async (id, dispatchData) => {
-        logger.info(`DispatchService: Updating dispatch with ID: ${id}`, { updateData: dispatchData });
+    updateDispatch: async (id, dispatchData, companyId = null, userId = null) => {
+        logger.info(`DispatchService: Updating dispatch with ID: ${id}`, { 
+            updateData: dispatchData,
+            companyId: companyId,
+            userId: userId
+        });
         try {
-            const [updatedRows] = await Dispatch.update(dispatchData, {
-                where: { dispatchIdSeq: id }
+            let whereClause = { dispatchIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const enrichedData = { ...dispatchData };
+            if (userId) {
+                enrichedData.updatedBy = userId;
+            }
+            
+            const [updatedRows] = await Dispatch.update(enrichedData, {
+                where: whereClause
             });
             if (updatedRows === 0) {
-                logger.warn(`DispatchService: No dispatch found to update with ID: ${id}`);
+                logger.warn(`DispatchService: No dispatch found to update with ID: ${id} for company: ${companyId}`);
                 throw new Error("Dispatch not found");
             }
-            const updatedDispatch = await Dispatch.findByPk(id);
-            logger.info(`DispatchService: Successfully updated dispatch: ${updatedDispatch.dispatchId} (ID: ${id})`);
+            const updatedDispatch = await Dispatch.findOne({ where: whereClause });
+            logger.info(`DispatchService: Successfully updated dispatch: ${updatedDispatch.dispatchId} (ID: ${id}) for company: ${companyId}`);
             return updatedDispatch;
         } catch (error) {
             logger.error(`DispatchService: Failed to update dispatch with ID: ${id}`, { 
                 error: error.message, 
                 updateData: dispatchData,
+                companyId: companyId,
+                userId: userId,
                 stack: error.stack 
             });
             throw error;
         }
     },
 
-    deleteDispatch: async (id) => {
-        logger.info(`DispatchService: Deleting dispatch with ID: ${id}`);
+    deleteDispatch: async (id, companyId = null, userId = null) => {
+        logger.info(`DispatchService: Deleting dispatch with ID: ${id}`, {
+            companyId: companyId,
+            userId: userId
+        });
         try {
-            const dispatch = await Dispatch.findByPk(id);
+            let whereClause = { dispatchIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const dispatch = await Dispatch.findOne({ where: whereClause });
             const deletedRows = await Dispatch.destroy({
-                where: { dispatchIdSeq: id }
+                where: whereClause
             });
             if (deletedRows === 0) {
-                logger.warn(`DispatchService: No dispatch found to delete with ID: ${id}`);
+                logger.warn(`DispatchService: No dispatch found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Dispatch not found");
             }
-            logger.info(`DispatchService: Successfully deleted dispatch: ${dispatch?.dispatchId || 'Unknown'} (ID: ${id})`);
+            logger.info(`DispatchService: Successfully deleted dispatch: ${dispatch?.dispatchId || 'Unknown'} (ID: ${id}) for company: ${companyId} by user: ${userId}`);
             return { message: "Dispatch deleted successfully" };
         } catch (error) {
             logger.error(`DispatchService: Failed to delete dispatch with ID: ${id}`, { 
-                error: error.message, 
+                error: error.message,
+                companyId: companyId,
+                userId: userId,
                 stack: error.stack 
             });
             throw error;

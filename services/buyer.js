@@ -57,14 +57,19 @@ const buyerService = {
         }
     },
 
-    getBuyerById: async (id) => {
-        logger.info(`BuyerService: Fetching buyer with ID: ${id}`);
+    getBuyerById: async (id, companyId) => {
+        logger.info(`BuyerService: Fetching buyer with ID: ${id} for company: ${companyId}`);
         try {
-            const buyer = await Buyer.findByPk(id);
+            const buyer = await Buyer.findOne({
+                where: { 
+                    buyerIdSeq: id,
+                    companyId: companyId
+                }
+            });
             if (buyer) {
                 logger.info(`BuyerService: Successfully retrieved buyer: ${buyer.buyerName} (ID: ${id})`);
             } else {
-                logger.warn(`BuyerService: Buyer not found with ID: ${id}`);
+                logger.warn(`BuyerService: Buyer not found with ID: ${id} for company: ${companyId}`);
             }
             return buyer;
         } catch (error) {
@@ -76,13 +81,19 @@ const buyerService = {
         }
     },
 
-    createBuyer: async (buyerData) => {
+    createBuyer: async (buyerData, companyId, userId) => {
         logger.info(`BuyerService: Creating new buyer: ${buyerData.buyerName}`, { 
-            companyId: buyerData.companyId,
+            companyId: companyId,
             buyerId: buyerData.buyerId 
         });
         try {
-            const buyer = await Buyer.create(buyerData);
+            const buyerWithCompanyAndUser = {
+                ...buyerData,
+                companyId: companyId,
+                createdBy: userId,
+                updatedBy: userId
+            };
+            const buyer = await Buyer.create(buyerWithCompanyAndUser);
             logger.info(`BuyerService: Successfully created buyer: ${buyer.buyerName} (ID: ${buyer.buyerIdSeq})`);
             return buyer;
         } catch (error) {
@@ -95,17 +106,29 @@ const buyerService = {
         }
     },
 
-    updateBuyer: async (id, buyerData) => {
-        logger.info(`BuyerService: Updating buyer with ID: ${id}`, { updateData: buyerData });
+    updateBuyer: async (id, buyerData, companyId, userId) => {
+        logger.info(`BuyerService: Updating buyer with ID: ${id} for company: ${companyId}`, { updateData: buyerData });
         try {
-            const [updatedRows] = await Buyer.update(buyerData, {
-                where: { buyerIdSeq: id }
+            const buyerWithUpdatedBy = {
+                ...buyerData,
+                updatedBy: userId
+            };
+            const [updatedRows] = await Buyer.update(buyerWithUpdatedBy, {
+                where: { 
+                    buyerIdSeq: id,
+                    companyId: companyId
+                }
             });
             if (updatedRows === 0) {
-                logger.warn(`BuyerService: No buyer found to update with ID: ${id}`);
+                logger.warn(`BuyerService: No buyer found to update with ID: ${id} for company: ${companyId}`);
                 throw new Error("Buyer not found");
             }
-            const updatedBuyer = await Buyer.findByPk(id);
+            const updatedBuyer = await Buyer.findOne({
+                where: { 
+                    buyerIdSeq: id,
+                    companyId: companyId
+                }
+            });
             logger.info(`BuyerService: Successfully updated buyer: ${updatedBuyer.buyerName} (ID: ${id})`);
             return updatedBuyer;
         } catch (error) {
@@ -118,15 +141,23 @@ const buyerService = {
         }
     },
 
-    deleteBuyer: async (id) => {
-        logger.info(`BuyerService: Deleting buyer with ID: ${id}`);
+    deleteBuyer: async (id, companyId) => {
+        logger.info(`BuyerService: Deleting buyer with ID: ${id} for company: ${companyId}`);
         try {
-            const buyer = await Buyer.findByPk(id);
+            const buyer = await Buyer.findOne({
+                where: { 
+                    buyerIdSeq: id,
+                    companyId: companyId
+                }
+            });
             const deletedRows = await Buyer.destroy({
-                where: { buyerIdSeq: id }
+                where: { 
+                    buyerIdSeq: id,
+                    companyId: companyId
+                }
             });
             if (deletedRows === 0) {
-                logger.warn(`BuyerService: No buyer found to delete with ID: ${id}`);
+                logger.warn(`BuyerService: No buyer found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Buyer not found");
             }
             logger.info(`BuyerService: Successfully deleted buyer: ${buyer?.buyerName || 'Unknown'} (ID: ${id})`);

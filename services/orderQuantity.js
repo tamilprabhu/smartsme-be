@@ -4,18 +4,20 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 
 const orderQuantityService = {
-    getAllOrderQuantities: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+    getAllOrderQuantities: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`OrderQuantityService: Fetching order quantities - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
+        logger.info(`OrderQuantityService: Fetching order quantities - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
             const offset = (page - 1) * validLimit;
             
-            const whereClause = search ? {
-                [Op.or]: [
-                    { orderId: { [Op.like]: `%${search}%` } },
-                    { companyId: { [Op.like]: `%${search}%` } }
-                ]
-            } : {};
+            const whereClause = {
+                companyId,
+                ...(search && {
+                    [Op.or]: [
+                        { orderId: { [Op.like]: `%${search}%` } }
+                    ]
+                })
+            };
             
             const { count, rows } = await OrderQuantity.findAndCountAll({
                 where: whereClause,
@@ -63,11 +65,14 @@ const orderQuantityService = {
         }
     },
 
-    createOrderQuantity: async (orderQuantityData) => {
-        logger.info(`OrderQuantityService: Creating new order quantity for order: ${orderQuantityData.orderId}`);
+    createOrderQuantity: async (orderQuantityData, companyId, userId) => {
+        logger.info(`OrderQuantityService: Creating new order quantity for order: ${orderQuantityData.orderId}, companyId: ${companyId}, userId: ${userId}`);
         try {
             const orderQuantity = await OrderQuantity.create({
                 ...orderQuantityData,
+                companyId,
+                createUserId: userId,
+                updateUserId: userId,
                 createDate: new Date(),
                 updateDate: new Date()
             });
@@ -83,11 +88,12 @@ const orderQuantityService = {
         }
     },
 
-    updateOrderQuantity: async (orderId, companyId, orderQuantityData) => {
-        logger.info(`OrderQuantityService: Updating order quantity`, { updateData: orderQuantityData });
+    updateOrderQuantity: async (orderId, companyId, orderQuantityData, userId) => {
+        logger.info(`OrderQuantityService: Updating order quantity`, { updateData: orderQuantityData, companyId, userId });
         try {
             const [updatedRows] = await OrderQuantity.update({
                 ...orderQuantityData,
+                updateUserId: userId,
                 updateDate: new Date()
             }, {
                 where: { orderId, companyId }
@@ -112,7 +118,7 @@ const orderQuantityService = {
     },
 
     deleteOrderQuantity: async (orderId, companyId) => {
-        logger.info(`OrderQuantityService: Deleting order quantity`);
+        logger.info(`OrderQuantityService: Deleting order quantity for orderId: ${orderId}, companyId: ${companyId}`);
         try {
             const deletedRows = await OrderQuantity.destroy({
                 where: { orderId, companyId }

@@ -53,7 +53,8 @@ router.get("/:id", authenticate, async (req, res) => {
     });
     
     try {
-        const machine = await machineService.getMachineById(machineId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const machine = await machineService.getMachineById(machineId, companyId);
         if (!machine) {
             logger.warn(`MachineRoute: GET /machines/${machineId} - Machine not found`, { 
                 requestId: requestId,
@@ -94,7 +95,9 @@ router.post("/", authenticate, async (req, res) => {
     });
     
     try {
-        const machine = await machineService.createMachine(req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const machine = await machineService.createMachine(req.body, companyId, userId);
         logger.info(`MachineRoute: POST /machines - Request completed successfully`, { 
             requestId: requestId,
             machineId: machine.machineIdSeq,
@@ -127,7 +130,9 @@ router.put("/:id", authenticate, async (req, res) => {
     });
     
     try {
-        const machine = await machineService.updateMachine(machineId, req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const machine = await machineService.updateMachine(machineId, req.body, companyId, userId);
         logger.info(`MachineRoute: PUT /machines/${machineId} - Request completed successfully`, { 
             requestId: requestId,
             machineId: machineId,
@@ -167,7 +172,8 @@ router.delete("/:id", authenticate, async (req, res) => {
     });
     
     try {
-        const result = await machineService.deleteMachine(machineId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const result = await machineService.deleteMachine(machineId, companyId);
         logger.info(`MachineRoute: DELETE /machines/${machineId} - Request completed successfully`, { 
             requestId: requestId,
             machineId: machineId,

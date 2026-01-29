@@ -10,29 +10,34 @@ router.get("/", authenticate, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
+    const companyId = req.auth.getPrimaryCompanyId();
+    const userId = req.auth.getUserId();
     
     logger.info(`OrderRoute: GET /orders - Request started`, { 
         requestId: requestId,
         page: page,
         itemsPerPage: itemsPerPage,
         search: search,
-        userId: req.auth?.id
+        companyId: companyId,
+        userId: userId
     });
     
     try {
-        const result = await orderService.getAllOrders(page, itemsPerPage, search);
+        const result = await orderService.getAllOrders(page, itemsPerPage, search, companyId);
         logger.info(`OrderRoute: GET /orders - Request completed successfully`, { 
             requestId: requestId,
             orderCount: result.items.length,
             totalCount: result.paging.totalItems,
-            userId: req.auth?.id
+            companyId: companyId,
+            userId: userId
         });
         res.json(result);
     } catch (error) {
         logger.error(`OrderRoute: GET /orders - Request failed`, { 
             requestId: requestId,
             error: error.message,
-            userId: req.auth?.id,
+            companyId: companyId,
+            userId: userId,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -43,20 +48,24 @@ router.get("/", authenticate, async (req, res) => {
 router.get("/:id", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const orderId = req.params.id;
+    const companyId = req.auth.getPrimaryCompanyId();
+    const userId = req.auth.getUserId();
     
     logger.info(`OrderRoute: GET /orders/${orderId} - Request started`, { 
         requestId: requestId,
         orderId: orderId,
-        userId: req.auth?.id
+        companyId: companyId,
+        userId: userId
     });
     
     try {
-        const order = await orderService.getOrderById(orderId);
+        const order = await orderService.getOrderById(orderId, companyId);
         if (!order) {
             logger.warn(`OrderRoute: GET /orders/${orderId} - Order not found`, { 
                 requestId: requestId,
                 orderId: orderId,
-                userId: req.auth?.id
+                companyId: companyId,
+                userId: userId
             });
             return res.status(404).json({ error: "Order not found" });
         }
@@ -65,7 +74,8 @@ router.get("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             orderId: orderId,
             orderName: order.orderId,
-            userId: req.auth?.id
+            companyId: companyId,
+            userId: userId
         });
         res.json(order);
     } catch (error) {
@@ -73,7 +83,8 @@ router.get("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             orderId: orderId,
             error: error.message,
-            userId: req.auth?.id,
+            companyId: companyId,
+            userId: userId,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -83,21 +94,25 @@ router.get("/:id", authenticate, async (req, res) => {
 // POST /orders - Create new order
 router.post("/", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const companyId = req.auth.getPrimaryCompanyId();
+    const userId = req.auth.getUserId();
     
     logger.info(`OrderRoute: POST /orders - Request started`, { 
         requestId: requestId,
         orderId: req.body.orderId,
         orderQuantity: req.body.orderQuantity,
-        userId: req.auth?.id
+        companyId: companyId,
+        userId: userId
     });
     
     try {
-        const order = await orderService.createOrder(req.body);
+        const order = await orderService.createOrder(req.body, companyId, userId);
         logger.info(`OrderRoute: POST /orders - Request completed successfully`, { 
             requestId: requestId,
             orderIdSeq: order.orderIdSeq,
             orderId: order.orderId,
-            userId: req.auth?.id
+            companyId: companyId,
+            userId: userId
         });
         res.status(201).json(order);
     } catch (error) {
@@ -105,7 +120,8 @@ router.post("/", authenticate, async (req, res) => {
             requestId: requestId,
             error: error.message,
             requestBody: req.body,
-            userId: req.auth?.id,
+            companyId: companyId,
+            userId: userId,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -116,21 +132,25 @@ router.post("/", authenticate, async (req, res) => {
 router.put("/:id", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const orderId = req.params.id;
+    const companyId = req.auth.getPrimaryCompanyId();
+    const userId = req.auth.getUserId();
     
     logger.info(`OrderRoute: PUT /orders/${orderId} - Request started`, { 
         requestId: requestId,
         orderId: orderId,
         updateFields: Object.keys(req.body),
-        userId: req.auth?.id
+        companyId: companyId,
+        userId: userId
     });
     
     try {
-        const order = await orderService.updateOrder(orderId, req.body);
+        const order = await orderService.updateOrder(orderId, req.body, companyId, userId);
         logger.info(`OrderRoute: PUT /orders/${orderId} - Request completed successfully`, { 
             requestId: requestId,
             orderId: orderId,
             orderName: order.orderId,
-            userId: req.auth?.id
+            companyId: companyId,
+            userId: userId
         });
         res.json(order);
     } catch (error) {
@@ -138,7 +158,8 @@ router.put("/:id", authenticate, async (req, res) => {
             logger.warn(`OrderRoute: PUT /orders/${orderId} - Order not found`, { 
                 requestId: requestId,
                 orderId: orderId,
-                userId: req.auth?.id
+                companyId: companyId,
+                userId: userId
             });
             return res.status(404).json({ error: error.message });
         }
@@ -146,7 +167,8 @@ router.put("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             orderId: orderId,
             error: error.message,
-            userId: req.auth?.id,
+            companyId: companyId,
+            userId: userId,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });
@@ -157,19 +179,23 @@ router.put("/:id", authenticate, async (req, res) => {
 router.delete("/:id", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const orderId = req.params.id;
+    const companyId = req.auth.getPrimaryCompanyId();
+    const userId = req.auth.getUserId();
     
     logger.info(`OrderRoute: DELETE /orders/${orderId} - Request started`, { 
         requestId: requestId,
         orderId: orderId,
-        userId: req.auth?.id
+        companyId: companyId,
+        userId: userId
     });
     
     try {
-        const result = await orderService.deleteOrder(orderId);
+        const result = await orderService.deleteOrder(orderId, companyId);
         logger.info(`OrderRoute: DELETE /orders/${orderId} - Request completed successfully`, { 
             requestId: requestId,
             orderId: orderId,
-            userId: req.auth?.id
+            companyId: companyId,
+            userId: userId
         });
         res.json(result);
     } catch (error) {
@@ -177,7 +203,8 @@ router.delete("/:id", authenticate, async (req, res) => {
             logger.warn(`OrderRoute: DELETE /orders/${orderId} - Order not found`, { 
                 requestId: requestId,
                 orderId: orderId,
-                userId: req.auth?.id
+                companyId: companyId,
+                userId: userId
             });
             return res.status(404).json({ error: error.message });
         }
@@ -185,7 +212,8 @@ router.delete("/:id", authenticate, async (req, res) => {
             requestId: requestId,
             orderId: orderId,
             error: error.message,
-            userId: req.auth?.id,
+            companyId: companyId,
+            userId: userId,
             stack: error.stack
         });
         res.status(500).json({ error: "Internal server error" });

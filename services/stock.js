@@ -56,18 +56,23 @@ const stockService = {
         }
     },
 
-    getStockById: async (id) => {
-        logger.info(`StockService: Fetching stock with ID: ${id}`);
+    getStockById: async (id, companyId) => {
+        logger.info(`StockService: Fetching stock with ID: ${id} for company: ${companyId}`);
         try {
-            const stock = await Stock.findByPk(id);
+            const whereClause = { stockIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const stock = await Stock.findOne({ where: whereClause });
             if (stock) {
-                logger.info(`StockService: Successfully retrieved stock: ${stock.stockId} (ID: ${id})`);
+                logger.info(`StockService: Successfully retrieved stock: ${stock.stockId} (ID: ${id}) for company: ${companyId}`);
             } else {
-                logger.warn(`StockService: Stock not found with ID: ${id}`);
+                logger.warn(`StockService: Stock not found with ID: ${id} for company: ${companyId}`);
             }
             return stock;
         } catch (error) {
-            logger.error(`StockService: Failed to fetch stock with ID: ${id}`, { 
+            logger.error(`StockService: Failed to fetch stock with ID: ${id} for company: ${companyId}`, { 
                 error: error.message, 
                 stack: error.stack 
             });
@@ -75,17 +80,24 @@ const stockService = {
         }
     },
 
-    createStock: async (stockData) => {
-        logger.info(`StockService: Creating new stock: ${stockData.stockId}`, { 
+    createStock: async (stockData, companyId, userId) => {
+        logger.info(`StockService: Creating new stock: ${stockData.stockId} for company: ${companyId}`, { 
             rawMaterial: stockData.rawMaterial,
             weight: stockData.weight 
         });
         try {
-            const stock = await Stock.create(stockData);
-            logger.info(`StockService: Successfully created stock: ${stock.stockId} (ID: ${stock.stockIdSeq})`);
+            const enrichedStockData = {
+                ...stockData,
+                companyId,
+                createdBy: userId,
+                updatedBy: userId
+            };
+            
+            const stock = await Stock.create(enrichedStockData);
+            logger.info(`StockService: Successfully created stock: ${stock.stockId} (ID: ${stock.stockIdSeq}) for company: ${companyId}`);
             return stock;
         } catch (error) {
-            logger.error(`StockService: Failed to create stock: ${stockData.stockId}`, { 
+            logger.error(`StockService: Failed to create stock: ${stockData.stockId} for company: ${companyId}`, { 
                 error: error.message, 
                 stockData: stockData,
                 stack: error.stack 
@@ -94,21 +106,31 @@ const stockService = {
         }
     },
 
-    updateStock: async (id, stockData) => {
-        logger.info(`StockService: Updating stock with ID: ${id}`, { updateData: stockData });
+    updateStock: async (id, stockData, companyId, userId) => {
+        logger.info(`StockService: Updating stock with ID: ${id} for company: ${companyId}`, { updateData: stockData });
         try {
-            const [updatedRows] = await Stock.update(stockData, {
-                where: { stockIdSeq: id }
+            const enrichedStockData = {
+                ...stockData,
+                updatedBy: userId
+            };
+            
+            const whereClause = { stockIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const [updatedRows] = await Stock.update(enrichedStockData, {
+                where: whereClause
             });
             if (updatedRows === 0) {
-                logger.warn(`StockService: No stock found to update with ID: ${id}`);
+                logger.warn(`StockService: No stock found to update with ID: ${id} for company: ${companyId}`);
                 throw new Error("Stock not found");
             }
-            const updatedStock = await Stock.findByPk(id);
-            logger.info(`StockService: Successfully updated stock: ${updatedStock.stockId} (ID: ${id})`);
+            const updatedStock = await Stock.findOne({ where: whereClause });
+            logger.info(`StockService: Successfully updated stock: ${updatedStock.stockId} (ID: ${id}) for company: ${companyId}`);
             return updatedStock;
         } catch (error) {
-            logger.error(`StockService: Failed to update stock with ID: ${id}`, { 
+            logger.error(`StockService: Failed to update stock with ID: ${id} for company: ${companyId}`, { 
                 error: error.message, 
                 updateData: stockData,
                 stack: error.stack 
@@ -117,21 +139,24 @@ const stockService = {
         }
     },
 
-    deleteStock: async (id) => {
-        logger.info(`StockService: Deleting stock with ID: ${id}`);
+    deleteStock: async (id, companyId) => {
+        logger.info(`StockService: Deleting stock with ID: ${id} for company: ${companyId}`);
         try {
-            const stock = await Stock.findByPk(id);
-            const deletedRows = await Stock.destroy({
-                where: { stockIdSeq: id }
-            });
+            const whereClause = { stockIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const stock = await Stock.findOne({ where: whereClause });
+            const deletedRows = await Stock.destroy({ where: whereClause });
             if (deletedRows === 0) {
-                logger.warn(`StockService: No stock found to delete with ID: ${id}`);
+                logger.warn(`StockService: No stock found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Stock not found");
             }
-            logger.info(`StockService: Successfully deleted stock: ${stock?.stockId || 'Unknown'} (ID: ${id})`);
+            logger.info(`StockService: Successfully deleted stock: ${stock?.stockId || 'Unknown'} (ID: ${id}) for company: ${companyId}`);
             return { message: "Stock deleted successfully" };
         } catch (error) {
-            logger.error(`StockService: Failed to delete stock with ID: ${id}`, { 
+            logger.error(`StockService: Failed to delete stock with ID: ${id} for company: ${companyId}`, { 
                 error: error.message, 
                 stack: error.stack 
             });

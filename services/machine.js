@@ -58,17 +58,22 @@ const machineService = {
     },
 
     // Get machine by ID
-    getMachineById: async (id) => {
-        logger.info(`MachineService: Fetching machine with ID: ${id}`);
+    getMachineById: async (id, companyId = null) => {
+        logger.info(`MachineService: Fetching machine with ID: ${id}, companyId: ${companyId}`);
         try {
-            const machine = await Machine.findByPk(id);
+            const whereClause = { machineIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const machine = await Machine.findOne({ where: whereClause });
             if (machine) {
                 logger.info(`MachineService: Successfully retrieved machine: ${machine.machineName} (ID: ${id})`, {
                     machineType: machine.machineType,
                     capacity: machine.capacity
                 });
             } else {
-                logger.warn(`MachineService: Machine not found with ID: ${id}`);
+                logger.warn(`MachineService: Machine not found with ID: ${id} for company: ${companyId}`);
             }
             return machine;
         } catch (error) {
@@ -81,14 +86,22 @@ const machineService = {
     },
 
     // Create new machine
-    createMachine: async (machineData) => {
-        logger.info(`MachineService: Creating new machine: ${machineData.machineName}`, { 
-            companyId: machineData.companyId,
-            machineType: machineData.machineType,
-            capacity: machineData.capacity
+    createMachine: async (machineData, companyId, userId) => {
+        const enrichedData = {
+            ...machineData,
+            companyId: companyId,
+            createdBy: userId,
+            updatedBy: userId
+        };
+        
+        logger.info(`MachineService: Creating new machine: ${enrichedData.machineName}`, { 
+            companyId: enrichedData.companyId,
+            machineType: enrichedData.machineType,
+            capacity: enrichedData.capacity,
+            createdBy: userId
         });
         try {
-            const machine = await Machine.create(machineData);
+            const machine = await Machine.create(enrichedData);
             logger.info(`MachineService: Successfully created machine: ${machine.machineName} (ID: ${machine.machineIdSeq})`, {
                 machineId: machine.machineIdSeq,
                 companyId: machine.companyId,
@@ -96,9 +109,9 @@ const machineService = {
             });
             return machine;
         } catch (error) {
-            logger.error(`MachineService: Failed to create machine: ${machineData.machineName}`, { 
+            logger.error(`MachineService: Failed to create machine: ${enrichedData.machineName}`, { 
                 error: error.message, 
-                machineData: machineData,
+                machineData: enrichedData,
                 stack: error.stack 
             });
             throw error;
@@ -106,23 +119,33 @@ const machineService = {
     },
 
     // Update machine
-    updateMachine: async (id, machineData) => {
-        logger.info(`MachineService: Updating machine with ID: ${id}`, { updateData: machineData });
+    updateMachine: async (id, machineData, companyId, userId) => {
+        const enrichedData = {
+            ...machineData,
+            updatedBy: userId
+        };
+        
+        logger.info(`MachineService: Updating machine with ID: ${id}`, { updateData: enrichedData, companyId });
         try {
-            const [updatedRows] = await Machine.update(machineData, {
-                where: { machineIdSeq: id }
+            const whereClause = { machineIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const [updatedRows] = await Machine.update(enrichedData, {
+                where: whereClause
             });
             if (updatedRows === 0) {
-                logger.warn(`MachineService: No machine found to update with ID: ${id}`);
+                logger.warn(`MachineService: No machine found to update with ID: ${id} for company: ${companyId}`);
                 throw new Error("Machine not found");
             }
-            const updatedMachine = await Machine.findByPk(id);
+            const updatedMachine = await Machine.findOne({ where: whereClause });
             logger.info(`MachineService: Successfully updated machine: ${updatedMachine.machineName} (ID: ${id})`);
             return updatedMachine;
         } catch (error) {
             logger.error(`MachineService: Failed to update machine with ID: ${id}`, { 
                 error: error.message, 
-                updateData: machineData,
+                updateData: enrichedData,
                 stack: error.stack 
             });
             throw error;
@@ -130,15 +153,18 @@ const machineService = {
     },
 
     // Delete machine
-    deleteMachine: async (id) => {
-        logger.info(`MachineService: Deleting machine with ID: ${id}`);
+    deleteMachine: async (id, companyId) => {
+        logger.info(`MachineService: Deleting machine with ID: ${id}, companyId: ${companyId}`);
         try {
-            const machine = await Machine.findByPk(id);
-            const deletedRows = await Machine.destroy({
-                where: { machineIdSeq: id }
-            });
+            const whereClause = { machineIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const machine = await Machine.findOne({ where: whereClause });
+            const deletedRows = await Machine.destroy({ where: whereClause });
             if (deletedRows === 0) {
-                logger.warn(`MachineService: No machine found to delete with ID: ${id}`);
+                logger.warn(`MachineService: No machine found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Machine not found");
             }
             logger.info(`MachineService: Successfully deleted machine: ${machine?.machineName || 'Unknown'} (ID: ${id})`);

@@ -57,83 +57,119 @@ const invoiceService = {
         }
     },
 
-    getInvoiceById: async (id) => {
-        logger.info(`InvoiceService: Fetching invoice with ID: ${id}`);
+    getInvoiceById: async (id, companyId = null) => {
+        logger.info(`InvoiceService: Fetching invoice with ID: ${id}, companyId: ${companyId}`);
         try {
-            const invoice = await Invoice.findByPk(id);
+            let whereClause = { invoiceSeq: id };
+            if (companyId) {
+                whereClause.compId = companyId;
+            }
+            
+            const invoice = await Invoice.findOne({ where: whereClause });
             if (invoice) {
-                logger.info(`InvoiceService: Successfully retrieved invoice: ${invoice.invoiceId} (ID: ${id})`);
+                logger.info(`InvoiceService: Successfully retrieved invoice: ${invoice.invoiceId} (ID: ${id}) for company: ${companyId}`);
             } else {
-                logger.warn(`InvoiceService: Invoice not found with ID: ${id}`);
+                logger.warn(`InvoiceService: Invoice not found with ID: ${id} for company: ${companyId}`);
             }
             return invoice;
         } catch (error) {
             logger.error(`InvoiceService: Failed to fetch invoice with ID: ${id}`, { 
                 error: error.message, 
+                companyId: companyId,
                 stack: error.stack 
             });
             throw error;
         }
     },
 
-    createInvoice: async (invoiceData) => {
+    createInvoice: async (invoiceData, companyId = null, userId = null) => {
         logger.info(`InvoiceService: Creating new invoice: ${invoiceData.invoiceId}`, { 
             compId: invoiceData.compId,
-            buyrId: invoiceData.buyrId 
+            buyrId: invoiceData.buyrId,
+            providedCompanyId: companyId,
+            userId: userId
         });
         try {
+            // Automatically populate compId if not provided or override with authenticated user's company
+            if (companyId) {
+                invoiceData.compId = companyId;
+            }
+            
             const invoice = await Invoice.create(invoiceData);
-            logger.info(`InvoiceService: Successfully created invoice: ${invoice.invoiceId} (ID: ${invoice.invoiceSeq})`);
+            logger.info(`InvoiceService: Successfully created invoice: ${invoice.invoiceId} (ID: ${invoice.invoiceSeq}) for company: ${companyId}`);
             return invoice;
         } catch (error) {
             logger.error(`InvoiceService: Failed to create invoice: ${invoiceData.invoiceId}`, { 
                 error: error.message, 
                 invoiceData: invoiceData,
+                companyId: companyId,
+                userId: userId,
                 stack: error.stack 
             });
             throw error;
         }
     },
 
-    updateInvoice: async (id, invoiceData) => {
-        logger.info(`InvoiceService: Updating invoice with ID: ${id}`, { updateData: invoiceData });
+    updateInvoice: async (id, invoiceData, companyId = null, userId = null) => {
+        logger.info(`InvoiceService: Updating invoice with ID: ${id}`, { 
+            updateData: invoiceData, 
+            companyId: companyId,
+            userId: userId 
+        });
         try {
+            let whereClause = { invoiceSeq: id };
+            if (companyId) {
+                whereClause.compId = companyId;
+            }
+            
             const [updatedRows] = await Invoice.update(invoiceData, {
-                where: { invoiceSeq: id }
+                where: whereClause
             });
             if (updatedRows === 0) {
-                logger.warn(`InvoiceService: No invoice found to update with ID: ${id}`);
+                logger.warn(`InvoiceService: No invoice found to update with ID: ${id} for company: ${companyId}`);
                 throw new Error("Invoice not found");
             }
-            const updatedInvoice = await Invoice.findByPk(id);
-            logger.info(`InvoiceService: Successfully updated invoice: ${updatedInvoice.invoiceId} (ID: ${id})`);
+            const updatedInvoice = await Invoice.findOne({ where: whereClause });
+            logger.info(`InvoiceService: Successfully updated invoice: ${updatedInvoice.invoiceId} (ID: ${id}) for company: ${companyId}`);
             return updatedInvoice;
         } catch (error) {
             logger.error(`InvoiceService: Failed to update invoice with ID: ${id}`, { 
                 error: error.message, 
                 updateData: invoiceData,
+                companyId: companyId,
+                userId: userId,
                 stack: error.stack 
             });
             throw error;
         }
     },
 
-    deleteInvoice: async (id) => {
-        logger.info(`InvoiceService: Deleting invoice with ID: ${id}`);
+    deleteInvoice: async (id, companyId = null, userId = null) => {
+        logger.info(`InvoiceService: Deleting invoice with ID: ${id}`, { 
+            companyId: companyId,
+            userId: userId 
+        });
         try {
-            const invoice = await Invoice.findByPk(id);
+            let whereClause = { invoiceSeq: id };
+            if (companyId) {
+                whereClause.compId = companyId;
+            }
+            
+            const invoice = await Invoice.findOne({ where: whereClause });
             const deletedRows = await Invoice.destroy({
-                where: { invoiceSeq: id }
+                where: whereClause
             });
             if (deletedRows === 0) {
-                logger.warn(`InvoiceService: No invoice found to delete with ID: ${id}`);
+                logger.warn(`InvoiceService: No invoice found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Invoice not found");
             }
-            logger.info(`InvoiceService: Successfully deleted invoice: ${invoice?.invoiceId || 'Unknown'} (ID: ${id})`);
+            logger.info(`InvoiceService: Successfully deleted invoice: ${invoice?.invoiceId || 'Unknown'} (ID: ${id}) for company: ${companyId}`);
             return { message: "Invoice deleted successfully" };
         } catch (error) {
             logger.error(`InvoiceService: Failed to delete invoice with ID: ${id}`, { 
                 error: error.message, 
+                companyId: companyId,
+                userId: userId,
                 stack: error.stack 
             });
             throw error;

@@ -9,8 +9,9 @@ router.get('/', authenticateToken, async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
         const search = req.query.search || '';
+        const companyId = req.auth.getPrimaryCompanyId();
         
-        const result = await prodHourlyService.getAllProdHourlies(page, itemsPerPage, search);
+        const result = await prodHourlyService.getAllProdHourlies(page, itemsPerPage, search, companyId);
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -20,9 +21,10 @@ router.get('/', authenticateToken, async (req, res) => {
 // Get production hourly by composite key
 router.get('/:orderId/:companyId/:shiftId/:shiftStartTime', authenticateToken, async (req, res) => {
     try {
+        const companyId = req.auth.getPrimaryCompanyId();
         const prodHourly = await prodHourlyService.getProdHourlyById(
             req.params.orderId, 
-            req.params.companyId, 
+            companyId, 
             req.params.shiftId, 
             req.params.shiftStartTime
         );
@@ -38,7 +40,9 @@ router.get('/:orderId/:companyId/:shiftId/:shiftStartTime', authenticateToken, a
 // Create new production hourly
 router.post('/', authenticateToken, async (req, res) => {
     try {
-        const prodHourly = await prodHourlyService.createProdHourly(req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const prodHourly = await prodHourlyService.createProdHourly(req.body, companyId, userId);
         res.status(201).json(prodHourly);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -48,12 +52,15 @@ router.post('/', authenticateToken, async (req, res) => {
 // Update production hourly
 router.put('/:orderId/:companyId/:shiftId/:shiftStartTime', authenticateToken, async (req, res) => {
     try {
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
         const prodHourly = await prodHourlyService.updateProdHourly(
             req.params.orderId, 
-            req.params.companyId, 
+            companyId, 
             req.params.shiftId, 
             req.params.shiftStartTime, 
-            req.body
+            req.body,
+            userId
         );
         res.json(prodHourly);
     } catch (error) {
@@ -67,11 +74,14 @@ router.put('/:orderId/:companyId/:shiftId/:shiftStartTime', authenticateToken, a
 // Delete production hourly
 router.delete('/:orderId/:companyId/:shiftId/:shiftStartTime', authenticateToken, async (req, res) => {
     try {
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
         const result = await prodHourlyService.deleteProdHourly(
             req.params.orderId, 
-            req.params.companyId, 
+            companyId, 
             req.params.shiftId, 
-            req.params.shiftStartTime
+            req.params.shiftStartTime,
+            userId
         );
         res.json(result);
     } catch (error) {

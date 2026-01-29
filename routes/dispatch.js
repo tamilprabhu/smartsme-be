@@ -47,7 +47,8 @@ router.get("/:id", authenticate, async (req, res) => {
     const dispatchId = req.params.id;
     
     try {
-        const dispatch = await dispatchService.getDispatchById(dispatchId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const dispatch = await dispatchService.getDispatchById(dispatchId, companyId);
         if (!dispatch) {
             return res.status(404).json({ error: "Dispatch not found" });
         }
@@ -67,7 +68,9 @@ router.post("/", authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     try {
-        const dispatch = await dispatchService.createDispatch(req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const dispatch = await dispatchService.createDispatch(req.body, companyId, userId);
         res.status(201).json(dispatch);
     } catch (error) {
         logger.error(`DispatchRoute: POST /dispatches - Request failed`, { 
@@ -85,7 +88,9 @@ router.put("/:id", authenticate, async (req, res) => {
     const dispatchId = req.params.id;
     
     try {
-        const dispatch = await dispatchService.updateDispatch(dispatchId, req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const dispatch = await dispatchService.updateDispatch(dispatchId, req.body, companyId, userId);
         res.json(dispatch);
     } catch (error) {
         if (error.message === "Dispatch not found") {
@@ -106,7 +111,9 @@ router.delete("/:id", authenticate, async (req, res) => {
     const dispatchId = req.params.id;
     
     try {
-        const result = await dispatchService.deleteDispatch(dispatchId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const result = await dispatchService.deleteDispatch(dispatchId, companyId, userId);
         res.json(result);
     } catch (error) {
         if (error.message === "Dispatch not found") {

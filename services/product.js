@@ -5,21 +5,23 @@ const ItemsPerPage = require("../constants/pagination");
 
 const productService = {
     // Get all products with pagination and search
-    getAllProducts: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+    getAllProducts: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId, userId) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`ProductService: Fetching products - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
+        logger.info(`ProductService: Fetching products - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}, userId: ${userId}`);
         try {
             const offset = (page - 1) * validLimit;
             
-            // Build search conditions
-            const whereClause = search ? {
-                [Op.or]: [
-                    { prodName: { [Op.like]: `%${search}%` } },
-                    { prodId: { [Op.like]: `%${search}%` } },
-                    { rawMaterial: { [Op.like]: `%${search}%` } },
-                    { companyId: { [Op.like]: `%${search}%` } }
-                ]
-            } : {};
+            // Build search conditions with company filtering
+            const whereClause = {
+                companyId: companyId,
+                ...(search && {
+                    [Op.or]: [
+                        { prodName: { [Op.like]: `%${search}%` } },
+                        { prodId: { [Op.like]: `%${search}%` } },
+                        { rawMaterial: { [Op.like]: `%${search}%` } }
+                    ]
+                })
+            };
             
             const { count, rows } = await Product.findAndCountAll({
                 where: whereClause,
@@ -27,7 +29,7 @@ const productService = {
                 offset: offset,
                 order: [['prodIdSeq', 'ASC']]
             });
-            logger.info(`ProductService: Successfully retrieved ${rows.length} products out of ${count} total`);
+            logger.info(`ProductService: Successfully retrieved ${rows.length} products out of ${count} total for company ${companyId}`);
             return {
                 items: rows,
                 paging: {
@@ -40,6 +42,8 @@ const productService = {
         } catch (error) {
             logger.error("ProductService: Failed to fetch products", { 
                 error: error.message, 
+                companyId: companyId,
+                userId: userId,
                 stack: error.stack 
             });
             throw error;
@@ -47,19 +51,26 @@ const productService = {
     },
 
     // Get product by ID
-    getProductById: async (id) => {
-        logger.info(`ProductService: Fetching product with ID: ${id}`);
+    getProductById: async (id, companyId, userId) => {
+        logger.info(`ProductService: Fetching product with ID: ${id} for company: ${companyId}, user: ${userId}`);
         try {
-            const product = await Product.findByPk(id);
+            const product = await Product.findOne({
+                where: {
+                    prodIdSeq: id,
+                    companyId: companyId
+                }
+            });
             if (product) {
-                logger.info(`ProductService: Successfully retrieved product: ${product.prodName} (ID: ${id})`);
+                logger.info(`ProductService: Successfully retrieved product: ${product.prodName} (ID: ${id}) for company: ${companyId}`);
             } else {
-                logger.warn(`ProductService: Product not found with ID: ${id}`);
+                logger.warn(`ProductService: Product not found with ID: ${id} for company: ${companyId}`);
             }
             return product;
         } catch (error) {
             logger.error(`ProductService: Failed to fetch product with ID: ${id}`, { 
                 error: error.message, 
+                companyId: companyId,
+                userId: userId,
                 stack: error.stack 
             });
             throw error;
@@ -67,22 +78,30 @@ const productService = {
     },
 
     // Create new product
-    createProduct: async (productData) => {
-        logger.info(`ProductService: Creating new product: ${productData.prodName}`, { 
-            companyId: productData.companyId,
+    createProduct: async (productData, companyId, userId) => {
+        logger.info(`ProductService: Creating new product: ${productData.prodName} for company: ${companyId}, user: ${userId}`, { 
             prodId: productData.prodId 
         });
         try {
-            const product = await Product.create(productData);
-            logger.info(`ProductService: Successfully created product: ${product.prodName} (ID: ${product.prodIdSeq})`, {
+            const enrichedProductData = {
+                ...productData,
+                companyId: companyId,
+                createDate: new Date(),
+                updateDate: new Date()
+            };
+            const product = await Product.create(enrichedProductData);
+            logger.info(`ProductService: Successfully created product: ${product.prodName} (ID: ${product.prodIdSeq}) for company: ${companyId}`, {
                 productId: product.prodIdSeq,
-                companyId: product.companyId
+                companyId: product.companyId,
+                userId: userId
             });
             return product;
         } catch (error) {
             logger.error(`ProductService: Failed to create product: ${productData.prodName}`, { 
                 error: error.message, 
                 productData: productData,
+                companyId: companyId,
+                userId: userId,
                 stack: error.stack 
             });
             throw error;
@@ -90,23 +109,39 @@ const productService = {
     },
 
     // Update product
-    updateProduct: async (id, productData) => {
-        logger.info(`ProductService: Updating product with ID: ${id}`, { updateData: productData });
+    updateProduct: async (id, productData, companyId, userId) => {
+        logger.info(`ProductService: Updating product with ID: ${id} for company: ${companyId}, user: ${userId}`, { updateData: productData });
         try {
-            const [updatedRows] = await Product.update(productData, {
-                where: { prodIdSeq: id }
+            const enrichedProductData = {
+                ...productData,
+                updateDate: new Date()
+            };
+            const [updatedRows] = await Product.update(enrichedProductData, {
+                where: { 
+                    prodIdSeq: id,
+                    companyId: companyId
+                }
             });
             if (updatedRows === 0) {
-                logger.warn(`ProductService: No product found to update with ID: ${id}`);
+                logger.warn(`ProductService: No product found to update with ID: ${id} for company: ${companyId}`);
                 throw new Error("Product not found");
             }
-            const updatedProduct = await Product.findByPk(id);
-            logger.info(`ProductService: Successfully updated product: ${updatedProduct.prodName} (ID: ${id})`);
+            const updatedProduct = await Product.findOne({
+                where: {
+                    prodIdSeq: id,
+                    companyId: companyId
+                }
+            });
+            logger.info(`ProductService: Successfully updated product: ${updatedProduct.prodName} (ID: ${id}) for company: ${companyId}`, {
+                userId: userId
+            });
             return updatedProduct;
         } catch (error) {
             logger.error(`ProductService: Failed to update product with ID: ${id}`, { 
                 error: error.message, 
                 updateData: productData,
+                companyId: companyId,
+                userId: userId,
                 stack: error.stack 
             });
             throw error;

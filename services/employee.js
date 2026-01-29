@@ -55,14 +55,19 @@ const employeeService = {
         }
     },
 
-    getEmployeeById: async (id) => {
-        logger.info(`EmployeeService: Fetching employee with ID: ${id}`);
+    getEmployeeById: async (id, companyId) => {
+        logger.info(`EmployeeService: Fetching employee with ID: ${id} for company: ${companyId}`);
         try {
-            const employee = await Employee.findByPk(id);
+            const whereClause = { employeeIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const employee = await Employee.findOne({ where: whereClause });
             if (employee) {
-                logger.info(`EmployeeService: Successfully retrieved employee (ID: ${id})`);
+                logger.info(`EmployeeService: Successfully retrieved employee (ID: ${id}) for company: ${companyId}`);
             } else {
-                logger.warn(`EmployeeService: Employee not found with ID: ${id}`);
+                logger.warn(`EmployeeService: Employee not found with ID: ${id} for company: ${companyId}`);
             }
             return employee;
         } catch (error) {
@@ -74,15 +79,18 @@ const employeeService = {
         }
     },
 
-    createEmployee: async (employeeData) => {
-        logger.info(`EmployeeService: Creating new employee for user: ${employeeData.userId}`);
+    createEmployee: async (employeeData, companyId, userId) => {
+        logger.info(`EmployeeService: Creating new employee for user: ${employeeData.userId}, company: ${companyId}`);
         try {
             const employee = await Employee.create({
                 ...employeeData,
+                companyId,
+                createUserId: userId,
+                updateUserId: userId,
                 createDate: new Date(),
                 updateDate: new Date()
             });
-            logger.info(`EmployeeService: Successfully created employee (ID: ${employee.employeeIdSeq})`);
+            logger.info(`EmployeeService: Successfully created employee (ID: ${employee.employeeIdSeq}) for company: ${companyId}`);
             return employee;
         } catch (error) {
             logger.error(`EmployeeService: Failed to create employee`, { 
@@ -94,21 +102,27 @@ const employeeService = {
         }
     },
 
-    updateEmployee: async (id, employeeData) => {
-        logger.info(`EmployeeService: Updating employee with ID: ${id}`, { updateData: employeeData });
+    updateEmployee: async (id, employeeData, companyId, userId) => {
+        logger.info(`EmployeeService: Updating employee with ID: ${id} for company: ${companyId}`, { updateData: employeeData });
         try {
+            const whereClause = { employeeIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
             const [updatedRows] = await Employee.update({
                 ...employeeData,
+                updateUserId: userId,
                 updateDate: new Date()
             }, {
-                where: { employeeIdSeq: id }
+                where: whereClause
             });
             if (updatedRows === 0) {
-                logger.warn(`EmployeeService: No employee found to update with ID: ${id}`);
+                logger.warn(`EmployeeService: No employee found to update with ID: ${id} for company: ${companyId}`);
                 throw new Error("Employee not found");
             }
-            const updatedEmployee = await Employee.findByPk(id);
-            logger.info(`EmployeeService: Successfully updated employee (ID: ${id})`);
+            const updatedEmployee = await Employee.findOne({ where: whereClause });
+            logger.info(`EmployeeService: Successfully updated employee (ID: ${id}) for company: ${companyId}`);
             return updatedEmployee;
         } catch (error) {
             logger.error(`EmployeeService: Failed to update employee with ID: ${id}`, { 
@@ -120,18 +134,22 @@ const employeeService = {
         }
     },
 
-    deleteEmployee: async (id) => {
-        logger.info(`EmployeeService: Deleting employee with ID: ${id}`);
+    deleteEmployee: async (id, companyId, userId) => {
+        logger.info(`EmployeeService: Deleting employee with ID: ${id} for company: ${companyId}`);
         try {
-            const employee = await Employee.findByPk(id);
-            const deletedRows = await Employee.destroy({
-                where: { employeeIdSeq: id }
-            });
-            if (deletedRows === 0) {
-                logger.warn(`EmployeeService: No employee found to delete with ID: ${id}`);
+            const whereClause = { employeeIdSeq: id };
+            if (companyId) {
+                whereClause.companyId = companyId;
+            }
+            
+            const employee = await Employee.findOne({ where: whereClause });
+            if (!employee) {
+                logger.warn(`EmployeeService: No employee found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Employee not found");
             }
-            logger.info(`EmployeeService: Successfully deleted employee (ID: ${id})`);
+            
+            const deletedRows = await Employee.destroy({ where: whereClause });
+            logger.info(`EmployeeService: Successfully deleted employee (ID: ${id}) for company: ${companyId}`);
             return { message: "Employee deleted successfully" };
         } catch (error) {
             logger.error(`EmployeeService: Failed to delete employee with ID: ${id}`, { 

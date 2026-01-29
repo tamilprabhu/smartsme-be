@@ -53,7 +53,8 @@ router.get("/:id", authenticate, async (req, res) => {
     });
     
     try {
-        const buyer = await buyerService.getBuyerById(buyerId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const buyer = await buyerService.getBuyerById(buyerId, companyId);
         if (!buyer) {
             logger.warn(`BuyerRoute: GET /buyers/${buyerId} - Buyer not found`, { 
                 requestId: requestId,
@@ -94,7 +95,9 @@ router.post("/", authenticate, async (req, res) => {
     });
     
     try {
-        const buyer = await buyerService.createBuyer(req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const buyer = await buyerService.createBuyer(req.body, companyId, userId);
         logger.info(`BuyerRoute: POST /buyers - Request completed successfully`, { 
             requestId: requestId,
             buyerId: buyer.buyerIdSeq,
@@ -127,7 +130,9 @@ router.put("/:id", authenticate, async (req, res) => {
     });
     
     try {
-        const buyer = await buyerService.updateBuyer(buyerId, req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const buyer = await buyerService.updateBuyer(buyerId, req.body, companyId, userId);
         logger.info(`BuyerRoute: PUT /buyers/${buyerId} - Request completed successfully`, { 
             requestId: requestId,
             buyerId: buyerId,
@@ -167,7 +172,8 @@ router.delete("/:id", authenticate, async (req, res) => {
     });
     
     try {
-        const result = await buyerService.deleteBuyer(buyerId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const result = await buyerService.deleteBuyer(buyerId, companyId);
         logger.info(`BuyerRoute: DELETE /buyers/${buyerId} - Request completed successfully`, { 
             requestId: requestId,
             buyerId: buyerId,

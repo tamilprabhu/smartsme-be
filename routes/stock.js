@@ -24,7 +24,8 @@ router.get("/:id", authenticate, async (req, res) => {
     const stockId = req.params.id;
     
     try {
-        const stock = await stockService.getStockById(stockId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const stock = await stockService.getStockById(stockId, companyId);
         if (!stock) {
             return res.status(404).json({ error: "Stock not found" });
         }
@@ -37,7 +38,9 @@ router.get("/:id", authenticate, async (req, res) => {
 // POST /stocks - Create new stock
 router.post("/", authenticate, async (req, res) => {
     try {
-        const stock = await stockService.createStock(req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const stock = await stockService.createStock(req.body, companyId, userId);
         res.status(201).json(stock);
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
@@ -49,7 +52,9 @@ router.put("/:id", authenticate, async (req, res) => {
     const stockId = req.params.id;
     
     try {
-        const stock = await stockService.updateStock(stockId, req.body);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const userId = req.auth.getUserId();
+        const stock = await stockService.updateStock(stockId, req.body, companyId, userId);
         res.json(stock);
     } catch (error) {
         if (error.message === "Stock not found") {
@@ -64,7 +69,8 @@ router.delete("/:id", authenticate, async (req, res) => {
     const stockId = req.params.id;
     
     try {
-        const result = await stockService.deleteStock(stockId);
+        const companyId = req.auth.getPrimaryCompanyId();
+        const result = await stockService.deleteStock(stockId, companyId);
         res.json(result);
     } catch (error) {
         if (error.message === "Stock not found") {
