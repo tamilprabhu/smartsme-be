@@ -18,6 +18,11 @@ router.post("/login", async (req, res) => {
             identifier,
             password,
         });
+        const roles = user.Roles.map(role => ({ id: role.id, name: role.name }));
+        const companies = [{
+            companyId: user?.Employee?.Company?.companyId,
+            companyName: user?.Employee?.Company?.companyName,
+        }];
         logger.info("Login successful", { 
             userId: user.id, 
             username: user.username,
@@ -33,7 +38,8 @@ router.post("/login", async (req, res) => {
                 email: user.email,
                 mobile: user.mobile,
                 address: user.address,
-                roles: user.Roles.map(role => ({ id: role.id, name: role.name })),
+                roles,
+                companies,
             },
             accessToken,
             refreshToken,
@@ -103,6 +109,12 @@ router.get("/me", authenticate, async (req, res) => {
             userId: user.id,
             username: user.username 
         });
+            // Populate CLAIMS
+        const roles = user.Roles.map(role => ({ id: role.id, name: role.name }));
+        const companies = [{
+            companyId: user?.Employee?.Company?.companyId,
+            companyName: user?.Employee?.Company?.companyName,
+        }];
         res.json({
             id: user.id,
             username: user.username,
@@ -112,7 +124,8 @@ router.get("/me", authenticate, async (req, res) => {
             email: user.email,
             mobile: user.mobile,
             address: user.address,
-            roles: user.Roles.map(role => ({ id: role.id, name: role.name })),
+            roles,
+            companies,
         });
     } catch (err) {
         logger.error("Error retrieving user info", { 

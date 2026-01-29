@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { Op } = require("sequelize");
-const { User, Role, Employee } = require("../models");
+const { User, Role, Employee, Company } = require("../models");
 const logger = require("../config/logger");
 
 // Service functions
@@ -25,7 +25,11 @@ const authService = {
                     attributes: ['id', 'name']
                 },{
                     model: Employee,
-                    attributes: ['companyId']
+                    attributes: ['companyId'],
+                    include: [{
+                        model: Company,
+                        attributes: ['companyId', 'companyName']
+                    }]
                 }]
             });
             if (!user) {
@@ -41,9 +45,13 @@ const authService = {
                 throw new Error("Invalid password");
             }
             logger.debug("Password verified successfully", { userId: user.id, username: user.username });
-            
-            // Generate tokens with industry standards
+
+            // Populate CLAIMS
             const roles = user.Roles.map(role => ({ id: role.id, name: role.name }));
+            const companies = [{
+                companyId: user?.Employee?.Company?.companyId,
+                companyName: user?.Employee?.Company?.companyName,
+            }];
             
             // Access token with roles (short-lived)
             const accessToken = jwt.sign(
@@ -53,8 +61,8 @@ const authService = {
                     sub: user.id.toString(),
                     jti: crypto.randomUUID(),
                     username: user.username,
-                    roles: roles,
-                    companyId: user.Employee?.companyId,
+                    roles,
+                    companies,
                     type: "access"
                 },
                 process.env.JWT_SECRET,
@@ -102,6 +110,13 @@ const authService = {
                 include: [{
                     model: Role,
                     attributes: ['id', 'name']
+                },{
+                    model: Employee,
+                    attributes: ['companyId'],
+                    include: [{
+                        model: Company,
+                        attributes: ['companyId', 'companyName']
+                    }]
                 }]
             });
 
@@ -109,8 +124,12 @@ const authService = {
                 throw new Error("User not found");
             }
 
-            // Generate new access token with fresh roles
+            // Populate CLAIMS
             const roles = user.Roles.map(role => ({ id: role.id, name: role.name }));
+            const companies = [{
+                companyId: user?.Employee?.Company?.companyId,
+                companyName: user?.Employee?.Company?.companyName,
+            }];
 
             const newAccessToken = jwt.sign(
                 { 
@@ -119,7 +138,8 @@ const authService = {
                     sub: user.id.toString(),
                     jti: crypto.randomUUID(),
                     username: user.username,
-                    roles: roles,
+                    roles,
+                    companies,
                     type: "access"
                 },
                 process.env.JWT_SECRET,
@@ -142,6 +162,13 @@ const authService = {
                 include: [{
                     model: Role,
                     attributes: ['id', 'name']
+                },{
+                    model: Employee,
+                    attributes: ['companyId'],
+                    include: [{
+                        model: Company,
+                        attributes: ['companyId', 'companyName']
+                    }]
                 }]
             });
             if (!user) {

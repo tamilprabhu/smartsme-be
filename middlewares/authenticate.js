@@ -25,13 +25,13 @@ const authenticate = (req, res, next) => {
         // Validate REQUIRED claims
         if (
             !decoded.sub ||
-            !decoded.companyId ||
+            !Array.isArray(decoded.companies) ||
             !Array.isArray(decoded.roles) ||
             decoded.roles.length === 0
         ) {
             logger.warn("JWT missing required claims", {
                 sub: decoded?.sub,
-                companyId: decoded?.companyId,
+                companies: decoded?.companies,
                 roles: decoded?.roles
             });
             return res.status(401).json({ message: "Invalid authentication token" });
