@@ -1061,6 +1061,49 @@ ALTER TABLE `stock`
 --
 ALTER TABLE `users`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `assets`
+--
+
+CREATE TABLE `assets` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `module` VARCHAR(50) NOT NULL,
+  `sub_module` VARCHAR(50) NOT NULL,
+  `identifier` VARCHAR(100) NOT NULL,
+  `original_name` VARCHAR(255) NOT NULL,
+  `stored_name` VARCHAR(255) NOT NULL,
+  `mime_type` VARCHAR(100) NOT NULL,
+  `size_bytes` INT NOT NULL,
+  `storage_path` VARCHAR(500) NOT NULL,
+  `visibility` ENUM('public','private') NOT NULL DEFAULT 'private',
+  `company_id` VARCHAR(20) DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
+  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `metadata` JSON DEFAULT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Seed data for assets (file type samples)
+INSERT INTO `assets` (`module`, `sub_module`, `identifier`, `original_name`, `stored_name`, `mime_type`, `size_bytes`, `storage_path`, `visibility`, `company_id`, `created_by`, `updated_by`, `is_deleted`, `is_active`, `metadata`, `created_at`, `updated_at`) VALUES
+('seed','samples','filetypes','sample.csv','b1510eef-9243-41fe-b0e0-0ef85cc2a1ff_sample.csv','text/csv',23,'seed/samples/b1510eef-9243-41fe-b0e0-0ef85cc2a1ff_sample.csv','public','FINO001',1,1,0,1,JSON_OBJECT('seed', true, 'fileType', 'csv'), NOW(), NOW()),
+('seed','samples','filetypes','sample.txt','4a87878d-110f-43f4-ad12-e785575485de_sample.txt','text/plain',30,'seed/samples/4a87878d-110f-43f4-ad12-e785575485de_sample.txt','public','FINO001',1,1,0,1,JSON_OBJECT('seed', true, 'fileType', 'txt'), NOW(), NOW()),
+('seed','samples','filetypes','sample.pdf','a2949208-58b5-4dad-b73d-77aa0487c203_sample.pdf','application/pdf',45,'seed/samples/a2949208-58b5-4dad-b73d-77aa0487c203_sample.pdf','public','FINO001',1,1,0,1,JSON_OBJECT('seed', true, 'fileType', 'pdf'), NOW(), NOW()),
+('seed','samples','filetypes','sample.docx','1cb6c67a-dfb3-492b-874a-def894877924_sample.docx','application/vnd.openxmlformats-officedocument.wordprocessingml.document',151,'seed/samples/1cb6c67a-dfb3-492b-874a-def894877924_sample.docx','public','FINO001',1,1,0,1,JSON_OBJECT('seed', true, 'fileType', 'docx'), NOW(), NOW()),
+('seed','samples','filetypes','sample.xlsx','24f7df5d-95b4-4f78-97f2-e037d64e2814_sample.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',151,'seed/samples/24f7df5d-95b4-4f78-97f2-e037d64e2814_sample.xlsx','public','FINO001',1,1,0,1,JSON_OBJECT('seed', true, 'fileType', 'xlsx'), NOW(), NOW()),
+('seed','samples','filetypes','sample.xls','36ed1d57-fe95-44bd-924a-d5deda94fd84_sample.xls','application/vnd.ms-excel',16,'seed/samples/36ed1d57-fe95-44bd-924a-d5deda94fd84_sample.xls','public','FINO001',1,1,0,1,JSON_OBJECT('seed', true, 'fileType', 'xls'), NOW(), NOW()),
+('seed','samples','filetypes','sample.zip','26ff74df-70e5-4472-9528-b025d60ecf21_sample.zip','application/zip',128,'seed/samples/26ff74df-70e5-4472-9528-b025d60ecf21_sample.zip','public','FINO001',1,1,0,1,JSON_OBJECT('seed', true, 'fileType', 'zip'), NOW(), NOW()),
+('seed','samples','filetypes','sample.apk','c1d9cb48-10ea-4273-b922-43cbeec72c7b_sample.apk','application/vnd.android.package-archive',157,'seed/samples/c1d9cb48-10ea-4273-b922-43cbeec72c7b_sample.apk','public','FINO001',1,1,0,1,JSON_OBJECT('seed', true, 'fileType', 'apk'), NOW(), NOW()),
+('seed','samples','filetypes','sample.png','842086d1-8fc2-45b4-a885-68ccbaf55b95_sample.png','image/png',68,'seed/samples/842086d1-8fc2-45b4-a885-68ccbaf55b95_sample.png','public','FINO001',1,1,0,1,JSON_OBJECT('seed', true, 'fileType', 'png'), NOW(), NOW()),
+('seed','samples','filetypes','sample.jpg','f5b99a6e-889f-49bc-94e6-d24f009787d7_sample.jpg','image/jpeg',282,'seed/samples/f5b99a6e-889f-49bc-94e6-d24f009787d7_sample.jpg','public','FINO001',1,1,0,1,JSON_OBJECT('seed', true, 'fileType', 'jpg'), NOW(), NOW());
+
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

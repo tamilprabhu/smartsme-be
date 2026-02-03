@@ -1,0 +1,198 @@
+{
+  "info": {
+    "name": "SmartSME Assets API",
+    "description": "Postman collection for assets upload/download module.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "accessToken",
+      "value": "REPLACE_WITH_ACCESS_TOKEN"
+    },
+    {
+      "key": "downloadToken",
+      "value": "REPLACE_WITH_DOWNLOAD_TOKEN"
+    },
+    {
+      "key": "assetId",
+      "value": "1"
+    },
+    {
+      "key": "module",
+      "value": "seed"
+    },
+    {
+      "key": "subModule",
+      "value": "samples"
+    },
+    {
+      "key": "identifier",
+      "value": "filetypes"
+    }
+  ],
+  "item": [
+    {
+      "name": "Upload Asset",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "module", "value": "{{module}}", "type": "text" },
+            { "key": "subModule", "value": "{{subModule}}", "type": "text" },
+            { "key": "identifier", "value": "{{identifier}}", "type": "text" },
+            { "key": "visibility", "value": "private", "type": "text" },
+            { "key": "metadata", "value": "{\"source\":\"postman\"}", "type": "text" },
+            { "key": "file", "type": "file" }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/1.0.0/assets",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "1.0.0", "assets"]
+        }
+      }
+    },
+    {
+      "name": "List Assets (Filters)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/1.0.0/assets?module={{module}}&subModule={{subModule}}&identifier={{identifier}}&page=1&itemsPerPage=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "1.0.0", "assets"],
+          "query": [
+            { "key": "module", "value": "{{module}}" },
+            { "key": "subModule", "value": "{{subModule}}" },
+            { "key": "identifier", "value": "{{identifier}}" },
+            { "key": "page", "value": "1" },
+            { "key": "itemsPerPage", "value": "10" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Assets By Reference",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/1.0.0/assets/{{module}}/{{subModule}}/{{identifier}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "1.0.0", "assets", "{{module}}", "{{subModule}}", "{{identifier}}"]
+        }
+      }
+    },
+    {
+      "name": "Get Asset By Id",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/1.0.0/assets/{{assetId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "1.0.0", "assets", "{{assetId}}"]
+        }
+      }
+    },
+    {
+      "name": "Download Asset",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/1.0.0/assets/download/{{assetId}}?token={{downloadToken}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "1.0.0", "assets", "download", "{{assetId}}"],
+          "query": [
+            { "key": "token", "value": "{{downloadToken}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Asset",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"visibility\": \"public\",\n  \"metadata\": {\"note\": \"updated\"},\n  \"isActive\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/1.0.0/assets/{{assetId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "1.0.0", "assets", "{{assetId}}"]
+        }
+      }
+    },
+    {
+      "name": "Soft Delete Asset",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/1.0.0/assets/{{assetId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "1.0.0", "assets", "{{assetId}}"]
+        }
+      }
+    },
+    {
+      "name": "Hard Delete Asset",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/1.0.0/assets/{{assetId}}/hard",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "1.0.0", "assets", "{{assetId}}", "hard"]
+        }
+      }
+    }
+  ]
+}

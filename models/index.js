@@ -18,6 +18,7 @@ const Buyer = require("./buyer");
 const Dispatch = require("./dispatch");
 const Seller = require("./seller");
 const Stock = require("./stock");
+const Asset = require("./asset");
 const Invoice = require("./invoice");
 
 // Associations
@@ -67,5 +68,6 @@ module.exports = {
     Dispatch,
     Seller,
     Stock,
+    Asset,
     Invoice,
 };

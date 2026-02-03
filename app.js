@@ -23,6 +23,7 @@ const productRouter = require('./routes/product');
 const productionShiftRouter = require('./routes/productionShift');
 const sellerRouter = require('./routes/seller');
 const stockRouter = require('./routes/stock');
+const assetsRouter = require('./routes/assets');
 const usersRouter = require('./routes/users');
 
 const app = express();
@@ -77,6 +78,7 @@ app.use('/api/1.0.0/product', productRouter);
 app.use('/api/1.0.0/production-shift', productionShiftRouter);
 app.use('/api/1.0.0/seller', sellerRouter);
 app.use('/api/1.0.0/stock', stockRouter);
+app.use('/api/1.0.0/assets', assetsRouter);
 app.use('/api/1.0.0/users', usersRouter);
 
 app.use('/', indexRouter);
