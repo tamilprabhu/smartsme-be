@@ -3,5 +3,11 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/bootstrap-5.3.8/css/bootstrap.css')
+
   body
     block content
+
+    // JavaScript files (best practice: load at end of body)
+    script(src='/bootstrap-5.3.8/js/bootstrap.bundle.js')
+    script(src='/javascripts/main.js')

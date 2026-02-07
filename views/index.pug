@@ -1,5 +1,27 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-8.text-center
+        h1.mb-3= title
+        p.lead Welcome to #{title}
+
+        .d-grid.gap-3.mt-4
+          a.btn.btn-success(
+            href="/upload/smart-sme-0.0.1.apk",
+            target="_blank",
+            rel="noopener noreferrer"
+          ) Download Android APK
+
+          a.btn.btn-primary(
+            href="/web/",
+            target="_blank",
+            rel="noopener noreferrer"
+          ) Desktop View
+
+          a.btn.btn-dark(
+            href="/admin/",
+            target="_blank",
+            rel="noopener noreferrer"
+          ) Admin Dashboard
