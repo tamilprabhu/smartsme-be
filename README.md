@@ -28,6 +28,7 @@ docker run -d \
   -e DB_PASS='sm@rtsmepwd' \
   -p 80:8080 \
   smartsme-be:0.0.1
+docker logs smartsme-be --follow
 
 # Docker compose commands
 docker compose up -d
