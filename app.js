@@ -47,6 +47,15 @@ app.use(morgan('combined', { stream: morganStream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Serve Angular static files
+app.use('/web', express.static(path.join(__dirname, 'www')));
+
+// SPA fallback (VERY IMPORTANT)
+app.get('/web/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'www/index.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Log all incoming requests
