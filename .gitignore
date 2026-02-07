@@ -1,12 +1,6 @@
 # Node modules
 node_modules/
 
-# dotenv files with secrets
-.env.local
-.env.dev
-.env.stage
-.env.prod
-
 # Uploaded files (keep seed samples tracked)
 storage/uploads/*
 !storage/uploads/seed/

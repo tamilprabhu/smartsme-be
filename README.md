@@ -16,6 +16,20 @@ docker run -d --name smartsme-mysql \
 # Shorthand script to generate private/public key for JWT
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
+
+docker build -t smartsme-be:0.0.1 .
+docker run -d \
+  -e NODE_ENV=production \
+  -e PORT=8080 \
+  -e DB_HOST=172.17.0.3 \
+  -e DB_PORT=3306 \
+  -e DB_NAME=smartsme \
+  -e DB_USER=smartsmeusr \
+  -e DB_PASS='$m@rt$mepwd' \
+  -p 80:8080 \
+  smartsme-be:0.0.1
+
+
 ```
 
 ### All User Logins Added:

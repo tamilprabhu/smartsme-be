@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "start": "node ./bin/www",
-        "dev": "NODE_ENV=local PORT=8080 nodemon ./bin/www"
+        "dev": "NODE_ENV=development PORT=8080 nodemon ./bin/www"
     },
     "dependencies": {
         "bcrypt": "^6.0.0",
