@@ -169,7 +169,7 @@ DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=smartsme
 DB_USER=smartsmeusr
-DB_PASSWORD=$m@rt$mepwd
+DB_PASSWORD=sm@rtsmepwd
 
 # JWT
 JWT_SECRET=your-secret-key
@@ -192,7 +192,7 @@ docker build -f mysql.Dockerfile -t smartsme-mysql:8.0.23 .
 docker run -d --name smartsme-mysql \
   -e MYSQL_DATABASE=smartsme \
   -e MYSQL_USER=smartsmeusr \
-  -e MYSQL_PASSWORD='$m@rt$mepwd' \
+  -e MYSQL_PASSWORD='sm@rtsmepwd' \
   -e MYSQL_ROOT_PASSWORD=root \
   -p 3306:3306 \
   smartsme-mysql:8.0.23

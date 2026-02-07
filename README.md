@@ -2,34 +2,38 @@
 Diecast API Backend
 
 ```sh
+# Shorthand script to generate private/public key for JWT
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
 # Build custom mysql image
 docker build -f mysql.Dockerfile -t smartsme-mysql:8.0.23 .
 
 # Launch instance
 docker run -d --name smartsme-mysql \
   -e MYSQL_DATABASE=smartsme \
-  -e MYSQL_USER=smartsmeusr \
-  -e MYSQL_PASSWORD='$m@rt$mepwd' \
   -e MYSQL_ROOT_PASSWORD=root \
   smartsme-mysql:8.0.23
 
-# Shorthand script to generate private/public key for JWT
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-
-
+# Build app image
 docker build -t smartsme-be:0.0.1 .
+
+# Launch image
 docker run -d \
   -e NODE_ENV=production \
   -e PORT=8080 \
-  -e DB_HOST=172.17.0.3 \
+  -e DB_HOST=172.17.0.2 \
   -e DB_PORT=3306 \
   -e DB_NAME=smartsme \
   -e DB_USER=smartsmeusr \
-  -e DB_PASS='$m@rt$mepwd' \
+  -e DB_PASS='sm@rtsmepwd' \
   -p 80:8080 \
   smartsme-be:0.0.1
 
-
+# Docker compose commands
+docker compose up -d
+docker volume inspect smartsme-be_mysql_data
+docker compose down
+# docker compose down -v # deletes volume
 ```
 
 ### All User Logins Added:

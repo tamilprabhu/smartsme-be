@@ -1,0 +1,39 @@
+services:
+  mysql:
+    image: smartsme-mysql:8.0.23
+    container_name: smartsme-mysql
+    environment:
+      MYSQL_DATABASE: smartsme
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+  backend:
+    image: smartsme-be:0.0.1
+    container_name: smartsme-be
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: smartsme
+      DB_USER: smartsmeusr
+      DB_PASS: sm@rtsmepwd
+    ports:
+      - "80:8080"
+    depends_on:
+      - mysql
+    restart: unless-stopped
+
+  adminer:
+    image: adminer:latest
+    container_name: smartsme-adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
