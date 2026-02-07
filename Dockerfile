@@ -19,6 +19,7 @@ COPY config ./config
 COPY db ./db
 COPY storage ./storage
 COPY .env ./.env
+COPY www ./www
 
 RUN mkdir -p logs
 
