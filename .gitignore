@@ -1,6 +1,9 @@
 # Node modules
 node_modules/
 
+# Ignore published APK
+public/*.apk
+
 # Uploaded files (keep seed samples tracked)
 storage/uploads/*
 !storage/uploads/seed/
