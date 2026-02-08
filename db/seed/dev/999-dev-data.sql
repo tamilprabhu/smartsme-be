@@ -701,62 +701,52 @@ INSERT INTO `stock` (`stock_id_seq`, `company_id`, `seller_id`, `stock_id`, `sto
 --
 -- Indexes for table `buyer`
 --
-ALTER TABLE `buyer`
-  ADD PRIMARY KEY (`buyer_id_seq`);
+ALTER TABLE `buyer` ADD PRIMARY KEY (`buyer_id_seq`);
 
 --
 -- Indexes for table `company`
 --
-ALTER TABLE `company`
-  ADD PRIMARY KEY (`company_id_seq`);
+ALTER TABLE `company` ADD PRIMARY KEY (`company_id_seq`);
 
 --
 -- Indexes for table `dispatch`
 --
-ALTER TABLE `dispatch`
-  ADD PRIMARY KEY (`dispatch_id_seq`);
+ALTER TABLE `dispatch` ADD PRIMARY KEY (`dispatch_id_seq`);
 
 --
 -- Indexes for table `employee`
 --
-ALTER TABLE `employee`
-  MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000017;
+ALTER TABLE `employee` MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000017;
 
 --
 -- Indexes for table `machine`
 --
-ALTER TABLE `machine`
-  ADD PRIMARY KEY (`machine_id_seq`);
+ALTER TABLE `machine` ADD PRIMARY KEY (`machine_id_seq`);
 
 --
 -- Indexes for table `order`
 --
-ALTER TABLE `order`
-  ADD PRIMARY KEY (`order_id_seq`);
+ALTER TABLE `order` ADD PRIMARY KEY (`order_id_seq`);
 
 --
 -- Indexes for table `product`
 --
-ALTER TABLE `product`
-  ADD PRIMARY KEY (`prod_id_seq`);
+ALTER TABLE `product` ADD PRIMARY KEY (`prod_id_seq`);
 
 --
 -- Indexes for table `production_shift`
 --
-ALTER TABLE `production_shift`
-  ADD PRIMARY KEY (`shift_id_seq`);
+ALTER TABLE `production_shift` ADD PRIMARY KEY (`shift_id_seq`);
 
 --
 -- Indexes for table `seller`
 --
-ALTER TABLE `seller`
-  ADD PRIMARY KEY (`seller_id_seq`);
+ALTER TABLE `seller` ADD PRIMARY KEY (`seller_id_seq`);
 
 --
 -- Indexes for table `stock`
 --
-ALTER TABLE `stock`
-  ADD PRIMARY KEY (`stock_id_seq`);
+ALTER TABLE `stock` ADD PRIMARY KEY (`stock_id_seq`);
 
 --
 -- Indexes for table `users`
@@ -772,68 +762,57 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for table `buyer`
 --
-ALTER TABLE `buyer`
-  MODIFY `buyer_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+ALTER TABLE `buyer` MODIFY `buyer_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 
 --
 -- AUTO_INCREMENT for table `company`
 --
-ALTER TABLE `company`
-  MODIFY `company_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100001;
+ALTER TABLE `company` MODIFY `company_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100001;
 
 --
 -- AUTO_INCREMENT for table `dispatch`
 --
-ALTER TABLE `dispatch`
-  MODIFY `dispatch_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000010;
+ALTER TABLE `dispatch` MODIFY `dispatch_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000010;
 
 --
 -- AUTO_INCREMENT for table `employee`
 --
-ALTER TABLE `employee`
-  MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000002;
+ALTER TABLE `employee` MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000002;
 
 --
 -- AUTO_INCREMENT for table `machine`
 --
-ALTER TABLE `machine`
-  MODIFY `machine_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+ALTER TABLE `machine` MODIFY `machine_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 
 --
 -- AUTO_INCREMENT for table `order`
 --
-ALTER TABLE `order`
-  MODIFY `order_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+ALTER TABLE `order` MODIFY `order_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 
 --
 -- AUTO_INCREMENT for table `product`
 --
-ALTER TABLE `product`
-  MODIFY `prod_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000096;
+ALTER TABLE `product` MODIFY `prod_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000096;
 
 --
 -- AUTO_INCREMENT for table `production_shift`
 --
-ALTER TABLE `production_shift`
-  MODIFY `shift_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038;
+ALTER TABLE `production_shift` MODIFY `shift_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038;
 
 --
 -- AUTO_INCREMENT for table `seller`
 --
-ALTER TABLE `seller`
-  MODIFY `seller_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+ALTER TABLE `seller` MODIFY `seller_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 
 --
 -- AUTO_INCREMENT for table `stock`
 --
-ALTER TABLE `stock`
-  MODIFY `stock_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000001;
+ALTER TABLE `stock` MODIFY `stock_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000001;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
-ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `users` MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 
 -- --------------------------------------------------------
