@@ -13,7 +13,7 @@ const ProductionShift = sequelize.define(
         orderId: { type: DataTypes.STRING(20), field: 'order_id' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         shiftId: { type: DataTypes.STRING(20), field: 'shift_id' },
-        prodName: { type: DataTypes.STRING(50), field: 'prod_name' },
+        productId: { type: DataTypes.STRING(50), field: 'product_id' },
         machineId: { type: DataTypes.STRING(20), field: 'machine_id' },
         shiftStartDate: { type: DataTypes.DATE, field: 'shift_start_date' },
         shiftEndDate: { type: DataTypes.DATE, field: 'shift_end_date' },
@@ -30,13 +30,15 @@ const ProductionShift = sequelize.define(
         netProduction: { type: DataTypes.INTEGER, field: 'net_production' },
         incentive: { type: DataTypes.CHAR(1) },
         less80Reason: { type: DataTypes.STRING(50), field: 'less_80_reason' },
-        createDate: { type: DataTypes.DATE, field: 'create_date' },
-        updateDate: { type: DataTypes.DATE, field: 'update_date' },
-        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
+        updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
+        createDate: { type: DataTypes.DATE, allowNull: true, field: 'create_date' },
+        updateDate: { type: DataTypes.DATE, allowNull: true, field: 'update_date' },
     },
     {
-        tableName: "prod_shift",
+        tableName: "production_shift",
         timestamps: false,
     }
 );

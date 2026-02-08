@@ -41,6 +41,8 @@ CREATE TABLE `users` (
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `created_date` datetime DEFAULT NULL,
     `updated_date` datetime DEFAULT NULL,
+    `created_by` INT DEFAULT NULL,
+    `updated_by` INT DEFAULT NULL,
     `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
     `is_active` TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (`id`)
@@ -106,6 +108,8 @@ CREATE TABLE `buyer` (
   `buyer_gstin` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -178,6 +182,8 @@ CREATE TABLE `company` (
   `mobile_no` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -213,6 +219,8 @@ CREATE TABLE `dispatch` (
   `norms_weight` decimal(10,4) DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -275,6 +283,8 @@ CREATE TABLE `employee` (
   `active_flag` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`employee_id_seq`),
@@ -343,6 +353,8 @@ CREATE TABLE `machine` (
   `active_flag` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -413,6 +425,8 @@ CREATE TABLE `order` (
   `total_price` decimal(10,2) DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -501,6 +515,8 @@ CREATE TABLE `order_quantity` (
   `qlins_rj_quantity` int DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -571,6 +587,8 @@ CREATE TABLE `product` (
   `incentive_limit` int DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -691,6 +709,8 @@ CREATE TABLE `prod_hourly` (
   `opening_count` int DEFAULT NULL,
   `closing_count` int DEFAULT NULL,
   `production` int DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -771,6 +791,8 @@ CREATE TABLE `prod_shift` (
   `less_80_reason` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -834,6 +856,8 @@ CREATE TABLE `seller` (
   `seller_email` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -899,6 +923,8 @@ CREATE TABLE `stock` (
   `weight` decimal(10,4) DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1158,6 +1184,8 @@ CREATE TABLE `invoice` (
   `buyr_gstin` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
