@@ -142,14 +142,15 @@ const orderService = {
         logger.info(`OrderService: Deleting order with ID: ${id}`);
         try {
             const order = await Order.findByPk(id);
-            const deletedRows = await Order.destroy({
-                where: { orderIdSeq: id }
-            });
-            if (deletedRows === 0) {
+            const [updatedRows] = await Order.update(
+                { isDeleted: true, isActive: false },
+                { where: { orderIdSeq: id, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
                 logger.warn(`OrderService: No order found to delete with ID: ${id}`);
                 throw new Error("Order not found");
             }
-            logger.info(`OrderService: Successfully deleted order: ${order?.orderId || 'Unknown'} (ID: ${id})`);
+            logger.info(`OrderService: Successfully soft deleted order: ${order?.orderId || 'Unknown'} (ID: ${id})`);
             return { message: "Order deleted successfully" };
         } catch (error) {
             logger.error(`OrderService: Failed to delete order with ID: ${id}`, { 

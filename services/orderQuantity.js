@@ -120,14 +120,15 @@ const orderQuantityService = {
     deleteOrderQuantity: async (orderId, companyId) => {
         logger.info(`OrderQuantityService: Deleting order quantity for orderId: ${orderId}, companyId: ${companyId}`);
         try {
-            const deletedRows = await OrderQuantity.destroy({
-                where: { orderId, companyId }
-            });
-            if (deletedRows === 0) {
+            const [updatedRows] = await OrderQuantity.update(
+                { isDeleted: true, isActive: false },
+                { where: { orderId, companyId, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
                 logger.warn(`OrderQuantityService: No order quantity found to delete`);
                 throw new Error("Order quantity not found");
             }
-            logger.info(`OrderQuantityService: Successfully deleted order quantity`);
+            logger.info(`OrderQuantityService: Successfully soft deleted order quantity`);
             return { message: "Order quantity deleted successfully" };
         } catch (error) {
             logger.error(`OrderQuantityService: Failed to delete order quantity`, { 

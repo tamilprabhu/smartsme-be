@@ -114,14 +114,15 @@ const companyService = {
         logger.info(`CompanyService: Deleting company with ID: ${id}`);
         try {
             const company = await Company.findByPk(id);
-            const deletedRows = await Company.destroy({
-                where: { companyIdSeq: id }
-            });
-            if (deletedRows === 0) {
+            const [updatedRows] = await Company.update(
+                { isDeleted: true, isActive: false },
+                { where: { companyIdSeq: id, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
                 logger.warn(`CompanyService: No company found to delete with ID: ${id}`);
                 throw new Error("Company not found");
             }
-            logger.info(`CompanyService: Successfully deleted company: ${company?.companyName || 'Unknown'} (ID: ${id})`);
+            logger.info(`CompanyService: Successfully soft deleted company: ${company?.companyName || 'Unknown'} (ID: ${id})`);
             return { message: "Company deleted successfully" };
         } catch (error) {
             logger.error(`CompanyService: Failed to delete company with ID: ${id}`, { 

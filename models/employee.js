@@ -16,6 +16,8 @@ const Employee = sequelize.define(
         activeFlag: { type: DataTypes.CHAR(1), field: 'active_flag' },
         createDate: { type: DataTypes.DATE, allowNull: false, field: 'create_date' },
         updateDate: { type: DataTypes.DATE, allowNull: false, field: 'update_date' },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "employee",

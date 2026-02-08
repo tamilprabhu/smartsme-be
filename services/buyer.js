@@ -150,17 +150,21 @@ const buyerService = {
                     companyId: companyId
                 }
             });
-            const deletedRows = await Buyer.destroy({
-                where: { 
-                    buyerIdSeq: id,
-                    companyId: companyId
+            const [updatedRows] = await Buyer.update(
+                { isDeleted: true, isActive: false },
+                {
+                    where: {
+                        buyerIdSeq: id,
+                        companyId: companyId,
+                        isDeleted: false
+                    }
                 }
-            });
-            if (deletedRows === 0) {
+            );
+            if (updatedRows === 0) {
                 logger.warn(`BuyerService: No buyer found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Buyer not found");
             }
-            logger.info(`BuyerService: Successfully deleted buyer: ${buyer?.buyerName || 'Unknown'} (ID: ${id})`);
+            logger.info(`BuyerService: Successfully soft deleted buyer: ${buyer?.buyerName || 'Unknown'} (ID: ${id})`);
             return { message: "Buyer deleted successfully" };
         } catch (error) {
             logger.error(`BuyerService: Failed to delete buyer with ID: ${id}`, { 

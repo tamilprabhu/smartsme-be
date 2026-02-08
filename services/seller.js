@@ -151,17 +151,21 @@ const sellerService = {
                     companyId: companyId
                 }
             });
-            const deletedRows = await Seller.destroy({
-                where: { 
-                    sellerIdSeq: id,
-                    companyId: companyId
+            const [updatedRows] = await Seller.update(
+                { isDeleted: true, isActive: false },
+                {
+                    where: {
+                        sellerIdSeq: id,
+                        companyId: companyId,
+                        isDeleted: false
+                    }
                 }
-            });
-            if (deletedRows === 0) {
+            );
+            if (updatedRows === 0) {
                 logger.warn(`SellerService: No seller found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Seller not found");
             }
-            logger.info(`SellerService: Successfully deleted seller: ${seller?.sellerName || 'Unknown'} (ID: ${id})`);
+            logger.info(`SellerService: Successfully soft deleted seller: ${seller?.sellerName || 'Unknown'} (ID: ${id})`);
             return { message: "Seller deleted successfully" };
         } catch (error) {
             logger.error(`SellerService: Failed to delete seller with ID: ${id}`, { 

@@ -164,14 +164,15 @@ const dispatchService = {
             }
             
             const dispatch = await Dispatch.findOne({ where: whereClause });
-            const deletedRows = await Dispatch.destroy({
-                where: whereClause
-            });
-            if (deletedRows === 0) {
+            const [updatedRows] = await Dispatch.update(
+                { isDeleted: true, isActive: false },
+                { where: { ...whereClause, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
                 logger.warn(`DispatchService: No dispatch found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Dispatch not found");
             }
-            logger.info(`DispatchService: Successfully deleted dispatch: ${dispatch?.dispatchId || 'Unknown'} (ID: ${id}) for company: ${companyId} by user: ${userId}`);
+            logger.info(`DispatchService: Successfully soft deleted dispatch: ${dispatch?.dispatchId || 'Unknown'} (ID: ${id}) for company: ${companyId} by user: ${userId}`);
             return { message: "Dispatch deleted successfully" };
         } catch (error) {
             logger.error(`DispatchService: Failed to delete dispatch with ID: ${id}`, { 

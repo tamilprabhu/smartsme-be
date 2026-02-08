@@ -156,14 +156,15 @@ const invoiceService = {
             }
             
             const invoice = await Invoice.findOne({ where: whereClause });
-            const deletedRows = await Invoice.destroy({
-                where: whereClause
-            });
-            if (deletedRows === 0) {
+            const [updatedRows] = await Invoice.update(
+                { isDeleted: true, isActive: false },
+                { where: { ...whereClause, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
                 logger.warn(`InvoiceService: No invoice found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Invoice not found");
             }
-            logger.info(`InvoiceService: Successfully deleted invoice: ${invoice?.invoiceId || 'Unknown'} (ID: ${id}) for company: ${companyId}`);
+            logger.info(`InvoiceService: Successfully soft deleted invoice: ${invoice?.invoiceId || 'Unknown'} (ID: ${id}) for company: ${companyId}`);
             return { message: "Invoice deleted successfully" };
         } catch (error) {
             logger.error(`InvoiceService: Failed to delete invoice with ID: ${id}`, { 

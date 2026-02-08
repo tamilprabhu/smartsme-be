@@ -124,8 +124,15 @@ const userService = {
                 return false;
             }
             
-            await User.destroy({ where: { id } });
-            logger.info(`UserService: Successfully deleted user: ${user.username} (ID: ${id})`);
+            const [updatedRows] = await User.update(
+                { isDeleted: true, isActive: false },
+                { where: { id, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
+                logger.warn(`UserService: User already deleted with ID: ${id}`);
+                return false;
+            }
+            logger.info(`UserService: Successfully soft deleted user: ${user.username} (ID: ${id})`);
             return true;
         } catch (error) {
             logger.error(`UserService: Failed to delete user with ID: ${id}`, { 

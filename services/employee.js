@@ -148,8 +148,15 @@ const employeeService = {
                 throw new Error("Employee not found");
             }
             
-            const deletedRows = await Employee.destroy({ where: whereClause });
-            logger.info(`EmployeeService: Successfully deleted employee (ID: ${id}) for company: ${companyId}`);
+            const [updatedRows] = await Employee.update(
+                { isDeleted: true, isActive: false },
+                { where: { ...whereClause, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
+                logger.warn(`EmployeeService: Employee already deleted with ID: ${id} for company: ${companyId}`);
+                throw new Error("Employee not found");
+            }
+            logger.info(`EmployeeService: Successfully soft deleted employee (ID: ${id}) for company: ${companyId}`);
             return { message: "Employee deleted successfully" };
         } catch (error) {
             logger.error(`EmployeeService: Failed to delete employee with ID: ${id}`, { 

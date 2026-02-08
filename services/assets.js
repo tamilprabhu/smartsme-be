@@ -167,16 +167,19 @@ const assetsService = {
     },
 
     hardDeleteAsset: async (id) => {
-        logger.info("AssetsService: Hard delete asset", { assetId: id });
+        logger.info("AssetsService: Soft delete asset (legacy hard delete)", { assetId: id });
         try {
             const asset = await Asset.findOne({ where: { id } });
             if (!asset) {
                 return null;
             }
-            await Asset.destroy({ where: { id } });
+            await Asset.update(
+                { isDeleted: true, isActive: false },
+                { where: { id, isDeleted: false } }
+            );
             return asset;
         } catch (error) {
-            logger.error("AssetsService: Failed to hard delete asset", {
+            logger.error("AssetsService: Failed to soft delete asset (legacy hard delete)", {
                 assetId: id,
                 error: error.message,
                 stack: error.stack,

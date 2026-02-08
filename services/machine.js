@@ -162,12 +162,15 @@ const machineService = {
             }
             
             const machine = await Machine.findOne({ where: whereClause });
-            const deletedRows = await Machine.destroy({ where: whereClause });
-            if (deletedRows === 0) {
+            const [updatedRows] = await Machine.update(
+                { isDeleted: true, isActive: false },
+                { where: { ...whereClause, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
                 logger.warn(`MachineService: No machine found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Machine not found");
             }
-            logger.info(`MachineService: Successfully deleted machine: ${machine?.machineName || 'Unknown'} (ID: ${id})`);
+            logger.info(`MachineService: Successfully soft deleted machine: ${machine?.machineName || 'Unknown'} (ID: ${id})`);
             return { message: "Machine deleted successfully" };
         } catch (error) {
             logger.error(`MachineService: Failed to delete machine with ID: ${id}`, { 

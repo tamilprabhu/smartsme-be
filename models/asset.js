@@ -21,9 +21,9 @@ const Asset = sequelize.define(
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         createdBy: { type: DataTypes.INTEGER, field: 'created_by' },
         updatedBy: { type: DataTypes.INTEGER, field: 'updated_by' },
-        isDeleted: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false, field: 'is_deleted' },
-        isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true, field: 'is_active' },
         metadata: { type: DataTypes.JSON, field: 'metadata' },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "assets",

@@ -19,6 +19,8 @@ const User = sequelize.define(
         password: { type: DataTypes.STRING(255) },
         createdDate: { type: DataTypes.DATE, field: 'created_date' },
         updatedDate: { type: DataTypes.DATE, field: 'updated_date' },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "users",

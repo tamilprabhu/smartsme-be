@@ -15,7 +15,9 @@ const ProdHourly = sequelize.define(
         shiftEndTime: { type: DataTypes.DATE, field: 'shift_end_time' },
         openingCount: { type: DataTypes.INTEGER, field: 'opening_count' },
         closingCount: { type: DataTypes.INTEGER, field: 'closing_count' },
-        production: { type: DataTypes.INTEGER }
+        production: { type: DataTypes.INTEGER },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "prod_hourly",

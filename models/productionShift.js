@@ -32,6 +32,8 @@ const ProductionShift = sequelize.define(
         less80Reason: { type: DataTypes.STRING(50), field: 'less_80_reason' },
         createDate: { type: DataTypes.DATE, field: 'create_date' },
         updateDate: { type: DataTypes.DATE, field: 'update_date' },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "prod_shift",

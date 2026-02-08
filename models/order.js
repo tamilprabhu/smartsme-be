@@ -24,6 +24,8 @@ const Order = sequelize.define(
         totalPrice: { type: DataTypes.DECIMAL(10, 2), field: 'total_price' },
         createDate: { type: DataTypes.DATE, field: 'create_date' },
         updateDate: { type: DataTypes.DATE, field: 'update_date' },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "order",

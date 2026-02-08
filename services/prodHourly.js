@@ -120,14 +120,15 @@ const prodHourlyService = {
     deleteProdHourly: async (orderId, companyId, shiftId, shiftStartTime, userId) => {
         logger.info(`ProdHourlyService: Deleting production hourly for company ${companyId}, user: ${userId}`);
         try {
-            const deletedRows = await ProdHourly.destroy({
-                where: { orderId, companyId, shiftId, shiftStartTime }
-            });
-            if (deletedRows === 0) {
+            const [updatedRows] = await ProdHourly.update(
+                { isDeleted: true, isActive: false },
+                { where: { orderId, companyId, shiftId, shiftStartTime, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
                 logger.warn(`ProdHourlyService: No production hourly found to delete for company ${companyId}`);
                 throw new Error("Production hourly not found");
             }
-            logger.info(`ProdHourlyService: Successfully deleted production hourly for company ${companyId}`);
+            logger.info(`ProdHourlyService: Successfully soft deleted production hourly for company ${companyId}`);
             return { message: "Production hourly deleted successfully" };
         } catch (error) {
             logger.error(`ProdHourlyService: Failed to delete production hourly`, { 

@@ -13,7 +13,6 @@ COPY routes ./routes
 COPY services ./services
 COPY models ./models
 COPY middlewares ./middlewares
-COPY utils ./utils
 COPY constants ./constants
 COPY config ./config
 COPY db ./db

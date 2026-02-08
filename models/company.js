@@ -26,6 +26,8 @@ const Company = sequelize.define(
         mobileNo: { type: DataTypes.STRING(10), field: 'mobile_no' },
         createDate: { type: DataTypes.DATE, allowNull: false, field: 'create_date' },
         updateDate: { type: DataTypes.DATE, allowNull: false, field: 'update_date' },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "company",

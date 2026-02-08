@@ -11,6 +11,8 @@ const Role = sequelize.define(
         },
         name: { type: DataTypes.STRING(100), unique: true },
         description: { type: DataTypes.TEXT },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "roles",

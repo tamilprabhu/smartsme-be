@@ -148,12 +148,15 @@ const stockService = {
             }
             
             const stock = await Stock.findOne({ where: whereClause });
-            const deletedRows = await Stock.destroy({ where: whereClause });
-            if (deletedRows === 0) {
+            const [updatedRows] = await Stock.update(
+                { isDeleted: true, isActive: false },
+                { where: { ...whereClause, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
                 logger.warn(`StockService: No stock found to delete with ID: ${id} for company: ${companyId}`);
                 throw new Error("Stock not found");
             }
-            logger.info(`StockService: Successfully deleted stock: ${stock?.stockId || 'Unknown'} (ID: ${id}) for company: ${companyId}`);
+            logger.info(`StockService: Successfully soft deleted stock: ${stock?.stockId || 'Unknown'} (ID: ${id}) for company: ${companyId}`);
             return { message: "Stock deleted successfully" };
         } catch (error) {
             logger.error(`StockService: Failed to delete stock with ID: ${id} for company: ${companyId}`, { 

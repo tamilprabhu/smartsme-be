@@ -19,6 +19,8 @@ const Buyer = sequelize.define(
         buyerGstin: { type: DataTypes.STRING(20), field: 'buyer_gstin' },
         createDate: { type: DataTypes.DATE, field: 'create_date' },
         updateDate: { type: DataTypes.DATE, field: 'update_date' },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "buyer",

@@ -153,14 +153,15 @@ const productService = {
         logger.info(`ProductService: Deleting product with ID: ${id}`);
         try {
             const product = await Product.findByPk(id);
-            const deletedRows = await Product.destroy({
-                where: { prodIdSeq: id }
-            });
-            if (deletedRows === 0) {
+            const [updatedRows] = await Product.update(
+                { isDeleted: true, isActive: false },
+                { where: { prodIdSeq: id, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
                 logger.warn(`ProductService: No product found to delete with ID: ${id}`);
                 throw new Error("Product not found");
             }
-            logger.info(`ProductService: Successfully deleted product: ${product?.prodName || 'Unknown'} (ID: ${id})`);
+            logger.info(`ProductService: Successfully soft deleted product: ${product?.prodName || 'Unknown'} (ID: ${id})`);
             return { message: "Product deleted successfully" };
         } catch (error) {
             logger.error(`ProductService: Failed to delete product with ID: ${id}`, { 

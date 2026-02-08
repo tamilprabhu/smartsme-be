@@ -18,6 +18,8 @@ const Seller = sequelize.define(
         sellerEmail: { type: DataTypes.STRING(30), field: 'seller_email' },
         createDate: { type: DataTypes.DATE, field: 'create_date' },
         updateDate: { type: DataTypes.DATE, field: 'update_date' },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "seller",

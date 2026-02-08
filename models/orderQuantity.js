@@ -40,7 +40,9 @@ const OrderQuantity = sequelize.define(
         qlinsAcQuantity: { type: DataTypes.INTEGER, field: 'qlins_ac_quantity' },
         qlinsRjQuantity: { type: DataTypes.INTEGER, field: 'qlins_rj_quantity' },
         createDate: { type: DataTypes.DATE, allowNull: false, field: 'create_date' },
-        updateDate: { type: DataTypes.DATE, allowNull: false, field: 'update_date' }
+        updateDate: { type: DataTypes.DATE, allowNull: false, field: 'update_date' },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "order_quantity",

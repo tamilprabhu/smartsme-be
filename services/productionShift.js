@@ -140,12 +140,15 @@ const productionShiftService = {
             }
             
             const shift = await ProductionShift.findOne({ where: whereClause });
-            const deletedRows = await ProductionShift.destroy({ where: whereClause });
-            if (deletedRows === 0) {
+            const [updatedRows] = await ProductionShift.update(
+                { isDeleted: true, isActive: false },
+                { where: { ...whereClause, isDeleted: false } }
+            );
+            if (updatedRows === 0) {
                 logger.warn(`ProductionShiftService: No shift found to delete with ID: ${id}, companyId: ${companyId}`);
                 throw new Error("Shift not found");
             }
-            logger.info(`ProductionShiftService: Successfully deleted shift: ${shift?.shiftId || 'Unknown'} (ID: ${id})`);
+            logger.info(`ProductionShiftService: Successfully soft deleted shift: ${shift?.shiftId || 'Unknown'} (ID: ${id})`);
             return { message: "Production shift deleted successfully" };
         } catch (error) {
             logger.error(`ProductionShiftService: Failed to delete shift with ID: ${id}`, { 

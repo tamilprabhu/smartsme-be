@@ -24,6 +24,8 @@ const Product = sequelize.define(
         incentiveLimit: { type: DataTypes.INTEGER, field: 'incentive_limit' },
         createDate: { type: DataTypes.DATE, field: 'create_date' },
         updateDate: { type: DataTypes.DATE, field: 'update_date' },
+        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
     },
     {
         tableName: "product",
