@@ -22,7 +22,7 @@ const ProdHourly = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "prod_hourly",
+        tableName: "production_entry",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",

@@ -57,7 +57,7 @@ CREATE TABLE permissions (
   FOREIGN KEY (action_id) REFERENCES actions(id)
 );
 
-CREATE TABLE role_permissions (
+CREATE TABLE map_role_permission (
   role_id INT NOT NULL,
   permission_id INT NOT NULL,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
@@ -71,7 +71,7 @@ CREATE TABLE role_permissions (
   FOREIGN KEY (permission_id) REFERENCES permissions(id)
 );
 
-CREATE TABLE role_actions (
+CREATE TABLE map_role_action (
   role_id INT NOT NULL,
   action_id INT NOT NULL,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
@@ -85,7 +85,7 @@ CREATE TABLE role_actions (
   FOREIGN KEY (action_id) REFERENCES actions(id)
 );
 
-CREATE TABLE user_roles (
+CREATE TABLE map_user_role (
   `user_id` INT NOT NULL,
   `role_id` INT NOT NULL,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
@@ -282,7 +282,7 @@ CREATE TABLE `product` (
   PRIMARY KEY (`prod_id_seq`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `prod_hourly` (
+CREATE TABLE `production_entry` (
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `shift_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,

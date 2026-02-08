@@ -12,7 +12,7 @@ const RoleAction = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "role_actions",
+        tableName: "map_role_action",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",

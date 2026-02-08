@@ -44,30 +44,30 @@ INSERT INTO permissions (id, resource, action_id, name, description, is_deleted,
 (18, 'COMPANY', 6, 'COMPANY_EXPORT', 'Export company data', 0, 1);
 
 -- SHIFT_INCHARGE (Role ID: 4) - Production, Secondary Process
-INSERT INTO role_permissions (role_id, permission_id, is_deleted, is_active) VALUES
+INSERT INTO map_role_permission (role_id, permission_id, is_deleted, is_active) VALUES
 -- Production permissions
 (4, 1, 0, 1), (4, 2, 0, 1), (4, 3, 0, 1), (4, 4, 0, 1), (4, 5, 0, 1), (4, 6, 0, 1),
 -- Secondary Process permissions
 (4, 7, 0, 1), (4, 8, 0, 1), (4, 9, 0, 1), (4, 10, 0, 1), (4, 11, 0, 1), (4, 12, 0, 1);
 
 -- OWNER (Role ID: 1) - All permissions
-INSERT INTO role_permissions (role_id, permission_id, is_deleted, is_active) VALUES
+INSERT INTO map_role_permission (role_id, permission_id, is_deleted, is_active) VALUES
 (1, 1, 0, 1), (1, 2, 0, 1), (1, 3, 0, 1), (1, 4, 0, 1), (1, 5, 0, 1), (1, 6, 0, 1),
 (1, 7, 0, 1), (1, 8, 0, 1), (1, 9, 0, 1), (1, 10, 0, 1), (1, 11, 0, 1), (1, 12, 0, 1),
 (1, 13, 0, 1), (1, 14, 0, 1), (1, 15, 0, 1), (1, 16, 0, 1), (1, 17, 0, 1), (1, 18, 0, 1);
 
 -- ADMIN (Role ID: 2) - All permissions
-INSERT INTO role_permissions (role_id, permission_id, is_deleted, is_active) VALUES
+INSERT INTO map_role_permission (role_id, permission_id, is_deleted, is_active) VALUES
 (2, 1, 0, 1), (2, 2, 0, 1), (2, 3, 0, 1), (2, 4, 0, 1), (2, 5, 0, 1), (2, 6, 0, 1),
 (2, 7, 0, 1), (2, 8, 0, 1), (2, 9, 0, 1), (2, 10, 0, 1), (2, 11, 0, 1), (2, 12, 0, 1),
 (2, 13, 0, 1), (2, 14, 0, 1), (2, 15, 0, 1), (2, 16, 0, 1), (2, 17, 0, 1), (2, 18, 0, 1);
 
 -- PLANT_HEAD (Role ID: 3) - All except delete
-INSERT INTO role_permissions (role_id, permission_id, is_deleted, is_active) VALUES
+INSERT INTO map_role_permission (role_id, permission_id, is_deleted, is_active) VALUES
 (3, 1, 0, 1), (3, 2, 0, 1), (3, 3, 0, 1), (3, 5, 0, 1), (3, 6, 0, 1),
 (3, 7, 0, 1), (3, 8, 0, 1), (3, 9, 0, 1), (3, 11, 0, 1), (3, 12, 0, 1),
 (3, 13, 0, 1), (3, 14, 0, 1), (3, 15, 0, 1), (3, 17, 0, 1), (3, 18, 0, 1);
 
 -- SHIFT_INCHARGE - Create, Read, Update, Approve
-INSERT INTO role_actions (role_id, action_id, is_deleted, is_active) VALUES
+INSERT INTO map_role_action (role_id, action_id, is_deleted, is_active) VALUES
 (4, 1, 0, 1), (4, 2, 0, 1), (4, 3, 0, 1), (4, 5, 0, 1);

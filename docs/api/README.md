@@ -150,9 +150,9 @@ curl -X GET http://localhost:8080/permissions/me \
 - `roles` - System roles (OWNER, ADMIN, etc.)
 - `actions` - Available actions (CREATE, READ, UPDATE, etc.)
 - `permissions` - Resource-specific permissions
-- `user_roles` - User-to-role assignments
-- `role_permissions` - Role-to-permission mappings
-- `role_actions` - Role-to-action mappings
+- `map_user_role` - User-to-role assignments
+- `map_role_permission` - Role-to-permission mappings
+- `map_role_action` - Role-to-action mappings
 
 ### Key Relationships
 - Users can have multiple roles

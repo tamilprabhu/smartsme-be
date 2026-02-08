@@ -493,17 +493,17 @@ INSERT INTO `product` (`prod_id_seq`, `prod_id`, `company_id`, `prod_name`, `raw
 -- --------------------------------------------------------
 
 --
--- Table structure for table `prod_hourly`
+-- Table structure for table `production_entry`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `prod_hourly`
+-- Table structure for table `production_entry`
 --
 
 -- Production Hourly seeders
-INSERT INTO `prod_hourly` (`order_id`, `company_id`, `shift_id`, `shift_start_time`, `shift_end_time`, `opening_count`, `closing_count`, `production`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `production_entry` (`order_id`, `company_id`, `shift_id`, `shift_start_time`, `shift_end_time`, `opening_count`, `closing_count`, `production`, `is_deleted`, `is_active`) VALUES
 ('FINO_OR_001', 'FINO001', 'FINO_SH_001', '2025-02-01 06:00:00', '2025-02-01 07:00:00', 0, 50, 50, 0, 1),
 ('FINO_OR_001', 'FINO001', 'FINO_SH_001', '2025-02-01 07:00:00', '2025-02-01 08:00:00', 50, 100, 50, 0, 1),
 ('FINO_OR_001', 'FINO001', 'FINO_SH_001', '2025-02-01 08:00:00', '2025-02-01 09:00:00', 100, 150, 50, 0, 1),
@@ -756,61 +756,61 @@ INSERT INTO `assets` (`module`, `sub_module`, `identifier`, `original_name`, `st
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 -- Tamil (User ID: 1) - OWNER
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1001, 1, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1001, 1, 0, 1);
 
 -- Nandha (User ID: 2) - OWNER
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1002, 1, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1002, 1, 0, 1);
 
 -- Alice Johnson (User ID: 3) - ADMIN
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1003, 2, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1003, 2, 0, 1);
 
 -- Bob Smith (User ID: 4) - PLANT_HEAD
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1004, 3, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1004, 3, 0, 1);
 
 -- Charlie Brown (User ID: 5) - SHIFT_INCHARGE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1005, 4, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1005, 4, 0, 1);
 
 -- Diana Prince (User ID: 6) - STORES_INCHARGE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1006, 5, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1006, 5, 0, 1);
 
 -- Ethan Hunt (User ID: 7) - PRODUCTION_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1007, 6, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1007, 6, 0, 1);
 
 -- Fiona Gallagher (User ID: 8) - PRODUCTION_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1008, 6, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1008, 6, 0, 1);
 
 -- George Miller (User ID: 9) - SECONDARY_PROCESS_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1009, 7, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1009, 7, 0, 1);
 
 -- Hannah Lee (User ID: 10) - SECONDARY_PROCESS_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1010, 7, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1010, 7, 0, 1);
 
 -- Ian Curtis (User ID: 11) - ACCOUNTANT
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1011, 8, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1011, 8, 0, 1);
 
 -- Jasmine Patel (User ID: 12) - PRODUCTION_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1012, 6, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1012, 6, 0, 1);
 
 -- Kevin Wu (User ID: 13) - STORES_INCHARGE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1013, 5, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1013, 5, 0, 1);
 
 -- Rajesh Kumar (User ID: 14) - ADMIN
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1014, 2, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1014, 2, 0, 1);
 
 -- Priya Menon (User ID: 15) - PLANT_HEAD
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1015, 3, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1015, 3, 0, 1);
 
 -- Amit Sharma (User ID: 16) - SHIFT_INCHARGE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1016, 4, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1016, 4, 0, 1);
 
 -- Sunita Singh (User ID: 17) - PRODUCTION_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1017, 6, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1017, 6, 0, 1);
 
 -- Vikram Reddy (User ID: 18) - ACCOUNTANT
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1018, 8, 0, 1);
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES (1018, 8, 0, 1);
 
 -- Additional user roles for remaining users (19-37)
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES
+INSERT INTO map_user_role (user_id, role_id, is_deleted, is_active) VALUES
 (1019, 3, 0, 1), -- Sanjay Dutt - PLANT_HEAD
 (1020, 3, 0, 1), -- Tanvi Mehta - PLANT_HEAD
 (1021, 4, 0, 1), -- Uday Kiran - SHIFT_INCHARGE
