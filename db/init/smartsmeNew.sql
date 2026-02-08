@@ -918,4 +918,92 @@ ALTER TABLE `invoice`
 -- AUTO_INCREMENT for table `invoice`
 --
 ALTER TABLE `invoice`
-  MODIFY `invoice_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038
+  MODIFY `invoice_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038;
+
+
+-- Tamil (User ID: 1) - OWNER
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1, 1, 0, 1);
+
+-- Nandha (User ID: 2) - OWNER
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (2, 1, 0, 1);
+
+-- Alice Johnson (User ID: 3) - ADMIN
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (3, 2, 0, 1);
+
+-- Bob Smith (User ID: 4) - PLANT_HEAD
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (4, 3, 0, 1);
+
+-- Charlie Brown (User ID: 5) - SHIFT_INCHARGE
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (5, 4, 0, 1);
+
+-- Diana Prince (User ID: 6) - STORES_INCHARGE
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (6, 5, 0, 1);
+
+-- Ethan Hunt (User ID: 7) - PRODUCTION_EMPLOYEE
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (7, 6, 0, 1);
+
+-- Fiona Gallagher (User ID: 8) - PRODUCTION_EMPLOYEE
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (8, 6, 0, 1);
+
+-- George Miller (User ID: 9) - SECONDARY_PROCESS_EMPLOYEE
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (9, 7, 0, 1);
+
+-- Hannah Lee (User ID: 10) - SECONDARY_PROCESS_EMPLOYEE
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (10, 7, 0, 1);
+
+-- Ian Curtis (User ID: 11) - ACCOUNTANT
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (11, 8, 0, 1);
+
+-- Jasmine Patel (User ID: 12) - PRODUCTION_EMPLOYEE
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (12, 6, 0, 1);
+
+-- Kevin Wu (User ID: 13) - STORES_INCHARGE
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (13, 5, 0, 1);
+
+-- Rajesh Kumar (User ID: 14) - ADMIN
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (14, 2, 0, 1);
+
+-- Priya Menon (User ID: 15) - PLANT_HEAD
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (15, 3, 0, 1);
+
+-- Amit Sharma (User ID: 16) - SHIFT_INCHARGE
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (16, 4, 0, 1);
+
+-- Sunita Singh (User ID: 17) - PRODUCTION_EMPLOYEE
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (17, 6, 0, 1);
+
+-- Vikram Reddy (User ID: 18) - ACCOUNTANT
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (18, 8, 0, 1);
+
+-- Additional user roles for remaining users (19-37)
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES
+(19, 3, 0, 1), -- Sanjay Dutt - PLANT_HEAD
+(20, 3, 0, 1), -- Tanvi Mehta - PLANT_HEAD
+(21, 4, 0, 1), -- Uday Kiran - SHIFT_INCHARGE
+(22, 4, 0, 1), -- Varun Tej - SHIFT_INCHARGE
+(23, 4, 0, 1), -- Wajid Khan - SHIFT_INCHARGE
+(24, 4, 0, 1), -- Xavi Fernandez - SHIFT_INCHARGE
+(25, 5, 0, 1), -- Yamini Reddy - STORES_INCHARGE
+(26, 5, 0, 1), -- Zara Sheikh - STORES_INCHARGE
+(27, 5, 0, 1), -- Arjun Das - STORES_INCHARGE
+(28, 6, 0, 1), -- Bhavana Menon - PRODUCTION_EMPLOYEE
+(29, 6, 0, 1), -- Chetan Bhagat - PRODUCTION_EMPLOYEE
+(30, 6, 0, 1), -- Divya Bharti - PRODUCTION_EMPLOYEE
+(31, 6, 0, 1), -- Eshwar Prasad - PRODUCTION_EMPLOYEE
+(32, 6, 0, 1), -- Falguni Pathak - PRODUCTION_EMPLOYEE
+(33, 6, 0, 1), -- Gautam Adani - PRODUCTION_EMPLOYEE
+(34, 7, 0, 1), -- Hema Malini - SECONDARY_PROCESS_EMPLOYEE
+(35, 7, 0, 1), -- Ishaan Khatter - SECONDARY_PROCESS_EMPLOYEE
+(36, 7, 0, 1), -- Janhvi Kapoor - SECONDARY_PROCESS_EMPLOYEE
+(37, 7, 0, 1); -- Kartik Aaryan - SECONDARY_PROCESS_EMPLOYEE
+
+-- Role Distribution Summary:
+-- OWNER: 2 users (Tamil - FINO001, Nandha - PRES001)
+-- ADMIN: 2 users
+-- PLANT_HEAD: 4 users
+-- SHIFT_INCHARGE: 6 users
+-- STORES_INCHARGE: 5 users
+-- PRODUCTION_EMPLOYEE: 10 users
+-- SECONDARY_PROCESS_EMPLOYEE: 6 users
+-- ACCOUNTANT: 2 users
+-- Total: 37 users
