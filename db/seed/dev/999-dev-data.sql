@@ -694,134 +694,6 @@ INSERT INTO `stock` (`stock_id_seq`, `company_id`, `seller_id`, `stock_id`, `sto
 (1000036, 'PRES001', 'PRES_SL_018', 'PRES_ST_018', '2025-02-21 00:00:00', 'Aluminum Alloy A712', 48, 2400.0000, NOW(), NOW(), 0, 1),
 (1000037, 'PRES001', 'PRES_SL_019', 'PRES_ST_019', '2025-02-23 00:00:00', 'Aluminum Alloy ADC-11', 42, 2100.0000, NOW(), NOW(), 0, 1);
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `buyer`
---
-ALTER TABLE `buyer` ADD PRIMARY KEY (`buyer_id_seq`);
-
---
--- Indexes for table `company`
---
-ALTER TABLE `company` ADD PRIMARY KEY (`company_id_seq`);
-
---
--- Indexes for table `dispatch`
---
-ALTER TABLE `dispatch` ADD PRIMARY KEY (`dispatch_id_seq`);
-
---
--- Indexes for table `employee`
---
-ALTER TABLE `employee` MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000017;
-
---
--- Indexes for table `machine`
---
-ALTER TABLE `machine` ADD PRIMARY KEY (`machine_id_seq`);
-
---
--- Indexes for table `order`
---
-ALTER TABLE `order` ADD PRIMARY KEY (`order_id_seq`);
-
---
--- Indexes for table `product`
---
-ALTER TABLE `product` ADD PRIMARY KEY (`prod_id_seq`);
-
---
--- Indexes for table `production_shift`
---
-ALTER TABLE `production_shift` ADD PRIMARY KEY (`shift_id_seq`);
-
---
--- Indexes for table `seller`
---
-ALTER TABLE `seller` ADD PRIMARY KEY (`seller_id_seq`);
-
---
--- Indexes for table `stock`
---
-ALTER TABLE `stock` ADD PRIMARY KEY (`stock_id_seq`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users` ADD KEY `id` (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `buyer`
---
-ALTER TABLE `buyer` MODIFY `buyer_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-
---
--- AUTO_INCREMENT for table `company`
---
-ALTER TABLE `company` MODIFY `company_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100001;
-
---
--- AUTO_INCREMENT for table `dispatch`
---
-ALTER TABLE `dispatch` MODIFY `dispatch_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000010;
-
---
--- AUTO_INCREMENT for table `employee`
---
-ALTER TABLE `employee` MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000002;
-
---
--- AUTO_INCREMENT for table `machine`
---
-ALTER TABLE `machine` MODIFY `machine_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-
---
--- AUTO_INCREMENT for table `order`
---
-ALTER TABLE `order` MODIFY `order_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-
---
--- AUTO_INCREMENT for table `product`
---
-ALTER TABLE `product` MODIFY `prod_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000096;
-
---
--- AUTO_INCREMENT for table `production_shift`
---
-ALTER TABLE `production_shift` MODIFY `shift_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038;
-
---
--- AUTO_INCREMENT for table `seller`
---
-ALTER TABLE `seller` MODIFY `seller_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-
---
--- AUTO_INCREMENT for table `stock`
---
-ALTER TABLE `stock` MODIFY `stock_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000001;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users` MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- Indexes for table `invoice`
---
-ALTER TABLE `invoice` ADD PRIMARY KEY (`invoice_seq`);
-
---
--- AUTO_INCREMENT for table `invoice`
---
-ALTER TABLE `invoice` MODIFY `invoice_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038;
-
 -- --------------------------------------------------------
 --
 -- Table structure for table `assets`
@@ -977,5 +849,133 @@ INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES
 -- SECONDARY_PROCESS_EMPLOYEE: 6 users
 -- ACCOUNTANT: 2 users
 -- Total: 37 users
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users` ADD KEY `id` (`id`);
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users` MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Indexes for table `buyer`
+--
+ALTER TABLE `buyer` ADD PRIMARY KEY (`buyer_id_seq`);
+
+--
+-- AUTO_INCREMENT for table `buyer`
+--
+ALTER TABLE `buyer` MODIFY `buyer_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+
+--
+-- Indexes for table `company`
+--
+ALTER TABLE `company` ADD PRIMARY KEY (`company_id_seq`);
+
+--
+-- AUTO_INCREMENT for table `company`
+--
+ALTER TABLE `company` MODIFY `company_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100001;
+
+--
+-- Indexes for table `dispatch`
+--
+ALTER TABLE `dispatch` ADD PRIMARY KEY (`dispatch_id_seq`);
+
+--
+-- AUTO_INCREMENT for table `dispatch`
+--
+ALTER TABLE `dispatch` MODIFY `dispatch_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000010;
+
+--
+-- Indexes for table `employee`
+--
+ALTER TABLE `employee` MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000017;
+
+--
+-- AUTO_INCREMENT for table `employee`
+--
+ALTER TABLE `employee` MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000002;
+
+--
+-- Indexes for table `machine`
+--
+ALTER TABLE `machine` ADD PRIMARY KEY (`machine_id_seq`);
+
+--
+-- AUTO_INCREMENT for table `machine`
+--
+ALTER TABLE `machine` MODIFY `machine_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+
+--
+-- Indexes for table `order`
+--
+ALTER TABLE `order` ADD PRIMARY KEY (`order_id_seq`);
+
+--
+-- AUTO_INCREMENT for table `order`
+--
+ALTER TABLE `order` MODIFY `order_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+
+--
+-- Indexes for table `product`
+--
+ALTER TABLE `product` ADD PRIMARY KEY (`prod_id_seq`);
+
+--
+-- AUTO_INCREMENT for table `product`
+--
+ALTER TABLE `product` MODIFY `prod_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000096;
+
+--
+-- Indexes for table `production_shift`
+--
+ALTER TABLE `production_shift` ADD PRIMARY KEY (`shift_id_seq`);
+
+--
+-- AUTO_INCREMENT for table `production_shift`
+--
+ALTER TABLE `production_shift` MODIFY `shift_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038;
+
+--
+-- Indexes for table `seller`
+--
+ALTER TABLE `seller` ADD PRIMARY KEY (`seller_id_seq`);
+
+--
+-- AUTO_INCREMENT for table `seller`
+--
+ALTER TABLE `seller` MODIFY `seller_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+
+--
+-- Indexes for table `stock`
+--
+ALTER TABLE `stock` ADD PRIMARY KEY (`stock_id_seq`);
+
+--
+-- AUTO_INCREMENT for table `stock`
+--
+ALTER TABLE `stock` MODIFY `stock_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000001;
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- Indexes for table `invoice`
+--
+ALTER TABLE `invoice` ADD PRIMARY KEY (`invoice_seq`);
+
+--
+-- AUTO_INCREMENT for table `invoice`
+--
+ALTER TABLE `invoice` MODIFY `invoice_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038;
 
 COMMIT;
