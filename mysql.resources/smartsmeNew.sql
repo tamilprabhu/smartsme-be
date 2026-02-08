@@ -764,10 +764,10 @@ INSERT INTO `prod_hourly` (`order_id`, `company_id`, `shift_id`, `shift_start_ti
 -- --------------------------------------------------------
 
 --
--- Table structure for table `prod_shift`
+-- Table structure for table `production_shift`
 --
 
-CREATE TABLE `prod_shift` (
+CREATE TABLE `production_shift` (
   `shift_id_seq` int NOT NULL,
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -798,15 +798,15 @@ CREATE TABLE `prod_shift` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `prod_shift`
+-- Dumping data for table `production_shift`
 --
 
-INSERT INTO `prod_shift` (`shift_id_seq`, `order_id`, `company_id`, `shift_id`, `prod_name`, `machine_id`, `shift_start_date`, `shift_end_date`, `entry_type`, `shift_type`, `operator1`, `operator2`, `operator3`, `supervisor`, `opening_count`, `closing_count`, `production`, `rejection`, `net_production`, `incentive`, `less_80_reason`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `production_shift` (`shift_id_seq`, `order_id`, `company_id`, `shift_id`, `prod_name`, `machine_id`, `shift_start_date`, `shift_end_date`, `entry_type`, `shift_type`, `operator1`, `operator2`, `operator3`, `supervisor`, `opening_count`, `closing_count`, `production`, `rejection`, `net_production`, `incentive`, `less_80_reason`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (10000001, 'FINO_OR_001', 'FINO001', 'FINO_SH_001', 'PVC Pipe 4 inch', 'FINO_DC_001', '2025-02-01 06:00:00', '2025-02-01 14:00:00', 'shift', '1', '1000005', '1000006', NULL, '1000002', 0, 400, 400, 20, 380, 'Y', '', NOW(), NOW(), 0, 1),
 (10000002, 'FINO_OR_001', 'FINO001', 'FINO_SH_002', 'PVC Pipe 4 inch', 'FINO_DC_001', '2025-02-01 14:00:00', '2025-02-01 22:00:00', 'shift', '2', '1000007', '1000008', NULL, '1000003', 400, 750, 350, 15, 335, 'Y', '', NOW(), NOW(), 0, 1),
 (10000003, 'PRES_OR_001', 'PRES001', 'PRES_SH_0NULL', 'Pressure Cooker Base', 'PRES_DC_001', '2025-02-03 06:00:00', '2025-02-03 14:00:00', 'shift', '1', '1000014', '1000015', NULL, '1000013', 0, 80, 80, 5, 75, 'Y', '', NOW(), NOW(), 0, 1),
 (10000004, 'PRES_OR_002', 'PRES001', 'PRES_SH_0NULL', 'Cooker Handle', 'PRES_DC_001', '2025-01-28 06:00:00', '2025-01-28 14:00:00', 'shift', '1', '1000014', '1000016', NULL, '1000013', 0, 400, 400, 25, 375, 'Y', '', NOW(), NOW(), 0, 1);
-INSERT INTO `prod_shift` (`shift_id_seq`, `order_id`, `company_id`, `shift_id`, `prod_name`, `machine_id`, `shift_start_date`, `shift_end_date`, `entry_type`, `shift_type`, `operator1`, `operator2`, `operator3`, `supervisor`, `opening_count`, `closing_count`, `production`, `rejection`, `net_production`, `incentive`, `less_80_reason`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `production_shift` (`shift_id_seq`, `order_id`, `company_id`, `shift_id`, `prod_name`, `machine_id`, `shift_start_date`, `shift_end_date`, `entry_type`, `shift_type`, `operator1`, `operator2`, `operator3`, `supervisor`, `opening_count`, `closing_count`, `production`, `rejection`, `net_production`, `incentive`, `less_80_reason`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (10000005, 'FINO_OR_003', 'FINO001', 'FINO_SH_003', 'PVC Pipe 6 inch', 'FINO_DC_002', '2025-02-08 06:00:00', '2025-02-08 14:00:00', 'shift', '1', '1000017', '1000018', NULL, '1000002', 0, 320, 320, 12, 308, 'Y', '', NOW(), NOW(), 0, 1),
 (10000006, 'FINO_OR_004', 'FINO001', 'FINO_SH_004', 'PVC T-Joint', 'FINO_DC_003', '2025-02-10 06:00:00', '2025-02-10 14:00:00', 'shift', '1', '1000019', '1000020', NULL, '1000003', 0, 600, 600, 25, 575, 'Y', '', NOW(), NOW(), 0, 1),
 (10000007, 'FINO_OR_005', 'FINO001', 'FINO_SH_005', 'PVC Reducer', 'FINO_TR_002', '2025-02-12 06:00:00', '2025-02-12 14:00:00', 'shift', '1', '1000021', '1000022', NULL, '1000004', 0, 480, 480, 18, 462, 'Y', '', NOW(), NOW(), 0, 1),
@@ -1020,9 +1020,9 @@ ALTER TABLE `product`
   ADD PRIMARY KEY (`prod_id_seq`);
 
 --
--- Indexes for table `prod_shift`
+-- Indexes for table `production_shift`
 --
-ALTER TABLE `prod_shift`
+ALTER TABLE `production_shift`
   ADD PRIMARY KEY (`shift_id_seq`);
 
 --
@@ -1091,9 +1091,9 @@ ALTER TABLE `product`
   MODIFY `prod_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000096;
 
 --
--- AUTO_INCREMENT for table `prod_shift`
+-- AUTO_INCREMENT for table `production_shift`
 --
-ALTER TABLE `prod_shift`
+ALTER TABLE `production_shift`
   MODIFY `shift_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038;
 
 --
