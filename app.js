@@ -8,27 +8,8 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const logger = require('./config/logger');
 
-const indexRouter = require('./routes/index');
-const authRouter = require('./routes/auth');
-const permissionsRouter = require('./routes/permissions');
-const actionsRouter = require('./routes/actions');
-const buyerRouter = require('./routes/buyer');
-const companyRouter = require('./routes/company');
-const dispatchRouter = require('./routes/dispatch');
-const employeeRouter = require('./routes/employee');
-const invoiceRouter = require('./routes/invoice');
-const machineRouter = require('./routes/machine');
-const orderRouter = require('./routes/order');
-const orderQuantityRouter = require('./routes/orderQuantity');
-const productionEntryRouter = require('./routes/productionEntry');
-const productRouter = require('./routes/product');
-const productionShiftRouter = require('./routes/productionShift');
-const sellerRouter = require('./routes/seller');
-const stockRouter = require('./routes/stock');
-const assetsRouter = require('./routes/assets');
-const usersRouter = require('./routes/users');
-
 const app = express();
+const registerRoutes = require('./routes');
 
 // Method 1: Allow all origins (completely open - NOT RECOMMENDED for production)
 app.use(cors());
@@ -71,28 +52,9 @@ app.use((req, res, next) => {
     next();
 });
 
-// API v1.0.0 routes
-app.use('/api/1.0.0/auth', authRouter);
-app.use('/api/1.0.0/permissions', permissionsRouter);
-app.use('/api/1.0.0/actions', actionsRouter);
+// Register all routes
+registerRoutes(app);
 
-app.use('/api/1.0.0/buyer', buyerRouter);
-app.use('/api/1.0.0/company', companyRouter);
-app.use('/api/1.0.0/dispatch', dispatchRouter);
-app.use('/api/1.0.0/employee', employeeRouter);
-app.use('/api/1.0.0/invoice', invoiceRouter);
-app.use('/api/1.0.0/machine', machineRouter);
-app.use('/api/1.0.0/order', orderRouter);
-app.use('/api/1.0.0/order-quantity', orderQuantityRouter);
-app.use('/api/1.0.0/production-entry', productionEntryRouter);
-app.use('/api/1.0.0/product', productRouter);
-app.use('/api/1.0.0/production-shift', productionShiftRouter);
-app.use('/api/1.0.0/seller', sellerRouter);
-app.use('/api/1.0.0/stock', stockRouter);
-app.use('/api/1.0.0/assets', assetsRouter);
-app.use('/api/1.0.0/users', usersRouter);
-
-app.use('/', indexRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     logger.warn('404 Not Found', {
