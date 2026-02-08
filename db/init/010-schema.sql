@@ -1,5 +1,5 @@
 CREATE TABLE `users` (
-    `id` INT NOT NULL AUTO_INCREMENT,  -- INT (signed)
+    `id` int NOT NULL,
     `username` VARCHAR(50) NOT NULL UNIQUE,
     `first_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
     `last_name` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
@@ -95,7 +95,7 @@ CREATE TABLE user_roles (
   `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id, role_id),
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+--   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
@@ -173,8 +173,8 @@ CREATE TABLE `employee` (
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`employee_id_seq`),
-  KEY `idx_employee_id_seq` (`employee_id_seq`),
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+  KEY `idx_employee_id_seq` (`employee_id_seq`)
+--   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `machine` (

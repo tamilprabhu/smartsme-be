@@ -31,44 +31,44 @@ SET time_zone = "+00:00";
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`username`, `first_name`, `last_name`, `name`, `email`, `mobile`, `address`, `password`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
-('tamil', 'Tamilselvan', 'M', 'Tamilselvan M', 'tamil@test.com', '7889043243', 'Medavakkam, Chennai', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', '2025-09-23 23:29:52', '2025-09-23 23:29:52', 0, 1),
-('nandha', 'Nandhakumar', 'V', 'Nandhakumar V', 'nandha@test.com', '7798343227', 'Kovilambakkam, Chennai', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', '2025-09-23 23:32:02', '2025-09-23 23:32:02', 0, 1),
-('alicej', 'Alice', 'Johnson', 'Alice Johnson', 'alice@example.com', '9812345670', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('bobsmith', 'Bob', 'Smith', 'Bob Smith', 'bob@example.com', '9912345671', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('charlieb', 'Charlie', 'Brown', 'Charlie Brown', 'charlie@example.com', '9712345672', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('dianap', 'Diana', 'Prince', 'Diana Prince', 'diana@example.com', '9812345673', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('ethanh', 'Ethan', 'Hunt', 'Ethan Hunt', 'ethan@example.com', '9912345674', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('fionag', 'Fiona', 'Gallagher', 'Fiona Gallagher', 'fiona@example.com', '9712345675', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('georgem', 'George', 'Miller', 'George Miller', 'george@example.com', '9812345676', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('hannahl', 'Hannah', 'Lee', 'Hannah Lee', 'hannah@example.com', '9912345677', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('ianc', 'Ian', 'Curtis', 'Ian Curtis', 'ian@example.com', '9712345678', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('jasminep', 'Jasmine', 'Patel', 'Jasmine Patel', 'jasmine@example.com', '9812345679', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('kevinw', 'Kevin', 'Wu', 'Kevin Wu', 'kevin@example.com', '9912345680', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('rajeshk', 'Rajesh', 'Kumar', 'Rajesh Kumar', 'rajesh@prestige.com', '9876543210', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('priyam', 'Priya', 'Menon', 'Priya Menon', 'priya@prestige.com', '9876543211', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('amits', 'Amit', 'Sharma', 'Amit Sharma', 'amit@prestige.com', '9876543212', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('sunitas', 'Sunita', 'Singh', 'Sunita Singh', 'sunita@prestige.com', '9876543213', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('vikramr', 'Vikram', 'Reddy', 'Vikram Reddy', 'vikram@prestige.com', '9876543214', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
-('user019', 'Sanjay', 'Dutt', 'Sanjay Dutt', 'user019@smartsme.co.in', '9876500019', 'Indore, Madhya Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user020', 'Tanvi', 'Mehta', 'Tanvi Mehta', 'user020@smartsme.co.in', '9876500020', 'Surat, Gujarat', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user021', 'Uday', 'Kiran', 'Uday Kiran', 'user021@smartsme.co.in', '9876500021', 'Vijayawada, Andhra Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user022', 'Varun', 'Tej', 'Varun Tej', 'user022@smartsme.co.in', '9876500022', 'Warangal, Telangana', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user023', 'Wajid', 'Khan', 'Wajid Khan', 'user023@smartsme.co.in', '9876500023', 'Mysore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user024', 'Xavi', 'Fernandez', 'Xavi Fernandez', 'user024@smartsme.co.in', '9876500024', 'Goa, Goa', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user025', 'Yamini', 'Reddy', 'Yamini Reddy', 'user025@smartsme.co.in', '9876500025', 'Guntur, Andhra Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user026', 'Zara', 'Sheikh', 'Zara Sheikh', 'user026@smartsme.co.in', '9876500026', 'Aurangabad, Maharashtra', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user027', 'Arjun', 'Das', 'Arjun Das', 'user027@smartsme.co.in', '9876500027', 'Guwahati, Assam', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user028', 'Bhavana', 'Menon', 'Bhavana Menon', 'user028@smartsme.co.in', '9876500028', 'Kozhikode, Kerala', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user029', 'Chetan', 'Bhagat', 'Chetan Bhagat', 'user029@smartsme.co.in', '9876500029', 'Shimla, Himachal Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user030', 'Divya', 'Bharti', 'Divya Bharti', 'user030@smartsme.co.in', '9876500030', 'Dehradun, Uttarakhand', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user031', 'Eshwar', 'Prasad', 'Eshwar Prasad', 'user031@smartsme.co.in', '9876500031', 'Ranchi, Jharkhand', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user032', 'Falguni', 'Pathak', 'Falguni Pathak', 'user032@smartsme.co.in', '9876500032', 'Vadodara, Gujarat', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user033', 'Gautam', 'Adani', 'Gautam Adani', 'user033@smartsme.co.in', '9876500033', 'Rajkot, Gujarat', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user034', 'Hema', 'Malini', 'Hema Malini', 'user034@smartsme.co.in', '9876500034', 'Mathura, Uttar Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user035', 'Ishaan', 'Khatter', 'Ishaan Khatter', 'user035@smartsme.co.in', '9876500035', 'Raipur, Chhattisgarh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user036', 'Janhvi', 'Kapoor', 'Janhvi Kapoor', 'user036@smartsme.co.in', '9876500036', 'Patna, Bihar', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
-('user037', 'Kartik', 'Aaryan', 'Kartik Aaryan', 'user037@smartsme.co.in', '9876500037', 'Gwalior, Madhya Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1);
+INSERT INTO `users` (`id`, `username`, `first_name`, `last_name`, `name`, `email`, `mobile`, `address`, `password`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+(1001, 'tamil', 'Tamilselvan', 'M', 'Tamilselvan M', 'tamil@test.com', '7889043243', 'Medavakkam, Chennai', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', '2025-09-23 23:29:52', '2025-09-23 23:29:52', 0, 1),
+(1002, 'nandha', 'Nandhakumar', 'V', 'Nandhakumar V', 'nandha@test.com', '7798343227', 'Kovilambakkam, Chennai', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', '2025-09-23 23:32:02', '2025-09-23 23:32:02', 0, 1),
+(1003, 'alicej', 'Alice', 'Johnson', 'Alice Johnson', 'alice@example.com', '9812345670', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1004, 'bobsmith', 'Bob', 'Smith', 'Bob Smith', 'bob@example.com', '9912345671', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1005, 'charlieb', 'Charlie', 'Brown', 'Charlie Brown', 'charlie@example.com', '9712345672', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1006, 'dianap', 'Diana', 'Prince', 'Diana Prince', 'diana@example.com', '9812345673', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1007, 'ethanh', 'Ethan', 'Hunt', 'Ethan Hunt', 'ethan@example.com', '9912345674', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1008, 'fionag', 'Fiona', 'Gallagher', 'Fiona Gallagher', 'fiona@example.com', '9712345675', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1009, 'georgem', 'George', 'Miller', 'George Miller', 'george@example.com', '9812345676', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1010, 'hannahl', 'Hannah', 'Lee', 'Hannah Lee', 'hannah@example.com', '9912345677', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1011, 'ianc', 'Ian', 'Curtis', 'Ian Curtis', 'ian@example.com', '9712345678', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1012, 'jasminep', 'Jasmine', 'Patel', 'Jasmine Patel', 'jasmine@example.com', '9812345679', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1013, 'kevinw', 'Kevin', 'Wu', 'Kevin Wu', 'kevin@example.com', '9912345680', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1014, 'rajeshk', 'Rajesh', 'Kumar', 'Rajesh Kumar', 'rajesh@prestige.com', '9876543210', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1015, 'priyam', 'Priya', 'Menon', 'Priya Menon', 'priya@prestige.com', '9876543211', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1016, 'amits', 'Amit', 'Sharma', 'Amit Sharma', 'amit@prestige.com', '9876543212', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1017, 'sunitas', 'Sunita', 'Singh', 'Sunita Singh', 'sunita@prestige.com', '9876543213', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1018, 'vikramr', 'Vikram', 'Reddy', 'Vikram Reddy', 'vikram@prestige.com', '9876543214', 'Bangalore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
+(1019, 'user019', 'Sanjay', 'Dutt', 'Sanjay Dutt', 'user019@smartsme.co.in', '9876500019', 'Indore, Madhya Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1020, 'user020', 'Tanvi', 'Mehta', 'Tanvi Mehta', 'user020@smartsme.co.in', '9876500020', 'Surat, Gujarat', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1021, 'user021', 'Uday', 'Kiran', 'Uday Kiran', 'user021@smartsme.co.in', '9876500021', 'Vijayawada, Andhra Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1022, 'user022', 'Varun', 'Tej', 'Varun Tej', 'user022@smartsme.co.in', '9876500022', 'Warangal, Telangana', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1023, 'user023', 'Wajid', 'Khan', 'Wajid Khan', 'user023@smartsme.co.in', '9876500023', 'Mysore, Karnataka', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1024, 'user024', 'Xavi', 'Fernandez', 'Xavi Fernandez', 'user024@smartsme.co.in', '9876500024', 'Goa, Goa', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1025, 'user025', 'Yamini', 'Reddy', 'Yamini Reddy', 'user025@smartsme.co.in', '9876500025', 'Guntur, Andhra Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1026, 'user026', 'Zara', 'Sheikh', 'Zara Sheikh', 'user026@smartsme.co.in', '9876500026', 'Aurangabad, Maharashtra', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1027, 'user027', 'Arjun', 'Das', 'Arjun Das', 'user027@smartsme.co.in', '9876500027', 'Guwahati, Assam', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1028, 'user028', 'Bhavana', 'Menon', 'Bhavana Menon', 'user028@smartsme.co.in', '9876500028', 'Kozhikode, Kerala', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1029, 'user029', 'Chetan', 'Bhagat', 'Chetan Bhagat', 'user029@smartsme.co.in', '9876500029', 'Shimla, Himachal Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1030, 'user030', 'Divya', 'Bharti', 'Divya Bharti', 'user030@smartsme.co.in', '9876500030', 'Dehradun, Uttarakhand', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1031, 'user031', 'Eshwar', 'Prasad', 'Eshwar Prasad', 'user031@smartsme.co.in', '9876500031', 'Ranchi, Jharkhand', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1032, 'user032', 'Falguni', 'Pathak', 'Falguni Pathak', 'user032@smartsme.co.in', '9876500032', 'Vadodara, Gujarat', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1033, 'user033', 'Gautam', 'Adani', 'Gautam Adani', 'user033@smartsme.co.in', '9876500033', 'Rajkot, Gujarat', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1034, 'user034', 'Hema', 'Malini', 'Hema Malini', 'user034@smartsme.co.in', '9876500034', 'Mathura, Uttar Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1035, 'user035', 'Ishaan', 'Khatter', 'Ishaan Khatter', 'user035@smartsme.co.in', '9876500035', 'Raipur, Chhattisgarh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1036, 'user036', 'Janhvi', 'Kapoor', 'Janhvi Kapoor', 'user036@smartsme.co.in', '9876500036', 'Patna, Bihar', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1),
+(1037, 'user037', 'Kartik', 'Aaryan', 'Kartik Aaryan', 'user037@smartsme.co.in', '9876500037', 'Gwalior, Madhya Pradesh', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NOW(), NOW(), 0, 1);
 
 -- --------------------------------------------------------
 
@@ -198,44 +198,44 @@ INSERT INTO `dispatch` (`dispatch_id_seq`, `prod_id`, `company_id`, `order_id`, 
 
 INSERT INTO `employee` (`employee_id_seq`, `user_id`, `company_id`, `salary`, `active_flag`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 -- Finolex Industries employees (Tamil as Owner)
-(1000, 1, 'FINO001', 200000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1001, 3, 'FINO001', 150000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1002, 4, 'FINO001', 120000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1003, 5, 'FINO001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1004, 6, 'FINO001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1005, 7, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1006, 8, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1007, 9, 'FINO001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1008, 11, 'FINO001', 60000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1009, 19, 'FINO001', 120000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1010, 21, 'FINO001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1011, 23, 'FINO001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1012, 25, 'FINO001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1013, 27, 'FINO001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1014, 28, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1015, 30, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1016, 32, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1017, 34, 'FINO001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1018, 36, 'FINO001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1000, 1001, 'FINO001', 200000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1001, 1003, 'FINO001', 150000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1002, 1004, 'FINO001', 120000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1003, 1005, 'FINO001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1004, 1006, 'FINO001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1005, 1007, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1006, 1008, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1007, 1009, 'FINO001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1008, 1011, 'FINO001', 60000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1009, 1019, 'FINO001', 120000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1010, 1021, 'FINO001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1011, 1023, 'FINO001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1012, 1025, 'FINO001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1013, 1027, 'FINO001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1014, 1028, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1015, 1030, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1016, 1032, 'FINO001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1017, 1034, 'FINO001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1018, 1036, 'FINO001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
 -- Prestige Smart Kitchen employees (Nandha as Owner)
-(1019, 2, 'PRES001', 200000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1020, 14, 'PRES001', 150000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1021, 15, 'PRES001', 120000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1022, 20, 'PRES001', 120000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1023, 16, 'PRES001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1024, 22, 'PRES001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1025, 24, 'PRES001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1026, 13, 'PRES001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1027, 26, 'PRES001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1028, 12, 'PRES001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1029, 17, 'PRES001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1030, 29, 'PRES001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1031, 31, 'PRES001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1032, 33, 'PRES001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1033, 10, 'PRES001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1034, 35, 'PRES001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1035, 37, 'PRES001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
-(1036, 18, 'PRES001', 60000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1);
+(1019, 1002, 'PRES001', 200000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1020, 1014, 'PRES001', 150000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1021, 1015, 'PRES001', 120000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1022, 1020, 'PRES001', 120000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1023, 1016, 'PRES001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1024, 1022, 'PRES001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1025, 1024, 'PRES001', 80000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1026, 1013, 'PRES001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1027, 1026, 'PRES001', 70000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1028, 1012, 'PRES001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1029, 1017, 'PRES001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1030, 1029, 'PRES001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1031, 1031, 'PRES001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1032, 1033, 'PRES001', 45000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1033, 1010, 'PRES001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1034, 1035, 'PRES001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1035, 1037, 'PRES001', 40000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
+(1036, 1018, 'PRES001', 60000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1);
 -- --------------------------------------------------------
 
 --
@@ -756,80 +756,80 @@ INSERT INTO `assets` (`module`, `sub_module`, `identifier`, `original_name`, `st
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 -- Tamil (User ID: 1) - OWNER
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1, 1, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1001, 1, 0, 1);
 
 -- Nandha (User ID: 2) - OWNER
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (2, 1, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1002, 1, 0, 1);
 
 -- Alice Johnson (User ID: 3) - ADMIN
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (3, 2, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1003, 2, 0, 1);
 
 -- Bob Smith (User ID: 4) - PLANT_HEAD
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (4, 3, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1004, 3, 0, 1);
 
 -- Charlie Brown (User ID: 5) - SHIFT_INCHARGE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (5, 4, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1005, 4, 0, 1);
 
 -- Diana Prince (User ID: 6) - STORES_INCHARGE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (6, 5, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1006, 5, 0, 1);
 
 -- Ethan Hunt (User ID: 7) - PRODUCTION_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (7, 6, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1007, 6, 0, 1);
 
 -- Fiona Gallagher (User ID: 8) - PRODUCTION_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (8, 6, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1008, 6, 0, 1);
 
 -- George Miller (User ID: 9) - SECONDARY_PROCESS_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (9, 7, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1009, 7, 0, 1);
 
 -- Hannah Lee (User ID: 10) - SECONDARY_PROCESS_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (10, 7, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1010, 7, 0, 1);
 
 -- Ian Curtis (User ID: 11) - ACCOUNTANT
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (11, 8, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1011, 8, 0, 1);
 
 -- Jasmine Patel (User ID: 12) - PRODUCTION_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (12, 6, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1012, 6, 0, 1);
 
 -- Kevin Wu (User ID: 13) - STORES_INCHARGE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (13, 5, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1013, 5, 0, 1);
 
 -- Rajesh Kumar (User ID: 14) - ADMIN
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (14, 2, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1014, 2, 0, 1);
 
 -- Priya Menon (User ID: 15) - PLANT_HEAD
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (15, 3, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1015, 3, 0, 1);
 
 -- Amit Sharma (User ID: 16) - SHIFT_INCHARGE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (16, 4, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1016, 4, 0, 1);
 
 -- Sunita Singh (User ID: 17) - PRODUCTION_EMPLOYEE
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (17, 6, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1017, 6, 0, 1);
 
 -- Vikram Reddy (User ID: 18) - ACCOUNTANT
-INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (18, 8, 0, 1);
+INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1018, 8, 0, 1);
 
 -- Additional user roles for remaining users (19-37)
 INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES
-(19, 3, 0, 1), -- Sanjay Dutt - PLANT_HEAD
-(20, 3, 0, 1), -- Tanvi Mehta - PLANT_HEAD
-(21, 4, 0, 1), -- Uday Kiran - SHIFT_INCHARGE
-(22, 4, 0, 1), -- Varun Tej - SHIFT_INCHARGE
-(23, 4, 0, 1), -- Wajid Khan - SHIFT_INCHARGE
-(24, 4, 0, 1), -- Xavi Fernandez - SHIFT_INCHARGE
-(25, 5, 0, 1), -- Yamini Reddy - STORES_INCHARGE
-(26, 5, 0, 1), -- Zara Sheikh - STORES_INCHARGE
-(27, 5, 0, 1), -- Arjun Das - STORES_INCHARGE
-(28, 6, 0, 1), -- Bhavana Menon - PRODUCTION_EMPLOYEE
-(29, 6, 0, 1), -- Chetan Bhagat - PRODUCTION_EMPLOYEE
-(30, 6, 0, 1), -- Divya Bharti - PRODUCTION_EMPLOYEE
-(31, 6, 0, 1), -- Eshwar Prasad - PRODUCTION_EMPLOYEE
-(32, 6, 0, 1), -- Falguni Pathak - PRODUCTION_EMPLOYEE
-(33, 6, 0, 1), -- Gautam Adani - PRODUCTION_EMPLOYEE
-(34, 7, 0, 1), -- Hema Malini - SECONDARY_PROCESS_EMPLOYEE
-(35, 7, 0, 1), -- Ishaan Khatter - SECONDARY_PROCESS_EMPLOYEE
-(36, 7, 0, 1), -- Janhvi Kapoor - SECONDARY_PROCESS_EMPLOYEE
-(37, 7, 0, 1); -- Kartik Aaryan - SECONDARY_PROCESS_EMPLOYEE
+(1019, 3, 0, 1), -- Sanjay Dutt - PLANT_HEAD
+(1020, 3, 0, 1), -- Tanvi Mehta - PLANT_HEAD
+(1021, 4, 0, 1), -- Uday Kiran - SHIFT_INCHARGE
+(1022, 4, 0, 1), -- Varun Tej - SHIFT_INCHARGE
+(1023, 4, 0, 1), -- Wajid Khan - SHIFT_INCHARGE
+(1024, 4, 0, 1), -- Xavi Fernandez - SHIFT_INCHARGE
+(1025, 5, 0, 1), -- Yamini Reddy - STORES_INCHARGE
+(1026, 5, 0, 1), -- Zara Sheikh - STORES_INCHARGE
+(1027, 5, 0, 1), -- Arjun Das - STORES_INCHARGE
+(1028, 6, 0, 1), -- Bhavana Menon - PRODUCTION_EMPLOYEE
+(1029, 6, 0, 1), -- Chetan Bhagat - PRODUCTION_EMPLOYEE
+(1030, 6, 0, 1), -- Divya Bharti - PRODUCTION_EMPLOYEE
+(1031, 6, 0, 1), -- Eshwar Prasad - PRODUCTION_EMPLOYEE
+(1032, 6, 0, 1), -- Falguni Pathak - PRODUCTION_EMPLOYEE
+(1033, 6, 0, 1), -- Gautam Adani - PRODUCTION_EMPLOYEE
+(1034, 7, 0, 1), -- Hema Malini - SECONDARY_PROCESS_EMPLOYEE
+(1035, 7, 0, 1), -- Ishaan Khatter - SECONDARY_PROCESS_EMPLOYEE
+(1036, 7, 0, 1), -- Janhvi Kapoor - SECONDARY_PROCESS_EMPLOYEE
+(1037, 7, 0, 1); -- Kartik Aaryan - SECONDARY_PROCESS_EMPLOYEE
 
 -- Role Distribution Summary:
 -- OWNER: 2 users (Tamil - FINO001, Nandha - PRES001)
@@ -855,6 +855,9 @@ ALTER TABLE `users` ADD KEY `id` (`id`);
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users` MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+
+
+ALTER TABLE `user_roles` ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 --
 -- Indexes for table `buyer`
@@ -895,6 +898,7 @@ ALTER TABLE `employee` MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUT
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee` MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+ALTER TABLE `employee` ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE;
 
 --
 -- Indexes for table `machine`
