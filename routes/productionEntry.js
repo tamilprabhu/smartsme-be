@@ -3,7 +3,7 @@ const router = express.Router();
 const productionEntryService = require('../services/productionEntry');
 const authenticateToken = require('../middlewares/authenticate');
 
-// Get all production hourlies with pagination and search
+// Get all production entries with pagination and search
 router.get('/', authenticateToken, async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -11,7 +11,7 @@ router.get('/', authenticateToken, async (req, res) => {
         const search = req.query.search || '';
         const companyId = req.auth.getPrimaryCompanyId();
         
-        const result = await productionEntryService.getAllProdHourlies(page, itemsPerPage, search, companyId);
+        const result = await productionEntryService.getAllProdEntries(page, itemsPerPage, search, companyId);
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });

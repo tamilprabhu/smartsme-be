@@ -502,7 +502,7 @@ INSERT INTO `product` (`prod_id_seq`, `prod_id`, `company_id`, `prod_name`, `raw
 -- Table structure for table `production_entry`
 --
 
--- Production Hourly seeders
+-- Production Entry seeders
 INSERT INTO `production_entry` (`order_id`, `company_id`, `shift_id`, `shift_start_time`, `shift_end_time`, `opening_count`, `closing_count`, `production`, `is_deleted`, `is_active`) VALUES
 ('FINO_OR_001', 'FINO001', 'FINO_SH_001', '2025-02-01 06:00:00', '2025-02-01 07:00:00', 0, 50, 50, 0, 1),
 ('FINO_OR_001', 'FINO001', 'FINO_SH_001', '2025-02-01 07:00:00', '2025-02-01 08:00:00', 50, 100, 50, 0, 1),

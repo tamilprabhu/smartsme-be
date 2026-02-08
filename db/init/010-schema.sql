@@ -294,7 +294,9 @@ CREATE TABLE `production_entry` (
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `production_shift` (

@@ -4,9 +4,9 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 
 const productionEntryService = {
-    getAllProdHourlies: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId) => {
+    getAllProdEntries: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`ProductionEntryService: Fetching production hourlies - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
+        logger.info(`ProductionEntryService: Fetching production entries - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
             const offset = (page - 1) * validLimit;
             
@@ -26,7 +26,7 @@ const productionEntryService = {
                 offset: offset,
                 order: [['shiftStartTime', 'DESC']]
             });
-            logger.info(`ProductionEntryService: Successfully retrieved ${rows.length} production hourlies out of ${count} total for company ${companyId}`);
+            logger.info(`ProductionEntryService: Successfully retrieved ${rows.length} production entries out of ${count} total for company ${companyId}`);
             return {
                 items: rows,
                 paging: {
@@ -37,7 +37,7 @@ const productionEntryService = {
                 }
             };
         } catch (error) {
-            logger.error("ProductionEntryService: Failed to fetch production hourlies", { 
+            logger.error("ProductionEntryService: Failed to fetch production entries", { 
                 error: error.message, 
                 companyId,
                 stack: error.stack 
