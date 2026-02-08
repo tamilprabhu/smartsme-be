@@ -151,8 +151,7 @@ INSERT INTO `dispatch` (`dispatch_id_seq`, `prod_id`, `company_id`, `order_id`, 
 (1000010, 'FINO_PR_001', 'FINO001', 'FINO_OR_001', 'FINO_DL_001', '2025-02-10 00:00:00', 500, 20, 1250.0000, 2.5000, 1312.5000, NOW(), NOW(), 0, 1),
 (1000011, 'FINO_PR_002', 'FINO001', 'FINO_OR_002', 'FINO_DL_002', '2025-02-15 00:00:00', 1000, 50, 800.0000, 0.8000, 864.0000, NOW(), NOW(), 0, 1),
 (1000012, 'PRES_PR_001', 'PRES001', 'PRES_OR_001', 'PRES_DL_001', '2025-02-12 00:00:00', 100, 5, 3500.0000, 35.0000, 3920.0000, NOW(), NOW(), 0, 1),
-(1000013, 'PRES_PR_002', 'PRES001', 'PRES_OR_002', 'PRES_DL_002', '2025-02-08 00:00:00', 400, 20, 4800.0000, 12.0000, 5520.0000, NOW(), NOW(), 0, 1);
-INSERT INTO `dispatch` (`dispatch_id_seq`, `prod_id`, `company_id`, `order_id`, `dispatch_id`, `dispatch_date`, `quantity`, `no_of_packs`, `total_weight`, `normal_weight`, `norms_weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+(1000013, 'PRES_PR_002', 'PRES001', 'PRES_OR_002', 'PRES_DL_002', '2025-02-08 00:00:00', 400, 20, 4800.0000, 12.0000, 5520.0000, NOW(), NOW(), 0, 1),
 (1000014, 'FINO_PR_003', 'FINO001', 'FINO_OR_003', 'FINO_DL_003', '2025-02-25 00:00:00', 800, 32, 3040.0000, 3.8000, 3192.0000, NOW(), NOW(), 0, 1),
 (1000015, 'FINO_PR_004', 'FINO001', 'FINO_OR_004', 'FINO_DL_004', '2025-02-28 00:00:00', 1500, 75, 1800.0000, 1.2000, 1926.0000, NOW(), NOW(), 0, 1),
 (1000016, 'FINO_PR_005', 'FINO001', 'FINO_OR_005', 'FINO_DL_005', '2025-03-02 00:00:00', 1200, 60, 1800.0000, 1.5000, 1908.0000, NOW(), NOW(), 0, 1),
@@ -261,8 +260,7 @@ INSERT INTO `machine` (`machine_id_seq`, `machine_id`, `company_id`, `machine_na
 (10011, 'PRES_TM_001', 'PRES001', 'Tapping Machine', 'Tapping Machine', '25T', 'TM-25', 'Y', NOW(), NOW(), 0, 1),
 (10012, 'PRES_CNC_001', 'PRES001', 'CNC Lathe', 'CNC Lathe', '90T', 'CNC-90', 'Y', NOW(), NOW(), 0, 1),
 (10013, 'PRES_SB_001', 'PRES001', 'Shot Blast Machine', 'Shot Blasting', '70T', 'SB-70', 'Y', NOW(), NOW(), 0, 1),
-(10014, 'PRES_PC_001', 'PRES001', 'Powder Coating Machine', 'Powder Coating', '110T', 'PC-110', 'Y', NOW(), NOW(), 0, 1);
-INSERT INTO `machine` (`machine_id_seq`, `machine_id`, `company_id`, `machine_name`, `machine_type`, `capacity`, `model`, `active_flag`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+(10014, 'PRES_PC_001', 'PRES001', 'Powder Coating Machine', 'Powder Coating', '110T', 'PC-110', 'Y', NOW(), NOW(), 0, 1),
 (10015, 'FINO_DC_002', 'FINO001', 'Die Casting Machine 2', 'Production', '250T', 'DC-250', 'Y', NOW(), NOW(), 0, 1),
 (10016, 'FINO_DC_003', 'FINO001', 'Die Casting Machine 3', 'Production', '300T', 'DC-300', 'Y', NOW(), NOW(), 0, 1),
 (10017, 'FINO_TR_002', 'FINO001', 'Trimming Machine 2', 'Trimming', '180T', 'TR-180', 'Y', NOW(), NOW(), 0, 1),
@@ -301,8 +299,7 @@ INSERT INTO `order` (`order_id_seq`, `order_id`, `order_name`, `company_id`, `pr
 (10001, 'FINO_OR_001', 'PVC Pipe 4 inch - Batch A', 'FINO001', 'FINO_PR_001', 'FINO_BY_001', 'IN_PROGRESS', '2025-02-01 00:00:00', '2025-02-15 00:00:00', 1000, 25.00, 2.00, 23000.00, NOW(), NOW(), 0, 1),
 (10002, 'FINO_OR_002', 'PVC Fitting Elbow - High Volume', 'FINO001', 'FINO_PR_002', 'FINO_BY_002', 'SCHEDULED', '2025-02-05 00:00:00', '2025-02-20 00:00:00', 2000, 8.50, 1.00, 15000.00, NOW(), NOW(), 0, 1),
 (10003, 'PRES_OR_001', 'Pressure Cooker Base - Premium', 'PRES001', 'PRES_PR_001', 'PRES_BY_001', 'IN_PROGRESS', '2025-02-03 00:00:00', '2025-02-18 00:00:00', 200, 120.00, 8.00, 22400.00, NOW(), NOW(), 0, 1),
-(10004, 'PRES_OR_002', 'Cooker Handle - Standard', 'PRES001', 'PRES_PR_002', 'PRES_BY_002', 'COMPLETED', '2025-01-28 00:00:00', '2025-02-10 00:00:00', 800, 35.00, 3.00, 25600.00, NOW(), NOW(), 0, 1);
-INSERT INTO `order` (`order_id_seq`, `order_id`, `order_name`, `company_id`, `prod_id`, `buyer_id`, `order_status`, `order_date`, `target_date`, `order_quantity`, `price`, `discount`, `total_price`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+(10004, 'PRES_OR_002', 'Cooker Handle - Standard', 'PRES001', 'PRES_PR_002', 'PRES_BY_002', 'COMPLETED', '2025-01-28 00:00:00', '2025-02-10 00:00:00', 800, 35.00, 3.00, 25600.00, NOW(), NOW(), 0, 1),
 (10005, 'FINO_OR_003', 'PVC Pipe 6 inch - Large Order', 'FINO001', 'FINO_PR_003', 'FINO_BY_003', 'SCHEDULED', '2025-02-08 00:00:00', '2025-02-25 00:00:00', 800, 30.00, 2.50, 22600.00, NOW(), NOW(), 0, 1),
 (10006, 'FINO_OR_004', 'PVC T-Joint - Bulk Production', 'FINO001', 'FINO_PR_004', 'FINO_BY_004', 'IN_PROGRESS', '2025-02-10 00:00:00', '2025-02-28 00:00:00', 1500, 12.00, 1.50, 16725.00, NOW(), NOW(), 0, 1),
 (10007, 'FINO_OR_005', 'PVC Reducer - Standard', 'FINO001', 'FINO_PR_005', 'FINO_BY_005', 'SCHEDULED', '2025-02-12 00:00:00', '2025-03-02 00:00:00', 1200, 15.00, 2.00, 17640.00, NOW(), NOW(), 0, 1),
@@ -351,8 +348,7 @@ INSERT INTO `order_quantity` (`order_id`, `company_id`, `order_quantity`, `produ
 ('FINO_OR_001', 'FINO001', 1000, 950, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NOW(), NOW(), 0, 1),
 ('FINO_OR_002', 'FINO001', 2000, 1900, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NOW(), NOW(), 0, 1),
 ('PRES_OR_001', 'PRES001', 200, 180, 200, 190, 10, 190, 180, 10, 180, 170, 10, 170, 160, 10, 160, 150, 10, 150, 140, 10, 140, 130, 10, 130, 120, 10, 120, 110, 10, NOW(), NOW(), 0, 1),
-('PRES_OR_002', 'PRES001', 800, 750, 800, 780, 20, 780, 760, 20, 760, 740, 20, 740, 720, 20, 720, 700, 20, 700, 680, 20, 680, 660, 20, 660, 640, 20, 640, 620, 20, NOW(), NOW(), 0, 1);
-INSERT INTO `order_quantity` (`order_id`, `company_id`, `order_quantity`, `product_quantity`, `fettl_ip_quantity`, `fettl_ac_quantity`, `fettl_rj_quantity`, `drill_ip_quantity`, `drill_ac_quantity`, `drill_rj_quantity`, `tapp_ip_quantity`, `tapp_ac_quantity`, `tapp_rj_quantity`, `mach_ip_quantity`, `mach_ac_quantity`, `mach_rj_quantity`, `trim_ip_quantity`, `trim_ac_quantity`, `trim_rj_quantity`, `shotb_ip_quantity`, `shotb_ac_quantity`, `shotb_rj_quantity`, `pwdr_ip_quantity`, `pwdr_ac_quantity`, `pwdr_rj_quantity`, `assmbl_ip_quantity`, `assmbl_ac_quantity`, `assmbl_rj_quantity`, `qlins_ip_quantity`, `qlins_ac_quantity`, `qlins_rj_quantity`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+('PRES_OR_002', 'PRES001', 800, 750, 800, 780, 20, 780, 760, 20, 760, 740, 20, 740, 720, 20, 720, 700, 20, 700, 680, 20, 680, 660, 20, 660, 640, 20, 640, 620, 20, NOW(), NOW(), 0, 1),
 ('FINO_OR_003', 'FINO001', 800, 760, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NOW(), NOW(), 0, 1),
 ('FINO_OR_004', 'FINO001', 1500, 1425, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NOW(), NOW(), 0, 1),
 ('FINO_OR_005', 'FINO001', 1200, 1140, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NOW(), NOW(), 0, 1),
@@ -513,8 +509,7 @@ INSERT INTO `prod_hourly` (`order_id`, `company_id`, `shift_id`, `shift_start_ti
 ('FINO_OR_001', 'FINO001', 'FINO_SH_001', '2025-02-01 08:00:00', '2025-02-01 09:00:00', 100, 150, 50, 0, 1),
 ('PRES_OR_001', 'PRES001', 'PRES_SH_001', '2025-02-03 06:00:00', '2025-02-03 07:00:00', 0, 10, 10, 0, 1),
 ('PRES_OR_001', 'PRES001', 'PRES_SH_001', '2025-02-03 07:00:00', '2025-02-03 08:00:00', 10, 20, 10, 0, 1),
-('PRES_OR_001', 'PRES001', 'PRES_SH_001', '2025-02-03 08:00:00', '2025-02-03 09:00:00', 20, 30, 10, 0, 1);
-INSERT INTO `prod_hourly` (`order_id`, `company_id`, `shift_id`, `shift_start_time`, `shift_end_time`, `opening_count`, `closing_count`, `production`, `is_deleted`, `is_active`) VALUES
+('PRES_OR_001', 'PRES001', 'PRES_SH_001', '2025-02-03 08:00:00', '2025-02-03 09:00:00', 20, 30, 10, 0, 1),
 ('FINO_OR_003', 'FINO001', 'FINO_SH_003', '2025-02-08 06:00:00', '2025-02-08 07:00:00', 0, 40, 40, 0, 1),
 ('FINO_OR_003', 'FINO001', 'FINO_SH_003', '2025-02-08 07:00:00', '2025-02-08 08:00:00', 40, 80, 40, 0, 1),
 ('FINO_OR_004', 'FINO001', 'FINO_SH_004', '2025-02-10 06:00:00', '2025-02-10 07:00:00', 0, 75, 75, 0, 1),
@@ -558,9 +553,8 @@ INSERT INTO `prod_hourly` (`order_id`, `company_id`, `shift_id`, `shift_start_ti
 INSERT INTO `production_shift` (`shift_id_seq`, `order_id`, `company_id`, `shift_id`, `prod_name`, `machine_id`, `shift_start_date`, `shift_end_date`, `entry_type`, `shift_type`, `operator1`, `operator2`, `operator3`, `supervisor`, `opening_count`, `closing_count`, `production`, `rejection`, `net_production`, `incentive`, `less_80_reason`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (10000001, 'FINO_OR_001', 'FINO001', 'FINO_SH_001', 'PVC Pipe 4 inch', 'FINO_DC_001', '2025-02-01 06:00:00', '2025-02-01 14:00:00', 'shift', '1', '1000005', '1000006', NULL, '1000002', 0, 400, 400, 20, 380, 'Y', '', NOW(), NOW(), 0, 1),
 (10000002, 'FINO_OR_001', 'FINO001', 'FINO_SH_002', 'PVC Pipe 4 inch', 'FINO_DC_001', '2025-02-01 14:00:00', '2025-02-01 22:00:00', 'shift', '2', '1000007', '1000008', NULL, '1000003', 400, 750, 350, 15, 335, 'Y', '', NOW(), NOW(), 0, 1),
-(10000003, 'PRES_OR_001', 'PRES001', 'PRES_SH_0NULL', 'Pressure Cooker Base', 'PRES_DC_001', '2025-02-03 06:00:00', '2025-02-03 14:00:00', 'shift', '1', '1000014', '1000015', NULL, '1000013', 0, 80, 80, 5, 75, 'Y', '', NOW(), NOW(), 0, 1),
-(10000004, 'PRES_OR_002', 'PRES001', 'PRES_SH_0NULL', 'Cooker Handle', 'PRES_DC_001', '2025-01-28 06:00:00', '2025-01-28 14:00:00', 'shift', '1', '1000014', '1000016', NULL, '1000013', 0, 400, 400, 25, 375, 'Y', '', NOW(), NOW(), 0, 1);
-INSERT INTO `production_shift` (`shift_id_seq`, `order_id`, `company_id`, `shift_id`, `prod_name`, `machine_id`, `shift_start_date`, `shift_end_date`, `entry_type`, `shift_type`, `operator1`, `operator2`, `operator3`, `supervisor`, `opening_count`, `closing_count`, `production`, `rejection`, `net_production`, `incentive`, `less_80_reason`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+(10000003, 'PRES_OR_001', 'PRES001', 'PRES_SH_001', 'Pressure Cooker Base', 'PRES_DC_001', '2025-02-03 06:00:00', '2025-02-03 14:00:00', 'shift', '1', '1000014', '1000015', NULL, '1000013', 0, 80, 80, 5, 75, 'Y', '', NOW(), NOW(), 0, 1),
+(10000004, 'PRES_OR_002', 'PRES001', 'PRES_SH_002', 'Cooker Handle', 'PRES_DC_001', '2025-01-28 06:00:00', '2025-01-28 14:00:00', 'shift', '1', '1000014', '1000016', NULL, '1000013', 0, 400, 400, 25, 375, 'Y', '', NOW(), NOW(), 0, 1),
 (10000005, 'FINO_OR_003', 'FINO001', 'FINO_SH_003', 'PVC Pipe 6 inch', 'FINO_DC_002', '2025-02-08 06:00:00', '2025-02-08 14:00:00', 'shift', '1', '1000017', '1000018', NULL, '1000002', 0, 320, 320, 12, 308, 'Y', '', NOW(), NOW(), 0, 1),
 (10000006, 'FINO_OR_004', 'FINO001', 'FINO_SH_004', 'PVC T-Joint', 'FINO_DC_003', '2025-02-10 06:00:00', '2025-02-10 14:00:00', 'shift', '1', '1000019', '1000020', NULL, '1000003', 0, 600, 600, 25, 575, 'Y', '', NOW(), NOW(), 0, 1),
 (10000007, 'FINO_OR_005', 'FINO001', 'FINO_SH_005', 'PVC Reducer', 'FINO_TR_002', '2025-02-12 06:00:00', '2025-02-12 14:00:00', 'shift', '1', '1000021', '1000022', NULL, '1000004', 0, 480, 480, 18, 462, 'Y', '', NOW(), NOW(), 0, 1),
@@ -608,8 +602,7 @@ INSERT INTO `seller` (`seller_id_seq`, `seller_id`, `company_id`, `seller_name`,
 (10001, 'FINO_SL_001', 'FINO001', 'PVC Resin Suppliers Pvt Ltd', 'Coimbatore, Tamil Nadu', '9876543220', 'sales@pvcresin.com', NOW(), NOW(), 0, 1),
 (10002, 'FINO_SL_002', 'FINO001', 'Polymer Trading Corporation', 'Hyderabad, Telangana', '9876543221', 'info@polytrading.com', NOW(), NOW(), 0, 1),
 (10003, 'PRES_SL_001', 'PRES001', 'Aluminum Alloy Hub', 'Pune, Maharashtra', '9876543222', 'sales@aluhub.com', NOW(), NOW(), 0, 1),
-(10004, 'PRES_SL_002', 'PRES001', 'Die Cast Metals Supplier', 'Ahmedabad, Gujarat', '9876543223', 'orders@diecastmetals.com', NOW(), NOW(), 0, 1);
-INSERT INTO `seller` (`seller_id_seq`, `seller_id`, `company_id`, `seller_name`, `seller_address`, `seller_phone`, `seller_email`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+(10004, 'PRES_SL_002', 'PRES001', 'Die Cast Metals Supplier', 'Ahmedabad, Gujarat', '9876543223', 'orders@diecastmetals.com', NOW(), NOW(), 0, 1),
 (10005, 'FINO_SL_003', 'FINO001', 'Chemical Compounds Ltd', 'Mumbai, Maharashtra', '9876543248', 'sales@chemcomp.com', NOW(), NOW(), 0, 1),
 (10006, 'FINO_SL_004', 'FINO001', 'Plastic Raw Materials Co', 'Delhi, NCR', '9876543249', 'info@plasticraw.com', NOW(), NOW(), 0, 1),
 (10007, 'FINO_SL_005', 'FINO001', 'Polymer Solutions Pvt Ltd', 'Pune, Maharashtra', '9876543250', 'sales@polysol.com', NOW(), NOW(), 0, 1),
@@ -658,8 +651,7 @@ INSERT INTO `stock` (`stock_id_seq`, `company_id`, `seller_id`, `stock_id`, `sto
 (1000001, 'FINO001', 'FINO_SL_001', 'FINO_ST_001', '2025-01-15 00:00:00', 'PVC Resin Grade S-65', 100, 5000.0000, NOW(), NOW(), 0, 1),
 (1000002, 'FINO001', 'FINO_SL_002', 'FINO_ST_002', '2025-01-20 00:00:00', 'PVC Compound K-67', 80, 4000.0000, NOW(), NOW(), 0, 1),
 (1000003, 'PRES001', 'PRES_SL_001', 'PRES_ST_001', '2025-01-18 00:00:00', 'Aluminum Alloy ADC-12', 40, 2000.0000, NOW(), NOW(), 0, 1),
-(1000004, 'PRES001', 'PRES_SL_002', 'PRES_ST_002', '2025-01-25 00:00:00', 'Aluminum Alloy A380', 35, 2100.0000, NOW(), NOW(), 0, 1);
-INSERT INTO `stock` (`stock_id_seq`, `company_id`, `seller_id`, `stock_id`, `stock_date`, `raw_material`, `no_of_bars`, `weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+(1000004, 'PRES001', 'PRES_SL_002', 'PRES_ST_002', '2025-01-25 00:00:00', 'Aluminum Alloy A380', 35, 2100.0000, NOW(), NOW(), 0, 1),
 (1000005, 'FINO001', 'FINO_SL_003', 'FINO_ST_003', '2025-01-22 00:00:00', 'PVC Resin Grade S-70', 90, 4500.0000, NOW(), NOW(), 0, 1),
 (1000006, 'FINO001', 'FINO_SL_004', 'FINO_ST_004', '2025-01-24 00:00:00', 'PVC Compound K-70', 85, 4250.0000, NOW(), NOW(), 0, 1),
 (1000007, 'FINO001', 'FINO_SL_005', 'FINO_ST_005', '2025-01-26 00:00:00', 'PVC Resin Grade S-75', 95, 4750.0000, NOW(), NOW(), 0, 1),
@@ -693,28 +685,6 @@ INSERT INTO `stock` (`stock_id_seq`, `company_id`, `seller_id`, `stock_id`, `sto
 (1000035, 'PRES001', 'PRES_SL_017', 'PRES_ST_017', '2025-02-19 00:00:00', 'Aluminum Alloy ADC-9', 41, 2050.0000, NOW(), NOW(), 0, 1),
 (1000036, 'PRES001', 'PRES_SL_018', 'PRES_ST_018', '2025-02-21 00:00:00', 'Aluminum Alloy A712', 48, 2400.0000, NOW(), NOW(), 0, 1),
 (1000037, 'PRES001', 'PRES_SL_019', 'PRES_ST_019', '2025-02-23 00:00:00', 'Aluminum Alloy ADC-11', 42, 2100.0000, NOW(), NOW(), 0, 1);
-
--- --------------------------------------------------------
---
--- Table structure for table `assets`
---
-
--- Seed data for assets (file type samples)
-INSERT INTO `assets` (`module`, `sub_module`, `identifier`, `original_name`, `stored_name`, `mime_type`, `size_bytes`, `storage_path`, `visibility`, `company_id`, `created_by`, `updated_by`, `metadata`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
-('seed','samples','filetypes','sample.csv','b1510eef-9243-41fe-b0e0-0ef85cc2a1ff_sample.csv','text/csv',23,'seed/samples/b1510eef-9243-41fe-b0e0-0ef85cc2a1ff_sample.csv','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'csv'), NOW(), NOW(), 0, 1),
-('seed','samples','filetypes','sample.txt','4a87878d-110f-43f4-ad12-e785575485de_sample.txt','text/plain',30,'seed/samples/4a87878d-110f-43f4-ad12-e785575485de_sample.txt','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'txt'), NOW(), NOW(), 0, 1),
-('seed','samples','filetypes','sample.pdf','a2949208-58b5-4dad-b73d-77aa0487c203_sample.pdf','application/pdf',45,'seed/samples/a2949208-58b5-4dad-b73d-77aa0487c203_sample.pdf','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'pdf'), NOW(), NOW(), 0, 1),
-('seed','samples','filetypes','sample.docx','1cb6c67a-dfb3-492b-874a-def894877924_sample.docx','application/vnd.openxmlformats-officedocument.wordprocessingml.document',151,'seed/samples/1cb6c67a-dfb3-492b-874a-def894877924_sample.docx','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'docx'), NOW(), NOW(), 0, 1),
-('seed','samples','filetypes','sample.xlsx','24f7df5d-95b4-4f78-97f2-e037d64e2814_sample.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',151,'seed/samples/24f7df5d-95b4-4f78-97f2-e037d64e2814_sample.xlsx','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'xlsx'), NOW(), NOW(), 0, 1),
-('seed','samples','filetypes','sample.xls','36ed1d57-fe95-44bd-924a-d5deda94fd84_sample.xls','application/vnd.ms-excel',16,'seed/samples/36ed1d57-fe95-44bd-924a-d5deda94fd84_sample.xls','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'xls'), NOW(), NOW(), 0, 1),
-('seed','samples','filetypes','sample.zip','26ff74df-70e5-4472-9528-b025d60ecf21_sample.zip','application/zip',128,'seed/samples/26ff74df-70e5-4472-9528-b025d60ecf21_sample.zip','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'zip'), NOW(), NOW(), 0, 1),
-('seed','samples','filetypes','sample.apk','c1d9cb48-10ea-4273-b922-43cbeec72c7b_sample.apk','application/vnd.android.package-archive',157,'seed/samples/c1d9cb48-10ea-4273-b922-43cbeec72c7b_sample.apk','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'apk'), NOW(), NOW(), 0, 1),
-('seed','samples','filetypes','sample.png','842086d1-8fc2-45b4-a885-68ccbaf55b95_sample.png','image/png',68,'seed/samples/842086d1-8fc2-45b4-a885-68ccbaf55b95_sample.png','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'png'), NOW(), NOW(), 0, 1),
-('seed','samples','filetypes','sample.jpg','f5b99a6e-889f-49bc-94e6-d24f009787d7_sample.jpg','image/jpeg',282,'seed/samples/f5b99a6e-889f-49bc-94e6-d24f009787d7_sample.jpg','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'jpg'), NOW(), NOW(), 0, 1);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 --
 -- Table structure for table `invoice`
@@ -762,6 +732,28 @@ INSERT INTO `invoice` (`invoice_seq`, `invoice_id`, `invoice_date`, `comp_id`, `
 (10000035, 'IN10000035', '2025-04-02 00:00:00', 'PRES001', 'PRES_BY_017', 'PRES_PR_017', 200, 125.00, 9.00, 2250.00, 9.00, 2250.00, 29500.00, 'SAC998313', '27AABCA1235I1Z5', NOW(), NOW(), 0, 1),
 (10000036, 'IN10000036', '2025-04-05 00:00:00', 'PRES001', 'PRES_BY_018', 'PRES_PR_018', 350, 75.00, 9.00, 2362.50, 9.00, 2362.50, 30975.00, 'SAC998313', '27AABCA1235J1Z5', NOW(), NOW(), 0, 1),
 (10000037, 'IN10000037', '2025-04-08 00:00:00', 'PRES001', 'PRES_BY_019', 'PRES_PR_019', 800, 32.00, 9.00, 2304.00, 9.00, 2304.00, 30208.00, 'SAC998313', '27AABCA1235K1Z5', NOW(), NOW(), 0, 1);
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `assets`
+--
+
+-- Seed data for assets (file type samples)
+INSERT INTO `assets` (`module`, `sub_module`, `identifier`, `original_name`, `stored_name`, `mime_type`, `size_bytes`, `storage_path`, `visibility`, `company_id`, `created_by`, `updated_by`, `metadata`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+('seed','samples','filetypes','sample.csv','b1510eef-9243-41fe-b0e0-0ef85cc2a1ff_sample.csv','text/csv',23,'seed/samples/b1510eef-9243-41fe-b0e0-0ef85cc2a1ff_sample.csv','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'csv'), NOW(), NOW(), 0, 1),
+('seed','samples','filetypes','sample.txt','4a87878d-110f-43f4-ad12-e785575485de_sample.txt','text/plain',30,'seed/samples/4a87878d-110f-43f4-ad12-e785575485de_sample.txt','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'txt'), NOW(), NOW(), 0, 1),
+('seed','samples','filetypes','sample.pdf','a2949208-58b5-4dad-b73d-77aa0487c203_sample.pdf','application/pdf',45,'seed/samples/a2949208-58b5-4dad-b73d-77aa0487c203_sample.pdf','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'pdf'), NOW(), NOW(), 0, 1),
+('seed','samples','filetypes','sample.docx','1cb6c67a-dfb3-492b-874a-def894877924_sample.docx','application/vnd.openxmlformats-officedocument.wordprocessingml.document',151,'seed/samples/1cb6c67a-dfb3-492b-874a-def894877924_sample.docx','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'docx'), NOW(), NOW(), 0, 1),
+('seed','samples','filetypes','sample.xlsx','24f7df5d-95b4-4f78-97f2-e037d64e2814_sample.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',151,'seed/samples/24f7df5d-95b4-4f78-97f2-e037d64e2814_sample.xlsx','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'xlsx'), NOW(), NOW(), 0, 1),
+('seed','samples','filetypes','sample.xls','36ed1d57-fe95-44bd-924a-d5deda94fd84_sample.xls','application/vnd.ms-excel',16,'seed/samples/36ed1d57-fe95-44bd-924a-d5deda94fd84_sample.xls','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'xls'), NOW(), NOW(), 0, 1),
+('seed','samples','filetypes','sample.zip','26ff74df-70e5-4472-9528-b025d60ecf21_sample.zip','application/zip',128,'seed/samples/26ff74df-70e5-4472-9528-b025d60ecf21_sample.zip','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'zip'), NOW(), NOW(), 0, 1),
+('seed','samples','filetypes','sample.apk','c1d9cb48-10ea-4273-b922-43cbeec72c7b_sample.apk','application/vnd.android.package-archive',157,'seed/samples/c1d9cb48-10ea-4273-b922-43cbeec72c7b_sample.apk','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'apk'), NOW(), NOW(), 0, 1),
+('seed','samples','filetypes','sample.png','842086d1-8fc2-45b4-a885-68ccbaf55b95_sample.png','image/png',68,'seed/samples/842086d1-8fc2-45b4-a885-68ccbaf55b95_sample.png','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'png'), NOW(), NOW(), 0, 1),
+('seed','samples','filetypes','sample.jpg','f5b99a6e-889f-49bc-94e6-d24f009787d7_sample.jpg','image/jpeg',282,'seed/samples/f5b99a6e-889f-49bc-94e6-d24f009787d7_sample.jpg','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'jpg'), NOW(), NOW(), 0, 1);
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 -- Tamil (User ID: 1) - OWNER
 INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1, 1, 0, 1);
