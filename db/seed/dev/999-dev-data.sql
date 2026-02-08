@@ -751,9 +751,7 @@ ALTER TABLE `stock` ADD PRIMARY KEY (`stock_id_seq`);
 --
 -- Indexes for table `users`
 --
-ALTER TABLE `users`
-  -- ADD PRIMARY KEY (`id`),
-  ADD KEY `id` (`id`);
+ALTER TABLE `users` ADD KEY `id` (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
