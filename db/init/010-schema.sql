@@ -304,7 +304,7 @@ CREATE TABLE `production_shift` (
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `shift_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `prod_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `product_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `machine_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `shift_start_date` datetime DEFAULT NULL,
   `shift_end_date` datetime DEFAULT NULL,

@@ -13,7 +13,7 @@ const ProductionShift = sequelize.define(
         orderId: { type: DataTypes.STRING(20), field: 'order_id' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         shiftId: { type: DataTypes.STRING(20), field: 'shift_id' },
-        productId: { type: DataTypes.STRING(50), field: 'product_id' },
+        productId: { type: DataTypes.STRING(20), field: 'product_id' },
         machineId: { type: DataTypes.STRING(20), field: 'machine_id' },
         shiftStartDate: { type: DataTypes.DATE, field: 'shift_start_date' },
         shiftEndDate: { type: DataTypes.DATE, field: 'shift_end_date' },

@@ -31,7 +31,7 @@ const productionShiftService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: [['createDate', 'DESC']]
+                order: [['create_date', 'DESC']]
             });
             logger.info(`ProductionShiftService: Successfully retrieved ${rows.length} shifts out of ${count} total`);
             return {
