@@ -15,12 +15,12 @@ const Action = sequelize.define(
         isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
-        createDate: { type: DataTypes.DATE, allowNull: true, field: 'create_date' },
-        updateDate: { type: DataTypes.DATE, allowNull: true, field: 'update_date' },
     },
     {
         tableName: "actions",
-        timestamps: false,
+        timestamps: true,
+        createdAt: "create_date",
+        updatedAt: "update_date",
     }
 );
 

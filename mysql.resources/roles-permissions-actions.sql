@@ -1,11 +1,13 @@
 CREATE TABLE roles (
-  `created_by` INT DEFAULT NULL,
-  `updated_by` INT DEFAULT NULL,
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(100) UNIQUE NOT NULL,      -- e.g. ADMIN, MANAGER, VIEWER
   description TEXT,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 INSERT INTO roles (id, name, description, is_deleted, is_active) VALUES
@@ -19,13 +21,15 @@ INSERT INTO roles (id, name, description, is_deleted, is_active) VALUES
 (8, 'ACCOUNTANT', 'Accountant managing despatch and billing', 0, 1);
 
 CREATE TABLE actions (
-  `created_by` INT DEFAULT NULL,
-  `updated_by` INT DEFAULT NULL,
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(50) UNIQUE NOT NULL,        -- e.g. READ, CREATE, UPDATE, DELETE
   description TEXT,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 INSERT INTO actions (id, name, description, is_deleted, is_active) VALUES
@@ -37,15 +41,17 @@ INSERT INTO actions (id, name, description, is_deleted, is_active) VALUES
 (6, 'EXPORT', 'Export data', 0, 1);
 
 CREATE TABLE permissions (
-  `created_by` INT DEFAULT NULL,
-  `updated_by` INT DEFAULT NULL,
   id INT PRIMARY KEY AUTO_INCREMENT,
   resource VARCHAR(100) NOT NULL,          -- e.g. USER, ORDER, PRODUCT
   action_id INT NOT NULL,
   name VARCHAR(150) UNIQUE NOT NULL,       -- e.g. USER_READ, ORDER_DELETE
   description TEXT,
-  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_by` INT DEFAULT NULL,
+  `updated_by` INT DEFAULT NULL,
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (action_id) REFERENCES actions(id)
 );
 
@@ -79,10 +85,12 @@ INSERT INTO permissions (id, resource, action_id, name, description, is_deleted,
 CREATE TABLE role_permissions (
   role_id INT NOT NULL,
   permission_id INT NOT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
-  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (role_id, permission_id),
   FOREIGN KEY (role_id) REFERENCES roles(id),
   FOREIGN KEY (permission_id) REFERENCES permissions(id)
@@ -116,10 +124,12 @@ INSERT INTO role_permissions (role_id, permission_id, is_deleted, is_active) VAL
 CREATE TABLE role_actions (
   role_id INT NOT NULL,
   action_id INT NOT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
-  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (role_id, action_id),
   FOREIGN KEY (role_id) REFERENCES roles(id),
   FOREIGN KEY (action_id) REFERENCES actions(id)
@@ -130,12 +140,14 @@ INSERT INTO role_actions (role_id, action_id, is_deleted, is_active) VALUES
 (4, 1, 0, 1), (4, 2, 0, 1), (4, 3, 0, 1), (4, 5, 0, 1);
 
 CREATE TABLE user_roles (
-  user_id INT NOT NULL,
-  role_id INT NOT NULL,
+  `user_id` INT NOT NULL,
+  `role_id` INT NOT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
-  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id, role_id),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
