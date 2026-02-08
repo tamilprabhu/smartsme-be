@@ -5,6 +5,8 @@ Diecast API Backend
 # Shorthand script to generate private/public key for JWT
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
+DB_HOST=172.17.0.2 DB_NAME=smartsme DB_USER=smartsmeusr DB_PASS=sm@rtsmepwd npm run dev
+
 # Build custom mysql image
 docker build -f mysql.Dockerfile -t smartsme-mysql:8.0.23 .
 
