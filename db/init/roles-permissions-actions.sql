@@ -1,15 +1,3 @@
-CREATE TABLE roles (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(100) UNIQUE NOT NULL,      -- e.g. ADMIN, MANAGER, VIEWER
-  description TEXT,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `created_by` INT DEFAULT NULL,
-  `updated_by` INT DEFAULT NULL,
-  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
 INSERT INTO roles (id, name, description, is_deleted, is_active) VALUES
 (1, 'OWNER', 'Owner with all rights and permissions', 0, 1),
 (2, 'ADMIN', 'Administrator with all rights and permissions', 0, 1),
@@ -20,18 +8,6 @@ INSERT INTO roles (id, name, description, is_deleted, is_active) VALUES
 (7, 'SECONDARY_PROCESS_EMPLOYEE', 'Secondary process employee', 0, 1),
 (8, 'ACCOUNTANT', 'Accountant managing despatch and billing', 0, 1);
 
-CREATE TABLE actions (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(50) UNIQUE NOT NULL,        -- e.g. READ, CREATE, UPDATE, DELETE
-  description TEXT,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `created_by` INT DEFAULT NULL,
-  `updated_by` INT DEFAULT NULL,
-  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
 INSERT INTO actions (id, name, description, is_deleted, is_active) VALUES
 (1, 'CREATE', 'Create new records', 0, 1),
 (2, 'READ', 'View/Read records', 0, 1),
@@ -39,21 +15,6 @@ INSERT INTO actions (id, name, description, is_deleted, is_active) VALUES
 (4, 'DELETE', 'Delete records', 0, 1),
 (5, 'APPROVE', 'Approve records or transactions', 0, 1),
 (6, 'EXPORT', 'Export data', 0, 1);
-
-CREATE TABLE permissions (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  resource VARCHAR(100) NOT NULL,          -- e.g. USER, ORDER, PRODUCT
-  action_id INT NOT NULL,
-  name VARCHAR(150) UNIQUE NOT NULL,       -- e.g. USER_READ, ORDER_DELETE
-  description TEXT,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `created_by` INT DEFAULT NULL,
-  `updated_by` INT DEFAULT NULL,
-  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (action_id) REFERENCES actions(id)
-);
 
 -- Production Permissions
 INSERT INTO permissions (id, resource, action_id, name, description, is_deleted, is_active) VALUES
@@ -82,20 +43,6 @@ INSERT INTO permissions (id, resource, action_id, name, description, is_deleted,
 (17, 'COMPANY', 5, 'COMPANY_APPROVE', 'Approve company records', 0, 1),
 (18, 'COMPANY', 6, 'COMPANY_EXPORT', 'Export company data', 0, 1);
 
-CREATE TABLE role_permissions (
-  role_id INT NOT NULL,
-  permission_id INT NOT NULL,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `created_by` INT DEFAULT NULL,
-  `updated_by` INT DEFAULT NULL,
-  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (role_id, permission_id),
-  FOREIGN KEY (role_id) REFERENCES roles(id),
-  FOREIGN KEY (permission_id) REFERENCES permissions(id)
-);
-
 -- SHIFT_INCHARGE (Role ID: 4) - Production, Secondary Process
 INSERT INTO role_permissions (role_id, permission_id, is_deleted, is_active) VALUES
 -- Production permissions
@@ -121,37 +68,9 @@ INSERT INTO role_permissions (role_id, permission_id, is_deleted, is_active) VAL
 (3, 7, 0, 1), (3, 8, 0, 1), (3, 9, 0, 1), (3, 11, 0, 1), (3, 12, 0, 1),
 (3, 13, 0, 1), (3, 14, 0, 1), (3, 15, 0, 1), (3, 17, 0, 1), (3, 18, 0, 1);
 
-CREATE TABLE role_actions (
-  role_id INT NOT NULL,
-  action_id INT NOT NULL,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `created_by` INT DEFAULT NULL,
-  `updated_by` INT DEFAULT NULL,
-  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (role_id, action_id),
-  FOREIGN KEY (role_id) REFERENCES roles(id),
-  FOREIGN KEY (action_id) REFERENCES actions(id)
-);
-
 -- SHIFT_INCHARGE - Create, Read, Update, Approve
 INSERT INTO role_actions (role_id, action_id, is_deleted, is_active) VALUES
 (4, 1, 0, 1), (4, 2, 0, 1), (4, 3, 0, 1), (4, 5, 0, 1);
-
-CREATE TABLE user_roles (
-  `user_id` INT NOT NULL,
-  `role_id` INT NOT NULL,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `created_by` INT DEFAULT NULL,
-  `updated_by` INT DEFAULT NULL,
-  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (user_id, role_id),
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- Tamil (User ID: 1) - OWNER
 INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1, 1, 0, 1);
