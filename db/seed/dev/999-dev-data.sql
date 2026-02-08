@@ -814,6 +814,15 @@ ALTER TABLE `stock` MODIFY `stock_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCR
 --
 ALTER TABLE `users` MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
+--
+-- Indexes for table `invoice`
+--
+ALTER TABLE `invoice` ADD PRIMARY KEY (`invoice_seq`);
+
+--
+-- AUTO_INCREMENT for table `invoice`
+--
+ALTER TABLE `invoice` MODIFY `invoice_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038;
 
 -- --------------------------------------------------------
 --
@@ -832,9 +841,6 @@ INSERT INTO `assets` (`module`, `sub_module`, `identifier`, `original_name`, `st
 ('seed','samples','filetypes','sample.apk','c1d9cb48-10ea-4273-b922-43cbeec72c7b_sample.apk','application/vnd.android.package-archive',157,'seed/samples/c1d9cb48-10ea-4273-b922-43cbeec72c7b_sample.apk','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'apk'), NOW(), NOW(), 0, 1),
 ('seed','samples','filetypes','sample.png','842086d1-8fc2-45b4-a885-68ccbaf55b95_sample.png','image/png',68,'seed/samples/842086d1-8fc2-45b4-a885-68ccbaf55b95_sample.png','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'png'), NOW(), NOW(), 0, 1),
 ('seed','samples','filetypes','sample.jpg','f5b99a6e-889f-49bc-94e6-d24f009787d7_sample.jpg','image/jpeg',282,'seed/samples/f5b99a6e-889f-49bc-94e6-d24f009787d7_sample.jpg','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'jpg'), NOW(), NOW(), 0, 1);
-
-
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
@@ -886,19 +892,6 @@ INSERT INTO `invoice` (`invoice_seq`, `invoice_id`, `invoice_date`, `comp_id`, `
 (10000035, 'IN10000035', '2025-04-02 00:00:00', 'PRES001', 'PRES_BY_017', 'PRES_PR_017', 200, 125.00, 9.00, 2250.00, 9.00, 2250.00, 29500.00, 'SAC998313', '27AABCA1235I1Z5', NOW(), NOW(), 0, 1),
 (10000036, 'IN10000036', '2025-04-05 00:00:00', 'PRES001', 'PRES_BY_018', 'PRES_PR_018', 350, 75.00, 9.00, 2362.50, 9.00, 2362.50, 30975.00, 'SAC998313', '27AABCA1235J1Z5', NOW(), NOW(), 0, 1),
 (10000037, 'IN10000037', '2025-04-08 00:00:00', 'PRES001', 'PRES_BY_019', 'PRES_PR_019', 800, 32.00, 9.00, 2304.00, 9.00, 2304.00, 30208.00, 'SAC998313', '27AABCA1235K1Z5', NOW(), NOW(), 0, 1);
-
---
--- Indexes for table `invoice`
---
-ALTER TABLE `invoice`
-  ADD PRIMARY KEY (`invoice_seq`);
-
---
--- AUTO_INCREMENT for table `invoice`
---
-ALTER TABLE `invoice`
-  MODIFY `invoice_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000038;
-
 
 -- Tamil (User ID: 1) - OWNER
 INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES (1, 1, 0, 1);
@@ -986,3 +979,5 @@ INSERT INTO user_roles (user_id, role_id, is_deleted, is_active) VALUES
 -- SECONDARY_PROCESS_EMPLOYEE: 6 users
 -- ACCOUNTANT: 2 users
 -- Total: 37 users
+
+COMMIT;
