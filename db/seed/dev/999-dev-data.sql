@@ -860,29 +860,14 @@ ALTER TABLE `users` MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000
 ALTER TABLE `user_roles` ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 --
--- Indexes for table `buyer`
---
-ALTER TABLE `buyer` ADD PRIMARY KEY (`buyer_id_seq`);
-
---
 -- AUTO_INCREMENT for table `buyer`
 --
 ALTER TABLE `buyer` MODIFY `buyer_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 
 --
--- Indexes for table `company`
---
-ALTER TABLE `company` ADD PRIMARY KEY (`company_id_seq`);
-
---
 -- AUTO_INCREMENT for table `company`
 --
 ALTER TABLE `company` MODIFY `company_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-
---
--- Indexes for table `dispatch`
---
-ALTER TABLE `dispatch` ADD PRIMARY KEY (`dispatch_id_seq`);
 
 --
 -- AUTO_INCREMENT for table `dispatch`
@@ -897,13 +882,7 @@ ALTER TABLE `employee` MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUT
 --
 -- AUTO_INCREMENT for table `employee`
 --
-ALTER TABLE `employee` MODIFY `employee_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 ALTER TABLE `employee` ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE;
-
---
--- Indexes for table `machine`
---
-ALTER TABLE `machine` ADD PRIMARY KEY (`machine_id_seq`);
 
 --
 -- AUTO_INCREMENT for table `machine`
@@ -911,19 +890,9 @@ ALTER TABLE `machine` ADD PRIMARY KEY (`machine_id_seq`);
 ALTER TABLE `machine` MODIFY `machine_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 
 --
--- Indexes for table `order`
---
-ALTER TABLE `order` ADD PRIMARY KEY (`order_id_seq`);
-
---
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order` MODIFY `order_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-
---
--- Indexes for table `product`
---
-ALTER TABLE `product` ADD PRIMARY KEY (`prod_id_seq`);
 
 --
 -- AUTO_INCREMENT for table `product`
@@ -931,19 +900,9 @@ ALTER TABLE `product` ADD PRIMARY KEY (`prod_id_seq`);
 ALTER TABLE `product` MODIFY `prod_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 
 --
--- Indexes for table `production_shift`
---
-ALTER TABLE `production_shift` ADD PRIMARY KEY (`shift_id_seq`);
-
---
 -- AUTO_INCREMENT for table `production_shift`
 --
 ALTER TABLE `production_shift` MODIFY `shift_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-
---
--- Indexes for table `seller`
---
-ALTER TABLE `seller` ADD PRIMARY KEY (`seller_id_seq`);
 
 --
 -- AUTO_INCREMENT for table `seller`
@@ -951,23 +910,9 @@ ALTER TABLE `seller` ADD PRIMARY KEY (`seller_id_seq`);
 ALTER TABLE `seller` MODIFY `seller_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 
 --
--- Indexes for table `stock`
---
-ALTER TABLE `stock` ADD PRIMARY KEY (`stock_id_seq`);
-
---
 -- AUTO_INCREMENT for table `stock`
 --
 ALTER TABLE `stock` MODIFY `stock_id_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- Indexes for table `invoice`
---
-ALTER TABLE `invoice` ADD PRIMARY KEY (`invoice_seq`);
 
 --
 -- AUTO_INCREMENT for table `invoice`

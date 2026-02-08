@@ -95,7 +95,6 @@ CREATE TABLE user_roles (
   `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id, role_id),
---   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
@@ -113,7 +112,8 @@ CREATE TABLE `buyer` (
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`buyer_id_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `company` (
@@ -137,7 +137,8 @@ CREATE TABLE `company` (
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`company_id_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `dispatch` (
@@ -157,7 +158,8 @@ CREATE TABLE `dispatch` (
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`dispatch_id_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `employee` (
@@ -174,7 +176,6 @@ CREATE TABLE `employee` (
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`employee_id_seq`),
   KEY `idx_employee_id_seq` (`employee_id_seq`)
---   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `machine` (
@@ -191,7 +192,8 @@ CREATE TABLE `machine` (
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`machine_id_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `order` (
@@ -213,7 +215,8 @@ CREATE TABLE `order` (
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`order_id_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `order_quantity` (
@@ -275,7 +278,8 @@ CREATE TABLE `product` (
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`prod_id_seq`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `prod_hourly` (
@@ -320,7 +324,8 @@ CREATE TABLE `production_shift` (
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`shift_id_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `seller` (
@@ -336,7 +341,8 @@ CREATE TABLE `seller` (
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`seller_id_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `stock` (
@@ -353,7 +359,8 @@ CREATE TABLE `stock` (
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`stock_id_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `invoice` (
@@ -377,7 +384,8 @@ CREATE TABLE `invoice` (
   `created_by` INT DEFAULT NULL,
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`invoice_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `assets` (
