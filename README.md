@@ -20,15 +20,15 @@ docker run -d --name smartsme-mysql \
 docker build -t smartsme-be:0.0.1 .
 
 # Launch image
-docker run -d \
+docker run -d --name smartsme-be \
   -e NODE_ENV=production \
-  -e PORT=8080 \
+  -e PORT=80 \
   -e DB_HOST=172.17.0.2 \
   -e DB_PORT=3306 \
   -e DB_NAME=smartsme \
   -e DB_USER=smartsmeusr \
   -e DB_PASS='sm@rtsmepwd' \
-  -p 80:8080 \
+  -p 80:80 \
   smartsme-be:0.0.1
 docker logs smartsme-be --follow
 
