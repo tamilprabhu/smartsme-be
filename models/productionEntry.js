@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../db/sequelize");
 
-const ProdHourly = sequelize.define(
-    "ProdHourly",
+const ProductionEntry = sequelize.define(
+    "ProductionEntry",
     {
         orderId: {
             type: DataTypes.STRING(20),
@@ -29,4 +29,4 @@ const ProdHourly = sequelize.define(
     }
 );
 
-module.exports = ProdHourly;
+module.exports = ProductionEntry;

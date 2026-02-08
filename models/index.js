@@ -10,7 +10,7 @@ const Company = require("./company");
 const Employee = require("./employee");
 const ProductionShift = require("./productionShift");
 const Product = require("./product");
-const ProdHourly = require("./prodHourly");
+const ProductionEntry = require("./productionEntry");
 const Machine = require("./machine");
 const Order = require("./order");
 const OrderQuantity = require("./orderQuantity");
@@ -60,7 +60,7 @@ module.exports = {
     Employee,
     ProductionShift,
     Product,
-    ProdHourly,
+    ProductionEntry,
     Machine,
     Order,
     OrderQuantity,
