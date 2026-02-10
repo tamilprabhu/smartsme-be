@@ -1,4 +1,4 @@
-const { Employee } = require("../models");
+const { Employee, User, UserRole, Role } = require("../models");
 const { Op } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
@@ -160,6 +160,36 @@ const employeeService = {
             return { message: "Employee deleted successfully" };
         } catch (error) {
             logger.error(`EmployeeService: Failed to delete employee with ID: ${id}`, { 
+                error: error.message, 
+                stack: error.stack 
+            });
+            throw error;
+        }
+    },
+
+    getEmployeesByRole: async (roleName, companyId) => {
+        logger.info(`EmployeeService: Fetching employees with role: ${roleName} for company: ${companyId}`);
+        try {
+            const employees = await Employee.findAll({
+                where: { companyId },
+                include: [{
+                    model: User,
+                    required: true,
+                    include: [{
+                        model: Role,
+                        through: { 
+                            model: UserRole,
+                            attributes: []
+                        },
+                        where: { name: roleName },
+                        required: true
+                    }]
+                }]
+            });
+            logger.info(`EmployeeService: Successfully retrieved ${employees.length} employees with role: ${roleName}`);
+            return employees;
+        } catch (error) {
+            logger.error(`EmployeeService: Failed to fetch employees by role: ${roleName}`, { 
                 error: error.message, 
                 stack: error.stack 
             });

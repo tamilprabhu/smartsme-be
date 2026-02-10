@@ -74,4 +74,16 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
 });
 
+// Get employees by role
+router.get('/role/:roleName', authenticateToken, async (req, res) => {
+    try {
+        const companyId = req.auth.getPrimaryCompanyId();
+        const roleName = req.params.roleName;
+        const employees = await employeeService.getEmployeesByRole(roleName, companyId);
+        res.json(employees);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;
