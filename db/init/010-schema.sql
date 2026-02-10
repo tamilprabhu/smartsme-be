@@ -310,6 +310,7 @@ CREATE TABLE `production_shift` (
   `shift_end_date` datetime DEFAULT NULL,
   `entry_type` varchar(6) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `shift_type` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `shift_hours` varchar(2) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `operator1` int DEFAULT NULL,
   `operator2` int DEFAULT NULL,
   `operator3` int DEFAULT NULL,

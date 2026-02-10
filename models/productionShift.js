@@ -19,6 +19,7 @@ const ProductionShift = sequelize.define(
         shiftEndDate: { type: DataTypes.DATE, field: 'shift_end_date' },
         entryType: { type: DataTypes.STRING(6), field: 'entry_type' },
         shiftType: { type: DataTypes.CHAR(1), field: 'shift_type' },
+        shiftHours: { type: DataTypes.STRING(2), field: 'shift_hours' },
         operator1: { type: DataTypes.INTEGER },
         operator2: { type: DataTypes.INTEGER },
         operator3: { type: DataTypes.INTEGER },
