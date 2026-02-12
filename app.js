@@ -31,12 +31,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Serve Angular static files
-app.use('/web', express.static(path.join(__dirname, 'www')));
-
-// SPA fallback (VERY IMPORTANT)
+// Serve smartsme-ionic (Angular) static files
+app.use('/web', express.static(path.join(__dirname, 'www/client')));
 app.get('/web/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'www/index.html'));
+  res.sendFile(path.join(__dirname, 'www/client/index.html'));
+});
+
+// Serve smartsme-admin (React) static files
+app.use('/admin', express.static(path.join(__dirname, 'www/admin')));
+app.get('/admin/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'www/admin/index.html'));
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
