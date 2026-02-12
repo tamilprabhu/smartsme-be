@@ -137,4 +137,29 @@ router.get("/me", authenticate, async (req, res) => {
     }
 });
 
+// POST /auth/change-password
+router.post("/change-password", authenticate, async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    logger.info("Change password attempt", { 
+        userId: req.auth.sub,
+        username: req.auth.username,
+        ip: req.ip 
+    });
+    try {
+        await authService.changePassword(req.auth.sub, currentPassword, newPassword);
+        logger.info("Password changed successfully", { 
+            userId: req.auth.sub,
+            username: req.auth.username 
+        });
+        res.json({ message: "Password changed successfully" });
+    } catch (err) {
+        logger.warn("Password change failed", { 
+            userId: req.auth.sub,
+            error: err.message,
+            ip: req.ip 
+        });
+        res.status(400).json({ error: err.message });
+    }
+});
+
 module.exports = router;

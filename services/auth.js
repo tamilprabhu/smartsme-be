@@ -194,6 +194,32 @@ const authService = {
             logger.error("Logout service error", { error: error.message });
             throw error;
         }
+    },
+
+    // Change password
+    changePassword: async (userId, currentPassword, newPassword) => {
+        logger.debug("Change password service called", { userId });
+        try {
+            const user = await User.findByPk(userId);
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+            if (!isPasswordValid) {
+                logger.warn("Invalid current password", { userId });
+                throw new Error("Current password is incorrect");
+            }
+
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            await user.update({ password: hashedPassword });
+
+            logger.info("Password changed successfully", { userId });
+            return { message: "Password changed successfully" };
+        } catch (error) {
+            logger.error("Change password service error", { userId, error: error.message });
+            throw error;
+        }
     }
 };
 
