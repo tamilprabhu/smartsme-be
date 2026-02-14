@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../db/sequelize");
 
+// TODO: Investigate whether this model is required
 const ProductionEntry = sequelize.define(
     "ProductionEntry",
     {
