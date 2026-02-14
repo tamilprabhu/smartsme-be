@@ -18,6 +18,39 @@ router.get('/', authenticateToken, async (req, res) => {
     }
 });
 
+// Get employees by role
+router.get('/role/:roleName', authenticateToken, async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
+        const search = req.query.search || '';
+
+        const companyId = req.auth.getPrimaryCompanyId();
+        const excludeUserId = req.auth.getUserId();
+        const roleNames = req.params.roleName
+            .split(',')
+            .map(role => role.trim())
+            .filter(Boolean);
+
+        if (!roleNames.length) {
+            return res.status(400).json({ error: 'roleName param is required' });
+        }
+
+        const result = await employeeService.getEmployeesByRole(roleNames, companyId, {
+            excludeUserId,
+            page,
+            itemsPerPage,
+            search
+        });
+        res.json({
+            ...result,
+            items: employeeService.toEmployeeDropdownList(result.items)
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Get employee by ID
 router.get('/:id', authenticateToken, async (req, res) => {
     try {
@@ -70,18 +103,6 @@ router.delete('/:id', authenticateToken, async (req, res) => {
         if (error.message === 'Employee not found') {
             return res.status(404).json({ error: error.message });
         }
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Get employees by role
-router.get('/role/:roleName', authenticateToken, async (req, res) => {
-    try {
-        const companyId = req.auth.getPrimaryCompanyId();
-        const roleName = req.params.roleName;
-        const employees = await employeeService.getEmployeesByRole(roleName, companyId);
-        res.json(employees);
-    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });

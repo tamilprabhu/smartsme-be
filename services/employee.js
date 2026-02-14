@@ -1,5 +1,5 @@
 const { Employee, User, UserRole, Role } = require("../models");
-const { Op } = require("sequelize");
+const { Op, col, where } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 
@@ -167,34 +167,109 @@ const employeeService = {
         }
     },
 
-    getEmployeesByRole: async (roleName, companyId) => {
-        logger.info(`EmployeeService: Fetching employees with role: ${roleName} for company: ${companyId}`);
+    getEmployeesByRole: async (roleNames, companyId, options = {}) => {
+        const safeRoleNames = Array.isArray(roleNames) ? roleNames : [roleNames];
+        const {
+            excludeUserId,
+            page = 1,
+            itemsPerPage = ItemsPerPage.TEN,
+            search = ''
+        } = options;
+
+        const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
+        logger.info(`EmployeeService: Fetching employees with roles: ${safeRoleNames.join(', ')} for company: ${companyId}`);
         try {
-            const employees = await Employee.findAll({
-                where: { companyId },
+            const offset = (page - 1) * validLimit;
+            const employeeWhere = {
+                companyId,
+                isActive: true,
+                isDeleted: false,
+                ...(excludeUserId ? { userId: { [Op.ne]: excludeUserId } } : {})
+            };
+
+            if (search) {
+                employeeWhere[Op.or] = [
+                    { employeeIdSeq: { [Op.like]: `%${search}%` } },
+                    { userId: { [Op.like]: `%${search}%` } },
+                    where(col('User.first_name'), { [Op.like]: `%${search}%` }),
+                    where(col('User.last_name'), { [Op.like]: `%${search}%` }),
+                    where(col('User.name'), { [Op.like]: `%${search}%` }),
+                    where(col('User.email'), { [Op.like]: `%${search}%` }),
+                    where(col('User.mobile'), { [Op.like]: `%${search}%` })
+                ];
+            }
+
+            const userWhere = {
+                isActive: true,
+                isDeleted: false
+            };
+
+            const { count, rows } = await Employee.findAndCountAll({
+                where: {
+                    ...employeeWhere
+                },
+                distinct: true,
+                subQuery: false,
+                limit: validLimit,
+                offset,
+                order: [['employeeIdSeq', 'ASC']],
                 include: [{
                     model: User,
                     required: true,
+                    where: userWhere,
                     include: [{
                         model: Role,
-                        through: { 
+                        through: {
                             model: UserRole,
-                            attributes: []
+                            attributes: [],
+                            where: { isActive: true, isDeleted: false }
                         },
-                        where: { name: roleName },
+                        where: {
+                            name: { [Op.in]: safeRoleNames },
+                            isActive: true,
+                            isDeleted: false
+                        },
                         required: true
                     }]
                 }]
             });
-            logger.info(`EmployeeService: Successfully retrieved ${employees.length} employees with role: ${roleName}`);
-            return employees;
+
+            logger.info(`EmployeeService: Successfully retrieved ${rows.length} employees with roles: ${safeRoleNames.join(', ')}`);
+            return {
+                items: rows,
+                paging: {
+                    currentPage: page,
+                    totalPages: Math.ceil(count / validLimit),
+                    itemsPerPage: validLimit,
+                    totalItems: count
+                }
+            };
         } catch (error) {
-            logger.error(`EmployeeService: Failed to fetch employees by role: ${roleName}`, { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error(`EmployeeService: Failed to fetch employees by roles: ${safeRoleNames.join(', ')}`, {
+                error: error.message,
+                stack: error.stack
             });
             throw error;
         }
+    },
+
+    toEmployeeDropdownList: (employees) => {
+        const uniqueByUserId = new Map();
+        for (const employee of employees) {
+            if (!uniqueByUserId.has(employee.userId)) {
+                const user = employee.User;
+                const displayName = (user?.firstName && user?.lastName)
+                    ? `${user.firstName} ${user.lastName}`
+                    : (user?.name || `User ${employee.userId}`);
+                uniqueByUserId.set(employee.userId, {
+                    value: employee.userId,
+                    label: `${displayName} (${employee.employeeIdSeq})`,
+                    userId: employee.userId,
+                    employeeId: employee.employeeIdSeq
+                });
+            }
+        }
+        return Array.from(uniqueByUserId.values());
     }
 };
 
