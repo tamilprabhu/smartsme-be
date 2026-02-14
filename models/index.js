@@ -47,6 +47,16 @@ User.hasOne(Employee, { foreignKey: 'userId' });
 Employee.belongsTo(Company, { foreignKey: 'companyId', targetKey: 'companyId' });
 Company.hasMany(Employee, { foreignKey: 'companyId', sourceKey: 'companyId' });
 
+// Production shift associations
+ProductionShift.belongsTo(Product, { foreignKey: 'productId', targetKey: 'prodId' });
+Product.hasMany(ProductionShift, { foreignKey: 'productId', sourceKey: 'prodId' });
+
+ProductionShift.belongsTo(Machine, { foreignKey: 'machineId', targetKey: 'machineId' });
+Machine.hasMany(ProductionShift, { foreignKey: 'machineId', sourceKey: 'machineId' });
+
+ProductionShift.belongsTo(Order, { foreignKey: 'orderId', targetKey: 'orderId' });
+Order.hasMany(ProductionShift, { foreignKey: 'orderId', sourceKey: 'orderId' });
+
 module.exports = {
     sequelize,
     User,

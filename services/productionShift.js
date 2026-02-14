@@ -1,5 +1,5 @@
-const { ProductionShift } = require("../models");
-const { Op, col } = require("sequelize");
+const { ProductionShift, Product, Machine, Order } = require("../models");
+const { Op, col, where, fn } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
@@ -37,18 +37,41 @@ const productionShiftService = {
             const offset = (page - 1) * validLimit;
             
             const whereClause = {};
+            const trimmedSearch = (search || '').trim();
             
             if (companyId) {
                 whereClause.companyId = companyId;
             }
             
-            if (search) {
+            const include = [
+                {
+                    model: Product,
+                    attributes: [],
+                    required: false
+                },
+                {
+                    model: Machine,
+                    attributes: [],
+                    required: false
+                },
+                {
+                    model: Order,
+                    attributes: [],
+                    required: false
+                }
+            ];
+
+            if (trimmedSearch) {
+                const likeValue = `%${trimmedSearch.toLowerCase()}%`;
                 whereClause[Op.or] = [
-                    { orderId: { [Op.like]: `%${search}%` } },
-                    { shiftId: { [Op.like]: `%${search}%` } },
-                    { prodName: { [Op.like]: `%${search}%` } },
-                    { machineId: { [Op.like]: `%${search}%` } },
-                    { shiftType: { [Op.like]: `%${search}%` } }
+                    where(fn('LOWER', col("ProductionShift.order_id")), { [Op.like]: likeValue }),
+                    where(fn('LOWER', col("ProductionShift.shift_id")), { [Op.like]: likeValue }),
+                    where(fn('LOWER', col("ProductionShift.product_id")), { [Op.like]: likeValue }),
+                    where(fn('LOWER', col("ProductionShift.machine_id")), { [Op.like]: likeValue }),
+                    where(fn('LOWER', col("ProductionShift.shift_type")), { [Op.like]: likeValue }),
+                    where(fn('LOWER', col("Product.prod_name")), { [Op.like]: likeValue }),
+                    where(fn('LOWER', col("Machine.machine_name")), { [Op.like]: likeValue }),
+                    where(fn('LOWER', col("Order.order_name")), { [Op.like]: likeValue })
                 ];
             }
             
@@ -56,7 +79,8 @@ const productionShiftService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildProductionShiftOrder(sortBy, sortOrder)
+                order: buildProductionShiftOrder(sortBy, sortOrder),
+                include
             });
             logger.info(`ProductionShiftService: Successfully retrieved ${rows.length} shifts out of ${count} total`);
             return {
