@@ -4,6 +4,7 @@ const companyService = require("../services/company");
 const optionalAuth = require("../middlewares/optionalAuth");
 const authenticate = require("../middlewares/authenticate");
 const { SYSTEM_ROLES } = require("../constants/roles");
+const { SortBy, SortOrder } = require("../constants/sort");
 
 // Helper function to check permissions
 const hasPermission = (userRoles, requiredPermission) => {
@@ -19,13 +20,15 @@ router.get("/", optionalAuth, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
+    const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
+    const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
     
     try {
         if (!hasPermission(req.auth.roles, 'COMPANY_READ')) {
             return res.status(403).json({ error: "Insufficient permissions" });
         }
 
-        const result = await companyService.getAllCompanies(page, itemsPerPage, search);
+        const result = await companyService.getAllCompanies(page, itemsPerPage, search, sortBy, sortOrder);
         res.json(result);
     } catch (err) {
         res.status(500).json({ error: "Internal server error" });

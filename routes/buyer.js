@@ -3,6 +3,7 @@ const router = express.Router();
 const buyerService = require("../services/buyer");
 const authenticate = require("../middlewares/authenticate");
 const logger = require("../config/logger");
+const { SortBy, SortOrder } = require("../constants/sort");
 
 // GET /buyers - Get all buyers with pagination and search
 router.get("/", authenticate, async (req, res) => {
@@ -10,6 +11,8 @@ router.get("/", authenticate, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
+    const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
+    const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
     
     logger.info(`BuyerRoute: GET /buyers - Request started`, { 
         requestId: requestId,
@@ -21,7 +24,7 @@ router.get("/", authenticate, async (req, res) => {
     
     try {
         const companyId = req.auth.getPrimaryCompanyId();
-        const result = await buyerService.getAllBuyers(page, itemsPerPage, search, companyId);
+        const result = await buyerService.getAllBuyers(page, itemsPerPage, search, companyId, sortBy, sortOrder);
         logger.info(`BuyerRoute: GET /buyers - Request completed successfully`, { 
             requestId: requestId,
             buyerCount: result.items.length,

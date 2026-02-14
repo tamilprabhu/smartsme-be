@@ -3,6 +3,7 @@ const router = express.Router();
 const userService = require('../services/user');
 const authenticate = require('../middlewares/authenticate');
 const logger = require('../config/logger');
+const { SortBy, SortOrder } = require('../constants/sort');
 
 // GET /users - Get all users with pagination and search
 router.get('/', authenticate, async (req, res) => {
@@ -11,6 +12,8 @@ router.get('/', authenticate, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
+    const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
+    const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
     
     logger.info('GET /users - Fetching users with pagination', { 
         requestId, 
@@ -21,7 +24,7 @@ router.get('/', authenticate, async (req, res) => {
     });
     
     try {
-        const result = await userService.getAllUsers(page, itemsPerPage, search);
+        const result = await userService.getAllUsers(page, itemsPerPage, search, sortBy, sortOrder);
         logger.info(`GET /users - Successfully retrieved ${result.items.length} users`, { 
             requestId, 
             username,

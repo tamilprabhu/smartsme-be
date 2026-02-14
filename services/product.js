@@ -2,10 +2,20 @@ const { Product } = require("../models");
 const { Op } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
+const { SortBy, SortOrder } = require("../constants/sort");
+const { buildSortOrder } = require("../utils/sort");
 
 const productService = {
     // Get all products with pagination and search
-    getAllProducts: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId, userId) => {
+    getAllProducts: async (
+        page = 1,
+        itemsPerPage = ItemsPerPage.TEN,
+        search = '',
+        companyId,
+        userId,
+        sortBy = SortBy.SEQUENCE,
+        sortOrder = SortOrder.DESC
+    ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
         logger.info(`ProductService: Fetching products - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}, userId: ${userId}`);
         try {
@@ -27,7 +37,7 @@ const productService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: [['prodIdSeq', 'ASC']]
+                order: buildSortOrder(sortBy, sortOrder, 'prod_id_seq')
             });
             logger.info(`ProductService: Successfully retrieved ${rows.length} products out of ${count} total for company ${companyId}`);
             return {

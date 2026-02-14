@@ -3,6 +3,7 @@ const router = express.Router();
 const invoiceService = require("../services/invoice");
 const authenticate = require("../middlewares/authenticate");
 const logger = require("../config/logger");
+const { SortBy, SortOrder } = require("../constants/sort");
 
 // GET /invoices - Get all invoices with pagination and search
 router.get("/", authenticate, async (req, res) => {
@@ -10,6 +11,8 @@ router.get("/", authenticate, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
+    const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
+    const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
     
     logger.info(`InvoiceRoute: GET /invoices - Request started`, { 
         requestId: requestId,
@@ -21,7 +24,7 @@ router.get("/", authenticate, async (req, res) => {
     
     try {
         const companyId = req.auth.getPrimaryCompanyId();
-        const result = await invoiceService.getAllInvoices(page, itemsPerPage, search, companyId);
+        const result = await invoiceService.getAllInvoices(page, itemsPerPage, search, companyId, sortBy, sortOrder);
         logger.info(`InvoiceRoute: GET /invoices - Request completed successfully`, { 
             requestId: requestId,
             invoiceCount: result.items.length,

@@ -2,9 +2,18 @@ const { Stock } = require("../models");
 const { Op } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
+const { SortBy, SortOrder } = require("../constants/sort");
+const { buildSortOrder } = require("../utils/sort");
 
 const stockService = {
-    getAllStocks: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
+    getAllStocks: async (
+        page = 1,
+        itemsPerPage = ItemsPerPage.TEN,
+        search = '',
+        companyId = null,
+        sortBy = SortBy.SEQUENCE,
+        sortOrder = SortOrder.DESC
+    ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
         logger.info(`StockService: Fetching stocks - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
@@ -35,7 +44,7 @@ const stockService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: [['stockIdSeq', 'DESC']]
+                order: buildSortOrder(sortBy, sortOrder, 'stock_id_seq')
             });
             logger.info(`StockService: Successfully retrieved ${rows.length} stocks out of ${count} total for company: ${companyId}`);
             return {

@@ -2,9 +2,18 @@ const { ProductionEntry } = require("../models");
 const { Op } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
+const { SortBy, SortOrder } = require("../constants/sort");
+const { buildSortOrder } = require("../utils/sort");
 
 const productionEntryService = {
-    getAllProdEntries: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId) => {
+    getAllProdEntries: async (
+        page = 1,
+        itemsPerPage = ItemsPerPage.TEN,
+        search = '',
+        companyId,
+        sortBy = SortBy.SEQUENCE,
+        sortOrder = SortOrder.DESC
+    ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
         logger.info(`ProductionEntryService: Fetching production entries - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
@@ -24,7 +33,7 @@ const productionEntryService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: [['shiftStartTime', 'DESC']]
+                order: buildSortOrder(sortBy, sortOrder, 'shift_start_time')
             });
             logger.info(`ProductionEntryService: Successfully retrieved ${rows.length} production entries out of ${count} total for company ${companyId}`);
             return {

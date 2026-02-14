@@ -2,10 +2,19 @@ const { Machine } = require("../models");
 const { Op } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
+const { SortBy, SortOrder } = require("../constants/sort");
+const { buildSortOrder } = require("../utils/sort");
 
 const machineService = {
     // Get all machines with pagination and search
-    getAllMachines: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
+    getAllMachines: async (
+        page = 1,
+        itemsPerPage = ItemsPerPage.TEN,
+        search = '',
+        companyId = null,
+        sortBy = SortBy.SEQUENCE,
+        sortOrder = SortOrder.DESC
+    ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
         logger.info(`MachineService: Fetching machines - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
@@ -36,7 +45,7 @@ const machineService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: [['machineIdSeq', 'ASC']]
+                order: buildSortOrder(sortBy, sortOrder, 'machine_id_seq')
             });
             logger.info(`MachineService: Successfully retrieved ${rows.length} machines out of ${count} total for company: ${companyId}`);
             return {

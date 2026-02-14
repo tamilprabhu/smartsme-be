@@ -2,9 +2,18 @@ const { Dispatch } = require("../models");
 const { Op } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
+const { SortBy, SortOrder } = require("../constants/sort");
+const { buildSortOrder } = require("../utils/sort");
 
 const dispatchService = {
-    getAllDispatches: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
+    getAllDispatches: async (
+        page = 1,
+        itemsPerPage = ItemsPerPage.TEN,
+        search = '',
+        companyId = null,
+        sortBy = SortBy.SEQUENCE,
+        sortOrder = SortOrder.DESC
+    ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
         logger.info(`DispatchService: Fetching dispatches - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
@@ -35,7 +44,7 @@ const dispatchService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: [['dispatchIdSeq', 'DESC']]
+                order: buildSortOrder(sortBy, sortOrder, 'dispatch_id_seq')
             });
             logger.info(`DispatchService: Successfully retrieved ${rows.length} dispatches out of ${count} total for company: ${companyId}`);
             return {

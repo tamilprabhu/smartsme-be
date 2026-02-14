@@ -2,10 +2,18 @@ const { User } = require("../models");
 const { Op } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
+const { SortBy, SortOrder } = require("../constants/sort");
+const { buildSortOrder } = require("../utils/sort");
 
 const userService = {
     // Get all users with pagination and search
-    getAllUsers: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '') => {
+    getAllUsers: async (
+        page = 1,
+        itemsPerPage = ItemsPerPage.TEN,
+        search = '',
+        sortBy = SortBy.SEQUENCE,
+        sortOrder = SortOrder.DESC
+    ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
         logger.info(`UserService: Fetching users - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
         try {
@@ -25,7 +33,7 @@ const userService = {
                 attributes: { exclude: ['password'] },
                 limit: validLimit,
                 offset: offset,
-                order: [['id', 'ASC']]
+                order: buildSortOrder(sortBy, sortOrder, 'id')
             });
             logger.info(`UserService: Successfully retrieved ${rows.length} users out of ${count} total`);
             return {

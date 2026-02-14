@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const productionEntryService = require('../services/productionEntry');
 const authenticateToken = require('../middlewares/authenticate');
+const { SortBy, SortOrder } = require('../constants/sort');
 
 // Get all production entries with pagination and search
 router.get('/', authenticateToken, async (req, res) => {
@@ -9,9 +10,11 @@ router.get('/', authenticateToken, async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
         const search = req.query.search || '';
+        const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
+        const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
         const companyId = req.auth.getPrimaryCompanyId();
         
-        const result = await productionEntryService.getAllProdEntries(page, itemsPerPage, search, companyId);
+        const result = await productionEntryService.getAllProdEntries(page, itemsPerPage, search, companyId, sortBy, sortOrder);
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });

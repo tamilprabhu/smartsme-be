@@ -2,9 +2,18 @@ const { Seller } = require("../models");
 const { Op } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
+const { SortBy, SortOrder } = require("../constants/sort");
+const { buildSortOrder } = require("../utils/sort");
 
 const sellerService = {
-    getAllSellers: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
+    getAllSellers: async (
+        page = 1,
+        itemsPerPage = ItemsPerPage.TEN,
+        search = '',
+        companyId = null,
+        sortBy = SortBy.SEQUENCE,
+        sortOrder = SortOrder.DESC
+    ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
         logger.info(`SellerService: Fetching sellers - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
@@ -35,7 +44,7 @@ const sellerService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: [['sellerIdSeq', 'ASC']]
+                order: buildSortOrder(sortBy, sortOrder, 'seller_id_seq')
             });
             logger.info(`SellerService: Successfully retrieved ${rows.length} sellers out of ${count} total for company: ${companyId}`);
             return {

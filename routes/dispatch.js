@@ -3,6 +3,7 @@ const router = express.Router();
 const dispatchService = require("../services/dispatch");
 const authenticate = require("../middlewares/authenticate");
 const logger = require("../config/logger");
+const { SortBy, SortOrder } = require("../constants/sort");
 
 // GET /dispatches - Get all dispatches with pagination and search
 router.get("/", authenticate, async (req, res) => {
@@ -10,6 +11,8 @@ router.get("/", authenticate, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
+    const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
+    const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
     
     logger.info(`DispatchRoute: GET /dispatches - Request started`, { 
         requestId: requestId,
@@ -21,7 +24,7 @@ router.get("/", authenticate, async (req, res) => {
     
     try {
         const companyId = req.auth.getPrimaryCompanyId();
-        const result = await dispatchService.getAllDispatches(page, itemsPerPage, search, companyId);
+        const result = await dispatchService.getAllDispatches(page, itemsPerPage, search, companyId, sortBy, sortOrder);
         logger.info(`DispatchRoute: GET /dispatches - Request completed successfully`, { 
             requestId: requestId,
             dispatchCount: result.items.length,

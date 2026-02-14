@@ -2,10 +2,19 @@ const { Invoice } = require("../models");
 const { Op } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
+const { SortBy, SortOrder } = require("../constants/sort");
+const { buildSortOrder } = require("../utils/sort");
 
 const invoiceService = {
     // Get all invoices with pagination and search
-    getAllInvoices: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
+    getAllInvoices: async (
+        page = 1,
+        itemsPerPage = ItemsPerPage.TEN,
+        search = '',
+        companyId = null,
+        sortBy = SortBy.SEQUENCE,
+        sortOrder = SortOrder.DESC
+    ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
         logger.info(`InvoiceService: Fetching invoices - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
@@ -36,7 +45,7 @@ const invoiceService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: [['invoiceSeq', 'ASC']]
+                order: buildSortOrder(sortBy, sortOrder, 'invoice_seq')
             });
             logger.info(`InvoiceService: Successfully retrieved ${rows.length} invoices out of ${count} total for company: ${companyId}`);
             return {

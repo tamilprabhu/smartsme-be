@@ -3,6 +3,7 @@ const router = express.Router();
 const orderService = require("../services/order");
 const authenticate = require("../middlewares/authenticate");
 const logger = require("../config/logger");
+const { SortBy, SortOrder } = require("../constants/sort");
 
 // GET /orders - Get all orders with pagination and search
 router.get("/", authenticate, async (req, res) => {
@@ -10,6 +11,8 @@ router.get("/", authenticate, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
+    const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
+    const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
     const companyId = req.auth.getPrimaryCompanyId();
     const userId = req.auth.getUserId();
     
@@ -23,7 +26,7 @@ router.get("/", authenticate, async (req, res) => {
     });
     
     try {
-        const result = await orderService.getAllOrders(page, itemsPerPage, search, companyId);
+        const result = await orderService.getAllOrders(page, itemsPerPage, search, companyId, sortBy, sortOrder);
         logger.info(`OrderRoute: GET /orders - Request completed successfully`, { 
             requestId: requestId,
             orderCount: result.items.length,

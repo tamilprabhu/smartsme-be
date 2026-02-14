@@ -3,6 +3,7 @@ const router = express.Router();
 const productService = require("../services/product");
 const authenticate = require("../middlewares/authenticate");
 const logger = require("../config/logger");
+const { SortBy, SortOrder } = require("../constants/sort");
 
 // GET /products - Get all products with pagination and search
 router.get("/", authenticate, async (req, res) => {
@@ -10,6 +11,8 @@ router.get("/", authenticate, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
+    const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
+    const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
     const companyId = req.auth.getPrimaryCompanyId();
     const userId = req.auth.getUserId();
     
@@ -25,7 +28,7 @@ router.get("/", authenticate, async (req, res) => {
     });
     
     try {
-        const result = await productService.getAllProducts(page, itemsPerPage, search, companyId, userId);
+        const result = await productService.getAllProducts(page, itemsPerPage, search, companyId, userId, sortBy, sortOrder);
         logger.info(`ProductRoute: GET /products - Request completed successfully`, { 
             requestId: requestId,
             productCount: result.items.length,
