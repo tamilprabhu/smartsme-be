@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const employeeService = require('../services/employee');
+const { SortBy, SortOrder } = require('../constants/sort');
 const authenticateToken = require('../middlewares/authenticate');
 
 // Get all employees with pagination and search
@@ -9,9 +10,11 @@ router.get('/', authenticateToken, async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
         const search = req.query.search || '';
+        const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
+        const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
         
         const companyId = req.auth.getPrimaryCompanyId();
-        const result = await employeeService.getAllEmployees(page, itemsPerPage, search, companyId);
+        const result = await employeeService.getAllEmployees(page, itemsPerPage, search, companyId, sortBy, sortOrder);
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -36,11 +39,16 @@ router.get('/role/:roleName', authenticateToken, async (req, res) => {
             return res.status(400).json({ error: 'roleName param is required' });
         }
 
+        const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
+        const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
+
         const result = await employeeService.getEmployeesByRole(roleNames, companyId, {
             excludeUserId,
             page,
             itemsPerPage,
-            search
+            search,
+            sortBy,
+            sortOrder
         });
         res.json({
             ...result,

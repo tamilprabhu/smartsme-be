@@ -1,11 +1,36 @@
 const { ProductionShift } = require("../models");
-const { Op } = require("sequelize");
+const { Op, col } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
+const { SortBy, SortOrder } = require("../constants/sort");
+
+const buildProductionShiftOrder = (sortBy, sortOrder) => {
+    const direction = sortOrder === SortOrder.DESC ? 'DESC' : 'ASC';
+    switch (sortBy) {
+        case SortBy.CREATE_DATE:
+            return [[col('create_date'), direction]];
+        case SortBy.UPDATE_DATE:
+            return [[col('update_date'), direction]];
+        case SortBy.CREATED_BY:
+            return [[col('created_by'), direction]];
+        case SortBy.UPDATED_BY:
+            return [[col('updated_by'), direction]];
+        case SortBy.SEQUENCE:
+        default:
+            return [[col('shift_id_seq'), direction]];
+    }
+};
 
 const productionShiftService = {
     // Get all production shifts with pagination and search
-    getAllProductionShifts: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
+    getAllProductionShifts: async (
+        page = 1,
+        itemsPerPage = ItemsPerPage.TEN,
+        search = '',
+        companyId = null,
+        sortBy = SortBy.SEQUENCE,
+        sortOrder = SortOrder.DESC
+    ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
         logger.info(`ProductionShiftService: Fetching shifts - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
@@ -31,7 +56,7 @@ const productionShiftService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: [['create_date', 'DESC']]
+                order: buildProductionShiftOrder(sortBy, sortOrder)
             });
             logger.info(`ProductionShiftService: Successfully retrieved ${rows.length} shifts out of ${count} total`);
             return {

@@ -2,9 +2,27 @@ const { Employee, User, UserRole, Role } = require("../models");
 const { Op, col, where } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
+const { SortBy, SortOrder } = require("../constants/sort");
+
+const buildEmployeeOrder = (sortBy, sortOrder) => {
+    const direction = sortOrder === SortOrder.DESC ? 'DESC' : 'ASC';
+    switch (sortBy) {
+        case SortBy.CREATE_DATE:
+            return [[col('create_date'), direction]];
+        case SortBy.UPDATE_DATE:
+            return [[col('update_date'), direction]];
+        case SortBy.CREATED_BY:
+            return [[col('created_by'), direction]];
+        case SortBy.UPDATED_BY:
+            return [[col('updated_by'), direction]];
+        case SortBy.SEQUENCE:
+        default:
+            return [[col('employee_id_seq'), direction]];
+    }
+};
 
 const employeeService = {
-    getAllEmployees: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null) => {
+    getAllEmployees: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null, sortBy = SortBy.SEQUENCE, sortOrder = SortOrder.DESC) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
         logger.info(`EmployeeService: Fetching employees - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
         try {
@@ -34,7 +52,7 @@ const employeeService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: [['employeeIdSeq', 'ASC']]
+                order: buildEmployeeOrder(sortBy, sortOrder)
             });
             logger.info(`EmployeeService: Successfully retrieved ${rows.length} employees out of ${count} total for company: ${companyId}`);
             return {
@@ -173,7 +191,9 @@ const employeeService = {
             excludeUserId,
             page = 1,
             itemsPerPage = ItemsPerPage.TEN,
-            search = ''
+            search = '',
+            sortBy = SortBy.SEQUENCE,
+            sortOrder = SortOrder.DESC
         } = options;
 
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
@@ -212,7 +232,7 @@ const employeeService = {
                 subQuery: false,
                 limit: validLimit,
                 offset,
-                order: [['employeeIdSeq', 'ASC']],
+                order: buildEmployeeOrder(sortBy, sortOrder),
                 include: [{
                     model: User,
                     required: true,

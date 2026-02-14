@@ -4,6 +4,7 @@ const productionShiftService = require("../services/productionShift");
 const optionalAuth = require("../middlewares/optionalAuth");
 const authenticate = require("../middlewares/authenticate");
 const { SYSTEM_ROLES } = require("../constants/roles");
+const { SortBy, SortOrder } = require("../constants/sort");
 const logger = require("../config/logger");
 
 const hasPermission = (userRoles, requiredPermission) => {
@@ -18,6 +19,8 @@ router.get("/", authenticate, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
+    const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
+    const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
     
     logger.info(`ProductionShiftRoute: GET /production-shift - Request started`, { 
         requestId: requestId,
@@ -39,7 +42,7 @@ router.get("/", authenticate, async (req, res) => {
         }
         
         const companyId = req.auth.getPrimaryCompanyId();
-        const result = await productionShiftService.getAllProductionShifts(page, itemsPerPage, search, companyId);
+        const result = await productionShiftService.getAllProductionShifts(page, itemsPerPage, search, companyId, sortBy, sortOrder);
         logger.info(`ProductionShiftRoute: GET /production-shift - Request completed successfully`, { 
             requestId: requestId,
             shiftsReturned: result.items.length,
