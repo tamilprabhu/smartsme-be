@@ -41,6 +41,16 @@ const authenticate = (req, res, next) => {
         // Add convenience methods for multi-tenant operations
         req.auth.getPrimaryCompanyId = () => decoded.companies?.[0]?.companyId || null;
         req.auth.getUserId = () => decoded.sub || null;
+        req.auth.getRoleNames = () => decoded.roles?.map(role => role?.name).filter(Boolean) || [];
+        req.auth.hasRole = (roleName) => req.auth.getRoleNames().includes(roleName);
+        req.auth.hasAnyRole = (roleNames = []) => {
+            const names = req.auth.getRoleNames();
+            return roleNames.some(roleName => names.includes(roleName));
+        };
+        req.auth.hasAllRoles = (roleNames = []) => {
+            const names = req.auth.getRoleNames();
+            return roleNames.every(roleName => names.includes(roleName));
+        };
         
         next();
     } catch (err) {
