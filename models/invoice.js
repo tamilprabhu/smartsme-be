@@ -14,7 +14,7 @@ const Invoice = sequelize.define(
         invoiceDate: { type: DataTypes.DATE, field: 'invoice_date' },
         compId: { type: DataTypes.STRING(20), field: 'comp_id' },
         buyrId: { type: DataTypes.STRING(10), field: 'buyr_id' },
-        prodId: { type: DataTypes.STRING(10), field: 'prod_id' },
+        productId: { type: DataTypes.STRING(10), field: 'product_id' },
         quantity: { type: DataTypes.INTEGER },
         unitPrice: { type: DataTypes.DECIMAL(10, 2), field: 'unit_price' },
         cgstRate: { type: DataTypes.DECIMAL(10, 2), field: 'cgst_rate' },

@@ -13,7 +13,7 @@ const Order = sequelize.define(
         orderId: { type: DataTypes.STRING(20), field: 'order_id' },
         orderName: { type: DataTypes.STRING(50), field: 'order_name' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
-        prodId: { type: DataTypes.STRING(20), field: 'prod_id' },
+        productId: { type: DataTypes.STRING(20), field: 'product_id' },
         buyerId: { type: DataTypes.STRING(20), field: 'buyer_id' },
         orderStatus: { type: DataTypes.STRING(20), field: 'order_status' },
         orderDate: { type: DataTypes.DATE, field: 'order_date' },

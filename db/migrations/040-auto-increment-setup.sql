@@ -9,9 +9,9 @@ ALTER TABLE `employee` ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON D
 ALTER TABLE `machine` MODIFY `machine_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 ALTER TABLE `order` MODIFY `order_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 ALTER TABLE `product` MODIFY `prod_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-ALTER TABLE `product` ADD KEY `product_prod_id` (`prod_id`);
+ALTER TABLE `product` ADD KEY `product_product_id` (`product_id`);
 ALTER TABLE `production_shift` MODIFY `shift_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-ALTER TABLE `production_shift` ADD FOREIGN KEY (product_id) REFERENCES product(prod_id) ON DELETE CASCADE;
+ALTER TABLE `production_shift` ADD FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE;
 ALTER TABLE `seller` MODIFY `seller_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 ALTER TABLE `stock` MODIFY `stock_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 ALTER TABLE `invoice` MODIFY `invoice_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;

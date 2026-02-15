@@ -10,7 +10,7 @@ const Product = sequelize.define(
             autoIncrement: true,
             field: 'prod_seq'
         },
-        prodId: { type: DataTypes.STRING(20), field: 'prod_id' },
+        productId: { type: DataTypes.STRING(20), field: 'product_id' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         prodName: { type: DataTypes.STRING(50), field: 'prod_name' },
         rawMaterial: { type: DataTypes.STRING(20), field: 'raw_material' },

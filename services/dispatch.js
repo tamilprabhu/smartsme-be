@@ -34,7 +34,7 @@ const dispatchService = {
                         [Op.or]: [
                             { dispatchId: { [Op.like]: `%${search}%` } },
                             { orderId: { [Op.like]: `%${search}%` } },
-                            { prodId: { [Op.like]: `%${search}%` } }
+                            { productId: { [Op.like]: `%${search}%` } }
                         ]
                     }
                 ];

@@ -48,8 +48,8 @@ Employee.belongsTo(Company, { foreignKey: 'companyId', targetKey: 'companyId' })
 Company.hasMany(Employee, { foreignKey: 'companyId', sourceKey: 'companyId' });
 
 // Production shift associations
-ProductionShift.belongsTo(Product, { foreignKey: 'productId', targetKey: 'prodId' });
-Product.hasMany(ProductionShift, { foreignKey: 'productId', sourceKey: 'prodId' });
+ProductionShift.belongsTo(Product, { foreignKey: 'productId', targetKey: 'productId' });
+Product.hasMany(ProductionShift, { foreignKey: 'productId', sourceKey: 'productId' });
 
 ProductionShift.belongsTo(Machine, { foreignKey: 'machineId', targetKey: 'machineId' });
 Machine.hasMany(ProductionShift, { foreignKey: 'machineId', sourceKey: 'machineId' });

@@ -89,7 +89,7 @@ const orderService = {
     // Create new order
     createOrder: async (orderData, companyId, userId) => {
         logger.info(`OrderService: Creating new order: ${orderData.orderId} for company: ${companyId} by user: ${userId}`, { 
-            prodId: orderData.prodId,
+            productId: orderData.productId,
             orderQuantity: orderData.orderQuantity,
             totalPrice: orderData.totalPrice
         });

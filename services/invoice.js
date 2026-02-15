@@ -35,7 +35,7 @@ const invoiceService = {
                         [Op.or]: [
                             { invoiceId: { [Op.like]: `%${search}%` } },
                             { buyrId: { [Op.like]: `%${search}%` } },
-                            { prodId: { [Op.like]: `%${search}%` } }
+                            { productId: { [Op.like]: `%${search}%` } }
                         ]
                     }
                 ];

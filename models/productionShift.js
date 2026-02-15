@@ -50,12 +50,12 @@ const ProductionShift = sequelize.define(
                 async validProductId(value) {
                     if (!hasValue(value)) return;
                     const where = {
-                        prodId: value,
+                        productId: value,
                         isDeleted: false,
                         isActive: true,
                     };
                     if (hasValue(this.companyId)) where.companyId = this.companyId;
-                    const product = await Product.findOne({ where, attributes: ["prodId"] });
+                    const product = await Product.findOne({ where, attributes: ["productId"] });
                     if (!product) throw new Error("Invalid productId");
                 },
             },

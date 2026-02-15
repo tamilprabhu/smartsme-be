@@ -143,7 +143,7 @@ CREATE TABLE `company` (
 
 CREATE TABLE `dispatch` (
   `dispatch_seq` int NOT NULL,
-  `prod_id` varchar(20) DEFAULT NULL,
+  `product_id` varchar(20) DEFAULT NULL,
   `company_id` varchar(20) DEFAULT NULL,
   `order_id` varchar(20) DEFAULT NULL,
   `dispatch_id` varchar(20) DEFAULT NULL,
@@ -201,7 +201,7 @@ CREATE TABLE `order` (
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `order_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `prod_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `product_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `buyer_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `order_status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `order_date` datetime DEFAULT NULL,
@@ -261,7 +261,7 @@ CREATE TABLE `order_quantity` (
 
 CREATE TABLE `product` (
   `prod_seq` int NOT NULL,
-  `prod_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `product_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `prod_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `raw_material` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -372,7 +372,7 @@ CREATE TABLE `invoice` (
   `invoice_date` datetime DEFAULT NULL,
   `comp_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `buyr_id` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `prod_id` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `product_id` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `quantity` int DEFAULT NULL,
   `unit_price` decimal(10,2) DEFAULT NULL,
   `cgst_rate` decimal(10,2) DEFAULT NULL,

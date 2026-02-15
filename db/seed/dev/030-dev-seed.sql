@@ -147,7 +147,7 @@ INSERT INTO `company` (`company_seq`, `company_id`, `company_name`, `business_co
 -- Dumping data for table `dispatch`
 --
 
-INSERT INTO `dispatch` (`dispatch_seq`, `prod_id`, `company_id`, `order_id`, `dispatch_id`, `dispatch_date`, `quantity`, `no_of_packs`, `total_weight`, `normal_weight`, `norms_weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `dispatch` (`dispatch_seq`, `product_id`, `company_id`, `order_id`, `dispatch_id`, `dispatch_date`, `quantity`, `no_of_packs`, `total_weight`, `normal_weight`, `norms_weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1010, 'FINO_PR_001', 'FINO001', 'FINO_OR_001', 'FINO_DL_001', '2025-02-10 00:00:00', 500, 20, 1250.0000, 2.5000, 1312.5000, NOW(), NOW(), 0, 1),
 (1011, 'FINO_PR_002', 'FINO001', 'FINO_OR_002', 'FINO_DL_002', '2025-02-15 00:00:00', 1000, 50, 800.0000, 0.8000, 864.0000, NOW(), NOW(), 0, 1),
 (1012, 'PRES_PR_001', 'PRES001', 'PRES_OR_001', 'PRES_DL_001', '2025-02-12 00:00:00', 100, 5, 3500.0000, 35.0000, 3920.0000, NOW(), NOW(), 0, 1),
@@ -295,7 +295,7 @@ INSERT INTO `machine` (`machine_seq`, `machine_id`, `company_id`, `machine_name`
 -- Dumping data for table `order`
 --
 
-INSERT INTO `order` (`order_seq`, `order_id`, `order_name`, `company_id`, `prod_id`, `buyer_id`, `order_status`, `order_date`, `target_date`, `order_quantity`, `price`, `discount`, `total_price`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `order` (`order_seq`, `order_id`, `order_name`, `company_id`, `product_id`, `buyer_id`, `order_status`, `order_date`, `target_date`, `order_quantity`, `price`, `discount`, `total_price`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_OR_001', 'PVC Pipe 4 inch - Batch A', 'FINO001', 'FINO_PR_001', 'FINO_BY_001', 'IN_PROGRESS', '2025-02-01 00:00:00', '2025-02-15 00:00:00', 1000, 25.00, 2.00, 23000.00, NOW(), NOW(), 0, 1),
 (1002, 'FINO_OR_002', 'PVC Fitting Elbow - High Volume', 'FINO001', 'FINO_PR_002', 'FINO_BY_002', 'SCHEDULED', '2025-02-05 00:00:00', '2025-02-20 00:00:00', 2000, 8.50, 1.00, 15000.00, NOW(), NOW(), 0, 1),
 (1003, 'PRES_OR_001', 'Pressure Cooker Base - Premium', 'PRES001', 'PRES_PR_001', 'PRES_BY_001', 'IN_PROGRESS', '2025-02-03 00:00:00', '2025-02-18 00:00:00', 200, 120.00, 8.00, 22400.00, NOW(), NOW(), 0, 1),
@@ -393,7 +393,7 @@ INSERT INTO `order_quantity` (`order_id`, `company_id`, `order_quantity`, `produ
 -- Dumping data for table `product`
 --
 
-INSERT INTO `product` (`prod_seq`, `prod_id`, `company_id`, `prod_name`, `raw_material`, `weight`, `wastage`, `norms`, `total_weight`, `cavity`, `shot_rate`, `per_item_rate`, `incentive_limit`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `product` (`prod_seq`, `product_id`, `company_id`, `prod_name`, `raw_material`, `weight`, `wastage`, `norms`, `total_weight`, `cavity`, `shot_rate`, `per_item_rate`, `incentive_limit`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_PR_001', 'FINO001', 'PVC Pipe 4 inch', 'PVC-Resin', 2.5000, 5, 0.125, 2.625, 8, 1.20, 0.12, 200, NOW(), NOW(), 0, 1),
 (1002, 'FINO_PR_002', 'FINO001', 'PVC Fitting Elbow', 'PVC-Compound', 0.8000, 8, 0.064, 0.864, 12, 0.80, 0.08, 300, NOW(), NOW(), 0, 1),
 (1003, 'PRES_PR_001', 'PRES001', 'Pressure Cooker Base', 'ADC-12', 35.0000, 12, 4.2000, 39.2000, 1, 8.00, 0.80, 60, NOW(), NOW(), 0, 1),
@@ -694,7 +694,7 @@ INSERT INTO `stock` (`stock_seq`, `company_id`, `seller_id`, `stock_id`, `stock_
 -- Dumping data for table `invoice`
 --
 
-INSERT INTO `invoice` (`invoice_seq`, `invoice_id`, `invoice_date`, `comp_id`, `buyr_id`, `prod_id`, `quantity`, `unit_price`, `cgst_rate`, `cgst_amount`, `sgst_rate`, `sgst_amount`, `total_amount`, `sac_code`, `buyr_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `invoice` (`invoice_seq`, `invoice_id`, `invoice_date`, `comp_id`, `buyr_id`, `product_id`, `quantity`, `unit_price`, `cgst_rate`, `cgst_amount`, `sgst_rate`, `sgst_amount`, `total_amount`, `sac_code`, `buyr_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'IN10000001', '2025-02-15 00:00:00', 'FINO001', 'FINO_BY_001', 'FINO_PR_001', 500, 25.00, 9.00, 1125.00, 9.00, 1125.00, 14750.00, 'SAC998314', '33AABCA1234A1Z5', NOW(), NOW(), 0, 1),
 (1002, 'IN10000002', '2025-02-20 00:00:00', 'FINO001', 'FINO_BY_002', 'FINO_PR_002', 1000, 8.50, 9.00, 765.00, 9.00, 765.00, 10030.00, 'SAC998314', '29AABCA1234B1Z5', NOW(), NOW(), 0, 1),
 (1003, 'IN10000003', '2025-02-18 00:00:00', 'PRES001', 'PRES_BY_001', 'PRES_PR_001', 100, 120.00, 9.00, 1080.00, 9.00, 1080.00, 14160.00, 'SAC998313', '27AABCA1234C1Z5', NOW(), NOW(), 0, 1),

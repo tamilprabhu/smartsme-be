@@ -10,7 +10,7 @@ const Dispatch = sequelize.define(
             autoIncrement: true,
             field: 'dispatch_seq'
         },
-        prodId: { type: DataTypes.STRING(20), field: 'prod_id' },
+        productId: { type: DataTypes.STRING(20), field: 'product_id' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         orderId: { type: DataTypes.STRING(20), field: 'order_id' },
         dispatchId: { type: DataTypes.STRING(20), field: 'dispatch_id' },

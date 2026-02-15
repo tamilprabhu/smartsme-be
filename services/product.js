@@ -27,7 +27,7 @@ const productService = {
                 ...(search && {
                     [Op.or]: [
                         { prodName: { [Op.like]: `%${search}%` } },
-                        { prodId: { [Op.like]: `%${search}%` } },
+                        { productId: { [Op.like]: `%${search}%` } },
                         { rawMaterial: { [Op.like]: `%${search}%` } }
                     ]
                 })
@@ -90,7 +90,7 @@ const productService = {
     // Create new product
     createProduct: async (productData, companyId, userId) => {
         logger.info(`ProductService: Creating new product: ${productData.prodName} for company: ${companyId}, user: ${userId}`, { 
-            prodId: productData.prodId 
+            productId: productData.productId 
         });
         try {
             const enrichedProductData = {

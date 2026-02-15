@@ -439,7 +439,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"prodId\": \"TEST_PR_001\",\n    \"companyId\": \"FINO001\",\n    \"prodName\": \"Test Product\",\n    \"rawMaterial\": \"Aluminum\",\n    \"weight\": 5.5000,\n    \"wastage\": 10,\n    \"norms\": 0.55,\n    \"totalWeight\": 6.05,\n    \"cavity\": 4,\n    \"shotRate\": 2.50,\n    \"perItemRate\": 0.25,\n    \"incentiveLimit\": 100,\n    \"createDate\": \"2025-11-08T15:00:00.000Z\",\n    \"updateDate\": \"2025-11-08T15:00:00.000Z\"\n}"
+							"raw": "{\n    \"productId\": \"TEST_PR_001\",\n    \"companyId\": \"FINO001\",\n    \"prodName\": \"Test Product\",\n    \"rawMaterial\": \"Aluminum\",\n    \"weight\": 5.5000,\n    \"wastage\": 10,\n    \"norms\": 0.55,\n    \"totalWeight\": 6.05,\n    \"cavity\": 4,\n    \"shotRate\": 2.50,\n    \"perItemRate\": 0.25,\n    \"incentiveLimit\": 100,\n    \"createDate\": \"2025-11-08T15:00:00.000Z\",\n    \"updateDate\": \"2025-11-08T15:00:00.000Z\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/products",
@@ -617,7 +617,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"orderId\": \"TEST_OR_001\",\n    \"companyId\": \"FINO001\",\n    \"prodId\": \"FINO_PR_001\",\n    \"buyerId\": \"FINO_BY_001\",\n    \"orderStatus\": \"SCHEDULED\",\n    \"orderDate\": \"2025-11-08T00:00:00.000Z\",\n    \"targetDate\": \"2025-11-20T00:00:00.000Z\",\n    \"orderQuantity\": 500,\n    \"price\": 30.00,\n    \"discount\": 2.50,\n    \"totalPrice\": 13750.00,\n    \"createDate\": \"2025-11-08T15:00:00.000Z\",\n    \"updateDate\": \"2025-11-08T15:00:00.000Z\"\n}"
+							"raw": "{\n    \"orderId\": \"TEST_OR_001\",\n    \"companyId\": \"FINO001\",\n    \"productId\": \"FINO_PR_001\",\n    \"buyerId\": \"FINO_BY_001\",\n    \"orderStatus\": \"SCHEDULED\",\n    \"orderDate\": \"2025-11-08T00:00:00.000Z\",\n    \"targetDate\": \"2025-11-20T00:00:00.000Z\",\n    \"orderQuantity\": 500,\n    \"price\": 30.00,\n    \"discount\": 2.50,\n    \"totalPrice\": 13750.00,\n    \"createDate\": \"2025-11-08T15:00:00.000Z\",\n    \"updateDate\": \"2025-11-08T15:00:00.000Z\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/orders",
