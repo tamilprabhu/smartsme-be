@@ -7,6 +7,25 @@ const { SYSTEM_ROLES } = require("../constants/roles");
 const { SortBy, SortOrder } = require("../constants/sort");
 const logger = require("../config/logger");
 
+const getFieldwiseValidationErrors = (err) => {
+    if (err?.name === "SequelizeValidationError" && Array.isArray(err.errors)) {
+        const fieldErrors = {};
+
+        err.errors.forEach((validationError) => {
+            const field = validationError?.path || "base";
+            const message = validationError?.message;
+
+            if (!message) return;
+            if (!fieldErrors[field]) fieldErrors[field] = [];
+            if (!fieldErrors[field].includes(message)) fieldErrors[field].push(message);
+        });
+
+        if (Object.keys(fieldErrors).length > 0) return fieldErrors;
+    }
+
+    return null;
+};
+
 const hasPermission = (userRoles, requiredPermission) => {
     if (userRoles.some(role => role.id === SYSTEM_ROLES.GUEST.id)) {
         return requiredPermission.includes('READ'); // If it is a guest, allow only READ
@@ -144,13 +163,17 @@ router.post("/", authenticate, async (req, res) => {
         });
         res.status(201).json(shift);
     } catch (err) {
+        const validationErrors = getFieldwiseValidationErrors(err);
         logger.error(`ProductionShiftRoute: POST /production-shift - Request failed`, { 
             requestId: requestId,
-            error: err.message,
+            error: validationErrors || err.message,
             requestBody: req.body,
             userId: req.auth?.id,
             stack: err.stack
         });
+        if (validationErrors) {
+            return res.status(400).json({ errors: validationErrors });
+        }
         res.status(400).json({ error: err.message });
     }
 });
@@ -195,13 +218,17 @@ router.put("/:id", authenticate, async (req, res) => {
             });
             return res.status(404).json({ error: err.message });
         }
+        const validationErrors = getFieldwiseValidationErrors(err);
         logger.error(`ProductionShiftRoute: PUT /production-shift/${shiftId} - Request failed`, { 
             requestId: requestId,
             shiftId: shiftId,
-            error: err.message,
+            error: validationErrors || err.message,
             userId: req.auth?.id,
             stack: err.stack
         });
+        if (validationErrors) {
+            return res.status(400).json({ errors: validationErrors });
+        }
         res.status(400).json({ error: err.message });
     }
 });

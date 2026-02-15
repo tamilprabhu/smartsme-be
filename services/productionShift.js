@@ -156,20 +156,21 @@ const productionShiftService = {
                 whereClause.companyId = companyId;
             }
             
-            const [updatedRows] = await ProductionShift.update({
-                ...shiftData,
-                updatedBy: userId,
-                updateDate: new Date()
-            }, {
-                where: whereClause
-            });
-            if (updatedRows === 0) {
+            const shift = await ProductionShift.findOne({ where: whereClause });
+            if (!shift) {
                 logger.warn(`ProductionShiftService: No shift found to update with ID: ${id}, companyId: ${companyId}`);
                 throw new Error("Shift not found");
             }
-            const updatedShift = await ProductionShift.findOne({ where: whereClause });
-            logger.info(`ProductionShiftService: Successfully updated shift: ${updatedShift.shiftId} (ID: ${id})`);
-            return updatedShift;
+
+            shift.set({
+                ...shiftData,
+                updatedBy: userId,
+                updateDate: new Date()
+            });
+
+            await shift.save();
+            logger.info(`ProductionShiftService: Successfully updated shift: ${shift.shiftId} (ID: ${id})`);
+            return shift;
         } catch (error) {
             logger.error(`ProductionShiftService: Failed to update shift with ID: ${id}`, { 
                 error: error.message, 
