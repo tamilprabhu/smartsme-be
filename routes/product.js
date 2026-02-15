@@ -80,7 +80,7 @@ router.get("/:id", authenticate, async (req, res) => {
         logger.info(`ProductRoute: GET /products/${productId} - Request completed successfully`, { 
             requestId: requestId,
             productId: productId,
-            productName: product.prodName,
+            productName: product.productName,
             companyId: companyId,
             userId: userId
         });
@@ -106,7 +106,7 @@ router.post("/", authenticate, async (req, res) => {
     
     logger.info(`ProductRoute: POST /products - Request started`, { 
         requestId: requestId,
-        productName: req.body.prodName,
+        productName: req.body.productName,
         companyId: companyId,
         userId: userId
     });
@@ -116,7 +116,7 @@ router.post("/", authenticate, async (req, res) => {
         logger.info(`ProductRoute: POST /products - Request completed successfully`, { 
             requestId: requestId,
             productId: product.prodSequence,
-            productName: product.prodName,
+            productName: product.productName,
             companyId: companyId,
             userId: userId
         });
@@ -154,7 +154,7 @@ router.put("/:id", authenticate, async (req, res) => {
         logger.info(`ProductRoute: PUT /products/${productId} - Request completed successfully`, { 
             requestId: requestId,
             productId: productId,
-            productName: product.prodName,
+            productName: product.productName,
             companyId: companyId,
             userId: userId
         });

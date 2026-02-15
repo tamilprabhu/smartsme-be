@@ -16,7 +16,7 @@ ALTER TABLE `mst_machine` ADD KEY `mst_machine_machine_id` (`machine_id`);
 ALTER TABLE `txn_order` MODIFY `order_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 ALTER TABLE `txn_order` ADD KEY `order_order_id` (`order_id`);
 
-ALTER TABLE `mst_product` MODIFY `prod_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+ALTER TABLE `mst_product` MODIFY `product_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 ALTER TABLE `mst_product` ADD KEY `product_product_id` (`product_id`);
 
 ALTER TABLE `txn_production_shift` MODIFY `shift_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;

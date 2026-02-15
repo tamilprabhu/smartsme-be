@@ -8,11 +8,11 @@ const Product = sequelize.define(
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: 'prod_seq'
+            field: 'product_seq'
         },
         productId: { type: DataTypes.STRING(20), field: 'product_id' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
-        prodName: { type: DataTypes.STRING(50), field: 'prod_name' },
+        productName: { type: DataTypes.STRING(50), field: 'product_name' },
         rawMaterial: { type: DataTypes.STRING(20), field: 'raw_material' },
         weight: { type: DataTypes.DECIMAL(10, 4) },
         wastage: { type: DataTypes.INTEGER },

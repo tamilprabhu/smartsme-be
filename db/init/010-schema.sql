@@ -260,10 +260,10 @@ CREATE TABLE `txn_order_quantity` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `mst_product` (
-  `prod_seq` int NOT NULL,
+  `product_seq` int NOT NULL,
   `product_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `prod_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `product_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `raw_material` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `weight` decimal(10,4) DEFAULT NULL,
   `wastage` int DEFAULT NULL,
@@ -282,7 +282,7 @@ CREATE TABLE `mst_product` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`prod_seq`)
+  PRIMARY KEY (`product_seq`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `txn_production_shift` (

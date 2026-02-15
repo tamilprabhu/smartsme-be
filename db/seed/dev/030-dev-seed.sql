@@ -393,7 +393,7 @@ INSERT INTO `txn_order_quantity` (`order_id`, `company_id`, `order_quantity`, `p
 -- Dumping data for table `mst_product`
 --
 
-INSERT INTO `mst_product` (`prod_seq`, `product_id`, `company_id`, `prod_name`, `raw_material`, `weight`, `wastage`, `norms`, `total_weight`, `cavity`, `shot_rate`, `per_item_rate`, `incentive_limit`, `sales_type`, `sales_code`, `sales_percent`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `mst_product` (`product_seq`, `product_id`, `company_id`, `product_name`, `raw_material`, `weight`, `wastage`, `norms`, `total_weight`, `cavity`, `shot_rate`, `per_item_rate`, `incentive_limit`, `sales_type`, `sales_code`, `sales_percent`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_PR_001', 'FINO001', 'PVC Pipe 4 inch', 'PVC-Resin', 2.5000, 5, 0.125, 2.625, 8, 1.20, 0.12, 200, 'Sales', 'HSN', 18.00, NOW(), NOW(), 0, 1),
 (1002, 'FINO_PR_002', 'FINO001', 'PVC Fitting Elbow', 'PVC-Compound', 0.8000, 8, 0.064, 0.864, 12, 0.80, 0.08, 300, 'Sales', 'HSN', 18.00, NOW(), NOW(), 0, 1),
 (1003, 'PRES_PR_001', 'PRES001', 'Pressure Cooker Base', 'ADC-12', 35.0000, 12, 4.2000, 39.2000, 1, 8.00, 0.80, 60, 'Sales', 'HSN', 18.00, NOW(), NOW(), 0, 1),

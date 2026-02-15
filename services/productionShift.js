@@ -69,7 +69,7 @@ const productionShiftService = {
                     where(fn('LOWER', col("ProductionShift.product_id")), { [Op.like]: likeValue }),
                     where(fn('LOWER', col("ProductionShift.machine_id")), { [Op.like]: likeValue }),
                     where(fn('LOWER', col("ProductionShift.shift_type")), { [Op.like]: likeValue }),
-                    where(fn('LOWER', col("Product.prod_name")), { [Op.like]: likeValue }),
+                    where(fn('LOWER', col("Product.product_name")), { [Op.like]: likeValue }),
                     where(fn('LOWER', col("Machine.machine_name")), { [Op.like]: likeValue }),
                     where(fn('LOWER', col("Order.order_name")), { [Op.like]: likeValue })
                 ];

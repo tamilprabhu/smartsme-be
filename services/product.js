@@ -26,7 +26,7 @@ const productService = {
                 companyId: companyId,
                 ...(search && {
                     [Op.or]: [
-                        { prodName: { [Op.like]: `%${search}%` } },
+                        { productName: { [Op.like]: `%${search}%` } },
                         { productId: { [Op.like]: `%${search}%` } },
                         { rawMaterial: { [Op.like]: `%${search}%` } },
                         { salesType: { [Op.like]: `%${search}%` } },
@@ -39,7 +39,7 @@ const productService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'prod_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'product_seq')
             });
             logger.info(`ProductService: Successfully retrieved ${rows.length} products out of ${count} total for company ${companyId}`);
             return {
@@ -73,7 +73,7 @@ const productService = {
                 }
             });
             if (product) {
-                logger.info(`ProductService: Successfully retrieved product: ${product.prodName} (ID: ${id}) for company: ${companyId}`);
+                logger.info(`ProductService: Successfully retrieved product: ${product.productName} (ID: ${id}) for company: ${companyId}`);
             } else {
                 logger.warn(`ProductService: Product not found with ID: ${id} for company: ${companyId}`);
             }
@@ -91,7 +91,7 @@ const productService = {
 
     // Create new product
     createProduct: async (productData, companyId, userId) => {
-        logger.info(`ProductService: Creating new product: ${productData.prodName} for company: ${companyId}, user: ${userId}`, { 
+        logger.info(`ProductService: Creating new product: ${productData.productName} for company: ${companyId}, user: ${userId}`, { 
             productId: productData.productId 
         });
         try {
@@ -102,14 +102,14 @@ const productService = {
                 updateDate: new Date()
             };
             const product = await Product.create(enrichedProductData);
-            logger.info(`ProductService: Successfully created product: ${product.prodName} (ID: ${product.prodSequence}) for company: ${companyId}`, {
+            logger.info(`ProductService: Successfully created product: ${product.productName} (ID: ${product.prodSequence}) for company: ${companyId}`, {
                 productId: product.prodSequence,
                 companyId: product.companyId,
                 userId: userId
             });
             return product;
         } catch (error) {
-            logger.error(`ProductService: Failed to create product: ${productData.prodName}`, { 
+            logger.error(`ProductService: Failed to create product: ${productData.productName}`, { 
                 error: error.message, 
                 productData: productData,
                 companyId: companyId,
@@ -144,7 +144,7 @@ const productService = {
                     companyId: companyId
                 }
             });
-            logger.info(`ProductService: Successfully updated product: ${updatedProduct.prodName} (ID: ${id}) for company: ${companyId}`, {
+            logger.info(`ProductService: Successfully updated product: ${updatedProduct.productName} (ID: ${id}) for company: ${companyId}`, {
                 userId: userId
             });
             return updatedProduct;
@@ -173,7 +173,7 @@ const productService = {
                 logger.warn(`ProductService: No product found to delete with ID: ${id}`);
                 throw new Error("Product not found");
             }
-            logger.info(`ProductService: Successfully soft deleted product: ${product?.prodName || 'Unknown'} (ID: ${id})`);
+            logger.info(`ProductService: Successfully soft deleted product: ${product?.productName || 'Unknown'} (ID: ${id})`);
             return { message: "Product deleted successfully" };
         } catch (error) {
             logger.error(`ProductService: Failed to delete product with ID: ${id}`, { 

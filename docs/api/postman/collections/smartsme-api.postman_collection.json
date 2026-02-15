@@ -439,7 +439,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"productId\": \"TEST_PR_001\",\n    \"companyId\": \"FINO001\",\n    \"prodName\": \"Test Product\",\n    \"rawMaterial\": \"Aluminum\",\n    \"weight\": 5.5000,\n    \"wastage\": 10,\n    \"norms\": 0.55,\n    \"totalWeight\": 6.05,\n    \"cavity\": 4,\n    \"shotRate\": 2.50,\n    \"perItemRate\": 0.25,\n    \"incentiveLimit\": 100,\n    \"salesType\": \"Sales\",\n    \"salesCode\": \"HSN\",\n    \"salesPercent\": 18.00,\n    \"createDate\": \"2025-11-08T15:00:00.000Z\",\n    \"updateDate\": \"2025-11-08T15:00:00.000Z\"\n}"
+							"raw": "{\n    \"productId\": \"TEST_PR_001\",\n    \"companyId\": \"FINO001\",\n    \"productName\": \"Test Product\",\n    \"rawMaterial\": \"Aluminum\",\n    \"weight\": 5.5000,\n    \"wastage\": 10,\n    \"norms\": 0.55,\n    \"totalWeight\": 6.05,\n    \"cavity\": 4,\n    \"shotRate\": 2.50,\n    \"perItemRate\": 0.25,\n    \"incentiveLimit\": 100,\n    \"salesType\": \"Sales\",\n    \"salesCode\": \"HSN\",\n    \"salesPercent\": 18.00,\n    \"createDate\": \"2025-11-08T15:00:00.000Z\",\n    \"updateDate\": \"2025-11-08T15:00:00.000Z\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/products",
@@ -461,7 +461,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"prodName\": \"Updated Test Product\",\n    \"weight\": 6.0000,\n    \"salesType\": \"Contract\",\n    \"salesCode\": \"SAC\",\n    \"salesPercent\": 12.50,\n    \"updateDate\": \"2025-11-08T15:30:00.000Z\"\n}"
+							"raw": "{\n    \"productName\": \"Updated Test Product\",\n    \"weight\": 6.0000,\n    \"salesType\": \"Contract\",\n    \"salesCode\": \"SAC\",\n    \"salesPercent\": 12.50,\n    \"updateDate\": \"2025-11-08T15:30:00.000Z\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/products/1000001",
@@ -720,7 +720,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"orderId\": \"FINO_OR_001\",\n    \"companyId\": \"FINO001\",\n    \"shiftId\": \"FINO_SH_003\",\n    \"prodName\": \"PVC Pipe 4 inch\",\n    \"machineId\": \"FINO_DC_001\",\n    \"shiftStartDate\": \"2025-11-08T06:00:00.000Z\",\n    \"shiftEndDate\": \"2025-11-08T14:00:00.000Z\",\n    \"entryType\": \"shift\",\n    \"shiftType\": \"1\",\n    \"operator1\": 1000005,\n    \"operator2\": 1000006,\n    \"operator3\": null,\n    \"supervisor\": 1000002,\n    \"openingCount\": 0,\n    \"closingCount\": 450,\n    \"production\": 450,\n    \"rejection\": 25,\n    \"netProduction\": 425,\n    \"incentive\": \"Y\",\n    \"less80Reason\": \"\"\n}"
+							"raw": "{\n    \"orderId\": \"FINO_OR_001\",\n    \"companyId\": \"FINO001\",\n    \"shiftId\": \"FINO_SH_003\",\n    \"productName\": \"PVC Pipe 4 inch\",\n    \"machineId\": \"FINO_DC_001\",\n    \"shiftStartDate\": \"2025-11-08T06:00:00.000Z\",\n    \"shiftEndDate\": \"2025-11-08T14:00:00.000Z\",\n    \"entryType\": \"shift\",\n    \"shiftType\": \"1\",\n    \"operator1\": 1000005,\n    \"operator2\": 1000006,\n    \"operator3\": null,\n    \"supervisor\": 1000002,\n    \"openingCount\": 0,\n    \"closingCount\": 450,\n    \"production\": 450,\n    \"rejection\": 25,\n    \"netProduction\": 425,\n    \"incentive\": \"Y\",\n    \"less80Reason\": \"\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/production-shift",
