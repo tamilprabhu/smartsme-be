@@ -26,7 +26,7 @@ const Dispatch = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "dispatch",
+        tableName: "txn_dispatch",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",

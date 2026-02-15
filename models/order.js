@@ -28,7 +28,7 @@ const Order = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "order",
+        tableName: "txn_order",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",

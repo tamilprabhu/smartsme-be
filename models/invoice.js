@@ -30,7 +30,7 @@ const Invoice = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "invoice",
+        tableName: "txn_invoice",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",

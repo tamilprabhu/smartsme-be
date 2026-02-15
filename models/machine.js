@@ -23,7 +23,7 @@ const Machine = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "machine",
+        tableName: "mst_machine",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",

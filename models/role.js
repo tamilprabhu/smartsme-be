@@ -17,7 +17,7 @@ const Role = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "roles",
+        tableName: "mst_roles",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",

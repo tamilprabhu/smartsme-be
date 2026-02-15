@@ -143,7 +143,7 @@ const ProductionShift = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "production_shift",
+        tableName: "txn_production_shift",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",

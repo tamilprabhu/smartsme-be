@@ -1,4 +1,4 @@
-INSERT INTO roles (id, name, description, is_deleted, is_active) VALUES
+INSERT INTO mst_roles (id, name, description, is_deleted, is_active) VALUES
 (1, 'OWNER', 'Owner with all rights and permissions', 0, 1),
 (2, 'ADMIN', 'Administrator with all rights and permissions', 0, 1),
 (3, 'PLANT_HEAD', 'Plant Head with all rights except billing', 0, 1),
@@ -8,7 +8,7 @@ INSERT INTO roles (id, name, description, is_deleted, is_active) VALUES
 (7, 'SECONDARY_PROCESS_EMPLOYEE', 'Secondary process employee', 0, 1),
 (8, 'ACCOUNTANT', 'Accountant managing despatch and billing', 0, 1);
 
-INSERT INTO actions (id, name, description, is_deleted, is_active) VALUES
+INSERT INTO mst_actions (id, name, description, is_deleted, is_active) VALUES
 (1, 'CREATE', 'Create new records', 0, 1),
 (2, 'READ', 'View/Read records', 0, 1),
 (3, 'UPDATE', 'Update existing records', 0, 1),
@@ -17,7 +17,7 @@ INSERT INTO actions (id, name, description, is_deleted, is_active) VALUES
 (6, 'EXPORT', 'Export data', 0, 1);
 
 -- Production Permissions
-INSERT INTO permissions (id, resource, action_id, name, description, is_deleted, is_active) VALUES
+INSERT INTO mst_permissions (id, resource, action_id, name, description, is_deleted, is_active) VALUES
 (1, 'PRODUCTION', 1, 'PRODUCTION_CREATE', 'Create production records', 0, 1),
 (2, 'PRODUCTION', 2, 'PRODUCTION_READ', 'View production records', 0, 1),
 (3, 'PRODUCTION', 3, 'PRODUCTION_UPDATE', 'Update production records', 0, 1),
@@ -26,7 +26,7 @@ INSERT INTO permissions (id, resource, action_id, name, description, is_deleted,
 (6, 'PRODUCTION', 6, 'PRODUCTION_EXPORT', 'Export production data', 0, 1);
 
 -- Secondary Process Permissions
-INSERT INTO permissions (id, resource, action_id, name, description, is_deleted, is_active) VALUES
+INSERT INTO mst_permissions (id, resource, action_id, name, description, is_deleted, is_active) VALUES
 (7, 'SECONDARY_PROCESS', 1, 'SECONDARY_PROCESS_CREATE', 'Create secondary process records', 0, 1),
 (8, 'SECONDARY_PROCESS', 2, 'SECONDARY_PROCESS_READ', 'View secondary process records', 0, 1),
 (9, 'SECONDARY_PROCESS', 3, 'SECONDARY_PROCESS_UPDATE', 'Update secondary process records', 0, 1),
@@ -35,7 +35,7 @@ INSERT INTO permissions (id, resource, action_id, name, description, is_deleted,
 (12, 'SECONDARY_PROCESS', 6, 'SECONDARY_PROCESS_EXPORT', 'Export secondary process data', 0, 1);
 
 -- Company Permissions
-INSERT INTO permissions (id, resource, action_id, name, description, is_deleted, is_active) VALUES
+INSERT INTO mst_permissions (id, resource, action_id, name, description, is_deleted, is_active) VALUES
 (13, 'COMPANY', 1, 'COMPANY_CREATE', 'Create company records', 0, 1),
 (14, 'COMPANY', 2, 'COMPANY_READ', 'View company records', 0, 1),
 (15, 'COMPANY', 3, 'COMPANY_UPDATE', 'Update company records', 0, 1),

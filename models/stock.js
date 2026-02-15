@@ -23,7 +23,7 @@ const Stock = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "stock",
+        tableName: "txn_stock",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",

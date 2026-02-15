@@ -1,4 +1,4 @@
-CREATE TABLE `users` (
+CREATE TABLE `mst_users` (
     `id` int NOT NULL,
     `username` VARCHAR(50) NOT NULL UNIQUE,
     `first_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE `users` (
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE roles (
+CREATE TABLE mst_roles (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(100) UNIQUE NOT NULL,      -- e.g. ADMIN, MANAGER, VIEWER
   description TEXT,
@@ -30,7 +30,7 @@ CREATE TABLE roles (
 );
 
 
-CREATE TABLE actions (
+CREATE TABLE mst_actions (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(50) UNIQUE NOT NULL,        -- e.g. READ, CREATE, UPDATE, DELETE
   description TEXT,
@@ -42,7 +42,7 @@ CREATE TABLE actions (
   `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE permissions (
+CREATE TABLE mst_permissions (
   id INT PRIMARY KEY AUTO_INCREMENT,
   resource VARCHAR(100) NOT NULL,          -- e.g. USER, ORDER, PRODUCT
   action_id INT NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE permissions (
   `updated_by` INT DEFAULT NULL,
   `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (action_id) REFERENCES actions(id)
+  FOREIGN KEY (action_id) REFERENCES mst_actions(id)
 );
 
 CREATE TABLE map_role_permission (
@@ -67,8 +67,8 @@ CREATE TABLE map_role_permission (
   `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (role_id, permission_id),
-  FOREIGN KEY (role_id) REFERENCES roles(id),
-  FOREIGN KEY (permission_id) REFERENCES permissions(id)
+  FOREIGN KEY (role_id) REFERENCES mst_roles(id),
+  FOREIGN KEY (permission_id) REFERENCES mst_permissions(id)
 );
 
 CREATE TABLE map_role_action (
@@ -81,8 +81,8 @@ CREATE TABLE map_role_action (
   `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (role_id, action_id),
-  FOREIGN KEY (role_id) REFERENCES roles(id),
-  FOREIGN KEY (action_id) REFERENCES actions(id)
+  FOREIGN KEY (role_id) REFERENCES mst_roles(id),
+  FOREIGN KEY (action_id) REFERENCES mst_actions(id)
 );
 
 CREATE TABLE map_user_role (
@@ -95,10 +95,10 @@ CREATE TABLE map_user_role (
   `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id, role_id),
-  FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+  FOREIGN KEY (role_id) REFERENCES mst_roles(id) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE `buyer` (
+CREATE TABLE `mst_buyer` (
   `buyer_seq` int NOT NULL,
   `buyer_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE `buyer` (
   PRIMARY KEY (`buyer_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `company` (
+CREATE TABLE `mst_company` (
   `company_seq` int NOT NULL,
   `company_id` varchar(12) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
@@ -141,7 +141,7 @@ CREATE TABLE `company` (
   PRIMARY KEY (`company_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `dispatch` (
+CREATE TABLE `txn_dispatch` (
   `dispatch_seq` int NOT NULL,
   `product_id` varchar(20) DEFAULT NULL,
   `company_id` varchar(20) DEFAULT NULL,
@@ -162,7 +162,7 @@ CREATE TABLE `dispatch` (
   PRIMARY KEY (`dispatch_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `employee` (
+CREATE TABLE `mst_employee` (
   `employee_seq` int NOT NULL,
   `user_id` INT NOT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -178,7 +178,7 @@ CREATE TABLE `employee` (
   KEY `idx_employee_seq` (`employee_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `machine` (
+CREATE TABLE `mst_machine` (
   `machine_seq` int NOT NULL,
   `machine_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -196,7 +196,7 @@ CREATE TABLE `machine` (
   PRIMARY KEY (`machine_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `order` (
+CREATE TABLE `txn_order` (
   `order_seq` int NOT NULL,
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `order_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -219,7 +219,7 @@ CREATE TABLE `order` (
   PRIMARY KEY (`order_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `order_quantity` (
+CREATE TABLE `txn_order_quantity` (
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `order_quantity` int DEFAULT NULL,
@@ -259,7 +259,7 @@ CREATE TABLE `order_quantity` (
   `is_active` TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `product` (
+CREATE TABLE `mst_product` (
   `prod_seq` int NOT NULL,
   `product_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -282,7 +282,7 @@ CREATE TABLE `product` (
   PRIMARY KEY (`prod_seq`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `production_entry` (
+CREATE TABLE `txn_production_entry` (
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `shift_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -299,7 +299,7 @@ CREATE TABLE `production_entry` (
   `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `production_shift` (
+CREATE TABLE `txn_production_shift` (
   `shift_seq` int NOT NULL,
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -331,7 +331,7 @@ CREATE TABLE `production_shift` (
   PRIMARY KEY (`shift_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `seller` (
+CREATE TABLE `mst_seller` (
   `seller_seq` int NOT NULL,
   `seller_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -348,7 +348,7 @@ CREATE TABLE `seller` (
   PRIMARY KEY (`seller_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `stock` (
+CREATE TABLE `txn_stock` (
   `stock_seq` int NOT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `seller_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -366,7 +366,7 @@ CREATE TABLE `stock` (
   PRIMARY KEY (`stock_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `invoice` (
+CREATE TABLE `txn_invoice` (
   `invoice_seq` int NOT NULL,
   `invoice_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `invoice_date` datetime DEFAULT NULL,
@@ -391,7 +391,7 @@ CREATE TABLE `invoice` (
   PRIMARY KEY (`invoice_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `assets` (
+CREATE TABLE `mst_assets` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `module` VARCHAR(50) NOT NULL,
   `sub_module` VARCHAR(50) NOT NULL,

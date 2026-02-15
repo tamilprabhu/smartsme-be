@@ -24,14 +24,14 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for table `mst_users`
 --
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `mst_users`
 --
 
-INSERT INTO `users` (`id`, `username`, `first_name`, `last_name`, `name`, `email`, `mobile`, `address`, `password`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `mst_users` (`id`, `username`, `first_name`, `last_name`, `name`, `email`, `mobile`, `address`, `password`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'tamil', 'Tamilselvan', 'M', 'Tamilselvan M', 'tamil@test.com', '7889043243', 'Medavakkam, Chennai', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', '2025-09-23 23:29:52', '2025-09-23 23:29:52', 0, 1),
 (1002, 'nandha', 'Nandhakumar', 'V', 'Nandhakumar V', 'nandha@test.com', '7798343227', 'Kovilambakkam, Chennai', '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', '2025-09-23 23:32:02', '2025-09-23 23:32:02', 0, 1),
 (1003, 'alicej', 'Alice', 'Johnson', 'Alice Johnson', 'alice@example.com', '9812345670', NULL, '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', NULL, NULL, 0, 1),
@@ -73,19 +73,19 @@ INSERT INTO `users` (`id`, `username`, `first_name`, `last_name`, `name`, `email
 -- --------------------------------------------------------
 
 --
--- Table structure for table `buyer`
+-- Table structure for table `mst_buyer`
 --
 
 --
--- Dumping data for table `buyer`
+-- Dumping data for table `mst_buyer`
 --
 
-INSERT INTO `buyer` (`buyer_seq`, `buyer_id`, `company_id`, `buyer_name`, `buyer_address`, `buyer_phone`, `buyer_email`, `buyer_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `mst_buyer` (`buyer_seq`, `buyer_id`, `company_id`, `buyer_name`, `buyer_address`, `buyer_phone`, `buyer_email`, `buyer_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_BY_001', 'FINO001', 'Construction Materials Ltd', 'Chennai, Tamil Nadu', '9876543210', 'orders@constmat.com', '33AABCA1234A1Z5', NOW(), NOW(), 0, 1),
 (1002, 'FINO_BY_002', 'FINO001', 'Plumbing Solutions Co', 'Bangalore, Karnataka', '9876543211', 'purchase@plumbsol.com', '29AABCA1234B1Z5', NOW(), NOW(), 0, 1),
 (1003, 'PRES_BY_001', 'PRES001', 'Kitchen Appliance Distributors', 'Mumbai, Maharashtra', '9876543212', 'orders@kitchendist.com', '27AABCA1234C1Z5', NOW(), NOW(), 0, 1),
 (1004, 'PRES_BY_002', 'PRES001', 'Home Products Retail', 'Delhi, NCR', '9876543213', 'purchase@homeretail.com', '07AABCA1234D1Z5', NOW(), NOW(), 0, 1);
-INSERT INTO `buyer` (`buyer_seq`, `buyer_id`, `company_id`, `buyer_name`, `buyer_address`, `buyer_phone`, `buyer_email`, `buyer_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `mst_buyer` (`buyer_seq`, `buyer_id`, `company_id`, `buyer_name`, `buyer_address`, `buyer_phone`, `buyer_email`, `buyer_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1005, 'FINO_BY_003', 'FINO001', 'Industrial Pipes Ltd', 'Pune, Maharashtra', '9876543215', 'orders@indpipes.com', '27AABCA1234E1Z5', NOW(), NOW(), 0, 1),
 (1006, 'FINO_BY_004', 'FINO001', 'Water Solutions Co', 'Hyderabad, Telangana', '9876543216', 'purchase@watersol.com', '36AABCA1234F1Z5', NOW(), NOW(), 0, 1),
 (1007, 'FINO_BY_005', 'FINO001', 'Building Materials Hub', 'Coimbatore, Tamil Nadu', '9876543217', 'orders@buildmat.com', '33AABCA1234G1Z5', NOW(), NOW(), 0, 1),
@@ -123,14 +123,14 @@ INSERT INTO `buyer` (`buyer_seq`, `buyer_id`, `company_id`, `buyer_name`, `buyer
 -- --------------------------------------------------------
 
 --
--- Table structure for table `company`
+-- Table structure for table `mst_company`
 --
 
 --
--- Dumping data for table `company`
+-- Dumping data for table `mst_company`
 --
 
-INSERT INTO `company` (`company_seq`, `company_id`, `company_name`, `business_cons`, `company_type`, `address`, `pincode`, `prop_name`, `direct_phone`, `office_phone`, `mgmt_phone`, `mail_id`, `nature_of_business`, `auth_person`, `mobile_no`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `mst_company` (`company_seq`, `company_id`, `company_name`, `business_cons`, `company_type`, `address`, `pincode`, `prop_name`, `direct_phone`, `office_phone`, `mgmt_phone`, `mail_id`, `nature_of_business`, `auth_person`, `mobile_no`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1000, 'FINO001', 'Finolex Industries Ltd', 'corporation', 'large scale', 'Finolex Bhavan, Pune-Bangalore Highway, Pune', 411045, 'Prakash P Chhabria', '2067121800', '2067121800', '2067121800', 'contact@finolex.com', 'manufacturing', 'Prakash P Chhabria', '2067121800', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
 (1001, 'PRES001', 'Prestige Smart Kitchen Ltd', 'corporation', 'large scale', 'TTK Prestige House, Bangalore', 560042, 'T T Jagannathan', '8025505555', '8025505555', '8025505555', 'contact@prestigesmartcooking.com', 'manufacturing', 'T T Jagannathan', '8025505555', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
 (1002, 'MILT001', 'Milton Industries Ltd', 'corporation', 'medium scale', 'Milton House, Rajkot, Gujarat', 360002, 'T M Louis', '2812234567', '2812234567', '2812234567', 'contact@milton.in', 'manufacturing', 'T M Louis', '2812234567', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
@@ -140,14 +140,14 @@ INSERT INTO `company` (`company_seq`, `company_id`, `company_name`, `business_co
 -- --------------------------------------------------------
 
 --
--- Table structure for table `dispatch`
+-- Table structure for table `txn_dispatch`
 --
 
 --
--- Dumping data for table `dispatch`
+-- Dumping data for table `txn_dispatch`
 --
 
-INSERT INTO `dispatch` (`dispatch_seq`, `product_id`, `company_id`, `order_id`, `dispatch_id`, `dispatch_date`, `quantity`, `no_of_packs`, `total_weight`, `normal_weight`, `norms_weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `txn_dispatch` (`dispatch_seq`, `product_id`, `company_id`, `order_id`, `dispatch_id`, `dispatch_date`, `quantity`, `no_of_packs`, `total_weight`, `normal_weight`, `norms_weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1010, 'FINO_PR_001', 'FINO001', 'FINO_OR_001', 'FINO_DL_001', '2025-02-10 00:00:00', 500, 20, 1250.0000, 2.5000, 1312.5000, NOW(), NOW(), 0, 1),
 (1011, 'FINO_PR_002', 'FINO001', 'FINO_OR_002', 'FINO_DL_002', '2025-02-15 00:00:00', 1000, 50, 800.0000, 0.8000, 864.0000, NOW(), NOW(), 0, 1),
 (1012, 'PRES_PR_001', 'PRES001', 'PRES_OR_001', 'PRES_DL_001', '2025-02-12 00:00:00', 100, 5, 3500.0000, 35.0000, 3920.0000, NOW(), NOW(), 0, 1),
@@ -189,14 +189,14 @@ INSERT INTO `dispatch` (`dispatch_seq`, `product_id`, `company_id`, `order_id`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `employee`
+-- Table structure for table `mst_employee`
 --
 
 --
--- Dumping data for table `employee`
+-- Dumping data for table `mst_employee`
 --
 
-INSERT INTO `employee` (`employee_seq`, `user_id`, `company_id`, `salary`, `active_flag`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `mst_employee` (`employee_seq`, `user_id`, `company_id`, `salary`, `active_flag`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 -- Finolex Industries employees (Tamil as Owner)
 (1000, 1001, 'FINO001', 200000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
 (1001, 1003, 'FINO001', 150000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
@@ -239,14 +239,14 @@ INSERT INTO `employee` (`employee_seq`, `user_id`, `company_id`, `salary`, `acti
 -- --------------------------------------------------------
 
 --
--- Table structure for table `machine`
+-- Table structure for table `mst_machine`
 --
 
 --
--- Dumping data for table `machine`
+-- Dumping data for table `mst_machine`
 --
 
-INSERT INTO `machine` (`machine_seq`, `machine_id`, `company_id`, `machine_name`, `machine_type`, `capacity`, `model`, `active_flag`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `mst_machine` (`machine_seq`, `machine_id`, `company_id`, `machine_name`, `machine_type`, `capacity`, `model`, `active_flag`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_DC_001', 'FINO001', 'Die Casting Machine', 'Production', '200T', 'DC-200', 'Y', NOW(), NOW(), 0, 1),
 (1002, 'FINO_TR_001', 'FINO001', 'Trimming Machine', 'Trimming', '150T', 'TR-150', 'Y', NOW(), NOW(), 0, 1),
 (1003, 'FINO_DM_001', 'FINO001', 'Drilling Machine', 'Drilling / Tapping', '50T', 'DM-50', 'Y', NOW(), NOW(), 0, 1),
@@ -288,14 +288,14 @@ INSERT INTO `machine` (`machine_seq`, `machine_id`, `company_id`, `machine_name`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order`
+-- Table structure for table `txn_order`
 --
 
 --
--- Dumping data for table `order`
+-- Dumping data for table `txn_order`
 --
 
-INSERT INTO `order` (`order_seq`, `order_id`, `order_name`, `company_id`, `product_id`, `buyer_id`, `order_status`, `order_date`, `target_date`, `order_quantity`, `price`, `discount`, `total_price`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `txn_order` (`order_seq`, `order_id`, `order_name`, `company_id`, `product_id`, `buyer_id`, `order_status`, `order_date`, `target_date`, `order_quantity`, `price`, `discount`, `total_price`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_OR_001', 'PVC Pipe 4 inch - Batch A', 'FINO001', 'FINO_PR_001', 'FINO_BY_001', 'IN_PROGRESS', '2025-02-01 00:00:00', '2025-02-15 00:00:00', 1000, 25.00, 2.00, 23000.00, NOW(), NOW(), 0, 1),
 (1002, 'FINO_OR_002', 'PVC Fitting Elbow - High Volume', 'FINO001', 'FINO_PR_002', 'FINO_BY_002', 'SCHEDULED', '2025-02-05 00:00:00', '2025-02-20 00:00:00', 2000, 8.50, 1.00, 15000.00, NOW(), NOW(), 0, 1),
 (1003, 'PRES_OR_001', 'Pressure Cooker Base - Premium', 'PRES001', 'PRES_PR_001', 'PRES_BY_001', 'IN_PROGRESS', '2025-02-03 00:00:00', '2025-02-18 00:00:00', 200, 120.00, 8.00, 22400.00, NOW(), NOW(), 0, 1),
@@ -337,14 +337,14 @@ INSERT INTO `order` (`order_seq`, `order_id`, `order_name`, `company_id`, `produ
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_quantity`
+-- Table structure for table `txn_order_quantity`
 --
 
 --
--- Dumping data for table `order_quantity`
+-- Dumping data for table `txn_order_quantity`
 --
 
-INSERT INTO `order_quantity` (`order_id`, `company_id`, `order_quantity`, `product_quantity`, `fettl_ip_quantity`, `fettl_ac_quantity`, `fettl_rj_quantity`, `drill_ip_quantity`, `drill_ac_quantity`, `drill_rj_quantity`, `tapp_ip_quantity`, `tapp_ac_quantity`, `tapp_rj_quantity`, `mach_ip_quantity`, `mach_ac_quantity`, `mach_rj_quantity`, `trim_ip_quantity`, `trim_ac_quantity`, `trim_rj_quantity`, `shotb_ip_quantity`, `shotb_ac_quantity`, `shotb_rj_quantity`, `pwdr_ip_quantity`, `pwdr_ac_quantity`, `pwdr_rj_quantity`, `assmbl_ip_quantity`, `assmbl_ac_quantity`, `assmbl_rj_quantity`, `qlins_ip_quantity`, `qlins_ac_quantity`, `qlins_rj_quantity`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `txn_order_quantity` (`order_id`, `company_id`, `order_quantity`, `product_quantity`, `fettl_ip_quantity`, `fettl_ac_quantity`, `fettl_rj_quantity`, `drill_ip_quantity`, `drill_ac_quantity`, `drill_rj_quantity`, `tapp_ip_quantity`, `tapp_ac_quantity`, `tapp_rj_quantity`, `mach_ip_quantity`, `mach_ac_quantity`, `mach_rj_quantity`, `trim_ip_quantity`, `trim_ac_quantity`, `trim_rj_quantity`, `shotb_ip_quantity`, `shotb_ac_quantity`, `shotb_rj_quantity`, `pwdr_ip_quantity`, `pwdr_ac_quantity`, `pwdr_rj_quantity`, `assmbl_ip_quantity`, `assmbl_ac_quantity`, `assmbl_rj_quantity`, `qlins_ip_quantity`, `qlins_ac_quantity`, `qlins_rj_quantity`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 ('FINO_OR_001', 'FINO001', 1000, 950, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NOW(), NOW(), 0, 1),
 ('FINO_OR_002', 'FINO001', 2000, 1900, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NOW(), NOW(), 0, 1),
 ('PRES_OR_001', 'PRES001', 200, 180, 200, 190, 10, 190, 180, 10, 180, 170, 10, 170, 160, 10, 160, 150, 10, 150, 140, 10, 140, 130, 10, 130, 120, 10, 120, 110, 10, NOW(), NOW(), 0, 1),
@@ -386,14 +386,14 @@ INSERT INTO `order_quantity` (`order_id`, `company_id`, `order_quantity`, `produ
 -- --------------------------------------------------------
 
 --
--- Table structure for table `product`
+-- Table structure for table `mst_product`
 --
 
 --
--- Dumping data for table `product`
+-- Dumping data for table `mst_product`
 --
 
-INSERT INTO `product` (`prod_seq`, `product_id`, `company_id`, `prod_name`, `raw_material`, `weight`, `wastage`, `norms`, `total_weight`, `cavity`, `shot_rate`, `per_item_rate`, `incentive_limit`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `mst_product` (`prod_seq`, `product_id`, `company_id`, `prod_name`, `raw_material`, `weight`, `wastage`, `norms`, `total_weight`, `cavity`, `shot_rate`, `per_item_rate`, `incentive_limit`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_PR_001', 'FINO001', 'PVC Pipe 4 inch', 'PVC-Resin', 2.5000, 5, 0.125, 2.625, 8, 1.20, 0.12, 200, NOW(), NOW(), 0, 1),
 (1002, 'FINO_PR_002', 'FINO001', 'PVC Fitting Elbow', 'PVC-Compound', 0.8000, 8, 0.064, 0.864, 12, 0.80, 0.08, 300, NOW(), NOW(), 0, 1),
 (1003, 'PRES_PR_001', 'PRES001', 'Pressure Cooker Base', 'ADC-12', 35.0000, 12, 4.2000, 39.2000, 1, 8.00, 0.80, 60, NOW(), NOW(), 0, 1),
@@ -493,17 +493,17 @@ INSERT INTO `product` (`prod_seq`, `product_id`, `company_id`, `prod_name`, `raw
 -- --------------------------------------------------------
 
 --
--- Table structure for table `production_entry`
+-- Table structure for table `txn_production_entry`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `production_entry`
+-- Table structure for table `txn_production_entry`
 --
 
 -- Production Entry seeders
-INSERT INTO `production_entry` (`order_id`, `company_id`, `shift_id`, `shift_start_time`, `shift_end_time`, `opening_count`, `closing_count`, `production`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `txn_production_entry` (`order_id`, `company_id`, `shift_id`, `shift_start_time`, `shift_end_time`, `opening_count`, `closing_count`, `production`, `is_deleted`, `is_active`) VALUES
 ('FINO_OR_001', 'FINO001', 'FINO_SH_001', '2025-02-01 06:00:00', '2025-02-01 07:00:00', 0, 50, 50, 0, 1),
 ('FINO_OR_001', 'FINO001', 'FINO_SH_001', '2025-02-01 07:00:00', '2025-02-01 08:00:00', 50, 100, 50, 0, 1),
 ('FINO_OR_001', 'FINO001', 'FINO_SH_001', '2025-02-01 08:00:00', '2025-02-01 09:00:00', 100, 150, 50, 0, 1),
@@ -544,13 +544,13 @@ INSERT INTO `production_entry` (`order_id`, `company_id`, `shift_id`, `shift_sta
 -- --------------------------------------------------------
 
 --
--- Table structure for table `production_shift`
+-- Table structure for table `txn_production_shift`
 --
 --
--- Dumping data for table `production_shift`
+-- Dumping data for table `txn_production_shift`
 --
 
-INSERT INTO `production_shift` (`shift_seq`, `order_id`, `company_id`, `shift_id`, `product_id`, `machine_id`, `shift_start_date`, `shift_end_date`, `entry_type`, `shift_type`, `shift_hours`, `operator1`, `operator2`, `operator3`, `supervisor`, `opening_count`, `closing_count`, `production`, `rejection`, `net_production`, `incentive`, `less_80_reason`, `create_date`, `update_date`, `created_by`, `updated_by`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `txn_production_shift` (`shift_seq`, `order_id`, `company_id`, `shift_id`, `product_id`, `machine_id`, `shift_start_date`, `shift_end_date`, `entry_type`, `shift_type`, `shift_hours`, `operator1`, `operator2`, `operator3`, `supervisor`, `opening_count`, `closing_count`, `production`, `rejection`, `net_production`, `incentive`, `less_80_reason`, `create_date`, `update_date`, `created_by`, `updated_by`, `is_deleted`, `is_active`) VALUES
 (1001,	'FINO_OR_001',	'FINO001',	'FINO_SH_001',	'FINO_PR_001',	'FINO_DC_001',	'2025-02-01 06:00:00',	'2025-02-01 14:00:00',	'1',	'1',	'8',	1000005,	1000006,	NULL,	1000002,	0,	400,	400,	20,	380,	'Y',	'',	'2026-02-08 12:49:45',	'2026-02-08 12:50:08',	NULL,	NULL,	0,	1),
 (1002,	'FINO_OR_001',	'FINO001',	'FINO_SH_002',	'FINO_PR_001',	'FINO_DC_001',	'2025-02-01 14:00:00',	'2025-02-01 22:00:00',	'1',	'2',	'8',	1000007,	1000008,	NULL,	1000003,	400,	750,	350,	15,	335,	'Y',	'',	'2026-02-08 12:49:45',	'2026-02-08 12:50:08',	NULL,	NULL,	0,	1),
 (1003,	'PRES_OR_001',	'PRES001',	'PRES_SH_001',	'PRES_PR_001',	'PRES_DC_001',	'2025-02-03 06:00:00',	'2025-02-03 14:00:00',	'1',	'1',	'8',	1000014,	1000015,	NULL,	1000013,	0,	80,	80,	5,	75,	'Y',	'',	'2026-02-08 12:49:45',	'2026-02-08 12:50:08',	NULL,	NULL,	0,	1),
@@ -591,14 +591,14 @@ INSERT INTO `production_shift` (`shift_seq`, `order_id`, `company_id`, `shift_id
 -- --------------------------------------------------------
 
 --
--- Table structure for table `seller`
+-- Table structure for table `mst_seller`
 --
 
 --
--- Dumping data for table `seller`
+-- Dumping data for table `mst_seller`
 --
 
-INSERT INTO `seller` (`seller_seq`, `seller_id`, `company_id`, `seller_name`, `seller_address`, `seller_phone`, `seller_email`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `mst_seller` (`seller_seq`, `seller_id`, `company_id`, `seller_name`, `seller_address`, `seller_phone`, `seller_email`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_SL_001', 'FINO001', 'PVC Resin Suppliers Pvt Ltd', 'Coimbatore, Tamil Nadu', '9876543220', 'sales@pvcresin.com', NOW(), NOW(), 0, 1),
 (1002, 'FINO_SL_002', 'FINO001', 'Polymer Trading Corporation', 'Hyderabad, Telangana', '9876543221', 'info@polytrading.com', NOW(), NOW(), 0, 1),
 (1003, 'PRES_SL_001', 'PRES001', 'Aluminum Alloy Hub', 'Pune, Maharashtra', '9876543222', 'sales@aluhub.com', NOW(), NOW(), 0, 1),
@@ -640,14 +640,14 @@ INSERT INTO `seller` (`seller_seq`, `seller_id`, `company_id`, `seller_name`, `s
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stock`
+-- Table structure for table `txn_stock`
 --
 
 --
--- Dumping data for table `stock`
+-- Dumping data for table `txn_stock`
 --
 
-INSERT INTO `stock` (`stock_seq`, `company_id`, `seller_id`, `stock_id`, `stock_date`, `raw_material`, `no_of_bars`, `weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `txn_stock` (`stock_seq`, `company_id`, `seller_id`, `stock_id`, `stock_date`, `raw_material`, `no_of_bars`, `weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO001', 'FINO_SL_001', 'FINO_ST_001', '2025-01-15 00:00:00', 'PVC Resin Grade S-65', 100, 5000.0000, NOW(), NOW(), 0, 1),
 (1002, 'FINO001', 'FINO_SL_002', 'FINO_ST_002', '2025-01-20 00:00:00', 'PVC Compound K-67', 80, 4000.0000, NOW(), NOW(), 0, 1),
 (1003, 'PRES001', 'PRES_SL_001', 'PRES_ST_001', '2025-01-18 00:00:00', 'Aluminum Alloy ADC-12', 40, 2000.0000, NOW(), NOW(), 0, 1),
@@ -687,14 +687,14 @@ INSERT INTO `stock` (`stock_seq`, `company_id`, `seller_id`, `stock_id`, `stock_
 (1037, 'PRES001', 'PRES_SL_019', 'PRES_ST_019', '2025-02-23 00:00:00', 'Aluminum Alloy ADC-11', 42, 2100.0000, NOW(), NOW(), 0, 1);
 
 --
--- Table structure for table `invoice`
+-- Table structure for table `txn_invoice`
 --
 
 --
--- Dumping data for table `invoice`
+-- Dumping data for table `txn_invoice`
 --
 
-INSERT INTO `invoice` (`invoice_seq`, `invoice_id`, `invoice_date`, `comp_id`, `buyr_id`, `product_id`, `quantity`, `unit_price`, `cgst_rate`, `cgst_amount`, `sgst_rate`, `sgst_amount`, `total_amount`, `sac_code`, `buyr_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `txn_invoice` (`invoice_seq`, `invoice_id`, `invoice_date`, `comp_id`, `buyr_id`, `product_id`, `quantity`, `unit_price`, `cgst_rate`, `cgst_amount`, `sgst_rate`, `sgst_amount`, `total_amount`, `sac_code`, `buyr_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'IN10000001', '2025-02-15 00:00:00', 'FINO001', 'FINO_BY_001', 'FINO_PR_001', 500, 25.00, 9.00, 1125.00, 9.00, 1125.00, 14750.00, 'SAC998314', '33AABCA1234A1Z5', NOW(), NOW(), 0, 1),
 (1002, 'IN10000002', '2025-02-20 00:00:00', 'FINO001', 'FINO_BY_002', 'FINO_PR_002', 1000, 8.50, 9.00, 765.00, 9.00, 765.00, 10030.00, 'SAC998314', '29AABCA1234B1Z5', NOW(), NOW(), 0, 1),
 (1003, 'IN10000003', '2025-02-18 00:00:00', 'PRES001', 'PRES_BY_001', 'PRES_PR_001', 100, 120.00, 9.00, 1080.00, 9.00, 1080.00, 14160.00, 'SAC998313', '27AABCA1234C1Z5', NOW(), NOW(), 0, 1),
@@ -735,11 +735,11 @@ INSERT INTO `invoice` (`invoice_seq`, `invoice_id`, `invoice_date`, `comp_id`, `
 
 -- --------------------------------------------------------
 --
--- Table structure for table `assets`
+-- Table structure for table `mst_assets`
 --
 
--- Seed data for assets (file type samples)
-INSERT INTO `assets` (`module`, `sub_module`, `identifier`, `original_name`, `stored_name`, `mime_type`, `size_bytes`, `storage_path`, `visibility`, `company_id`, `created_by`, `updated_by`, `metadata`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+-- Seed data for mst_assets (file type samples)
+INSERT INTO `mst_assets` (`module`, `sub_module`, `identifier`, `original_name`, `stored_name`, `mime_type`, `size_bytes`, `storage_path`, `visibility`, `company_id`, `created_by`, `updated_by`, `metadata`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 ('seed','samples','filetypes','sample.csv','b1510eef-9243-41fe-b0e0-0ef85cc2a1ff_sample.csv','text/csv',23,'seed/samples/b1510eef-9243-41fe-b0e0-0ef85cc2a1ff_sample.csv','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'csv'), NOW(), NOW(), 0, 1),
 ('seed','samples','filetypes','sample.txt','4a87878d-110f-43f4-ad12-e785575485de_sample.txt','text/plain',30,'seed/samples/4a87878d-110f-43f4-ad12-e785575485de_sample.txt','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'txt'), NOW(), NOW(), 0, 1),
 ('seed','samples','filetypes','sample.pdf','a2949208-58b5-4dad-b73d-77aa0487c203_sample.pdf','application/pdf',45,'seed/samples/a2949208-58b5-4dad-b73d-77aa0487c203_sample.pdf','public','FINO001',1,1,JSON_OBJECT('seed', true, 'fileType', 'pdf'), NOW(), NOW(), 0, 1),

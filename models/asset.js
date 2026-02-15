@@ -26,7 +26,7 @@ const Asset = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "assets",
+        tableName: "mst_assets",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",

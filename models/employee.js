@@ -20,7 +20,7 @@ const Employee = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "employee",
+        tableName: "mst_employee",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",

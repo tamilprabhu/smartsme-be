@@ -17,7 +17,7 @@ const Action = sequelize.define(
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "actions",
+        tableName: "mst_actions",
         timestamps: true,
         createdAt: "create_date",
         updatedAt: "update_date",
