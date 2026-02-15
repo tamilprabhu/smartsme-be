@@ -439,7 +439,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"productId\": \"TEST_PR_001\",\n    \"companyId\": \"FINO001\",\n    \"prodName\": \"Test Product\",\n    \"rawMaterial\": \"Aluminum\",\n    \"weight\": 5.5000,\n    \"wastage\": 10,\n    \"norms\": 0.55,\n    \"totalWeight\": 6.05,\n    \"cavity\": 4,\n    \"shotRate\": 2.50,\n    \"perItemRate\": 0.25,\n    \"incentiveLimit\": 100,\n    \"createDate\": \"2025-11-08T15:00:00.000Z\",\n    \"updateDate\": \"2025-11-08T15:00:00.000Z\"\n}"
+							"raw": "{\n    \"productId\": \"TEST_PR_001\",\n    \"companyId\": \"FINO001\",\n    \"prodName\": \"Test Product\",\n    \"rawMaterial\": \"Aluminum\",\n    \"weight\": 5.5000,\n    \"wastage\": 10,\n    \"norms\": 0.55,\n    \"totalWeight\": 6.05,\n    \"cavity\": 4,\n    \"shotRate\": 2.50,\n    \"perItemRate\": 0.25,\n    \"incentiveLimit\": 100,\n    \"salesType\": \"Sales\",\n    \"salesCode\": \"HSN\",\n    \"salesPercent\": 18.00,\n    \"createDate\": \"2025-11-08T15:00:00.000Z\",\n    \"updateDate\": \"2025-11-08T15:00:00.000Z\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/products",
@@ -461,7 +461,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"prodName\": \"Updated Test Product\",\n    \"weight\": 6.0000,\n    \"updateDate\": \"2025-11-08T15:30:00.000Z\"\n}"
+							"raw": "{\n    \"prodName\": \"Updated Test Product\",\n    \"weight\": 6.0000,\n    \"salesType\": \"Contract\",\n    \"salesCode\": \"SAC\",\n    \"salesPercent\": 12.50,\n    \"updateDate\": \"2025-11-08T15:30:00.000Z\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/products/1000001",

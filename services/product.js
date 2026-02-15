@@ -28,7 +28,9 @@ const productService = {
                     [Op.or]: [
                         { prodName: { [Op.like]: `%${search}%` } },
                         { productId: { [Op.like]: `%${search}%` } },
-                        { rawMaterial: { [Op.like]: `%${search}%` } }
+                        { rawMaterial: { [Op.like]: `%${search}%` } },
+                        { salesType: { [Op.like]: `%${search}%` } },
+                        { salesCode: { [Op.like]: `%${search}%` } }
                     ]
                 })
             };
