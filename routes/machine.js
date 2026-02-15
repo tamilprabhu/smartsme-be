@@ -103,7 +103,7 @@ router.post("/", authenticate, async (req, res) => {
         const machine = await machineService.createMachine(req.body, companyId, userId);
         logger.info(`MachineRoute: POST /machines - Request completed successfully`, { 
             requestId: requestId,
-            machineId: machine.machineIdSeq,
+            machineId: machine.machineSequence,
             machineName: machine.machineName,
             userId: req.auth?.id
         });

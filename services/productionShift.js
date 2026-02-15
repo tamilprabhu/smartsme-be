@@ -17,7 +17,7 @@ const buildProductionShiftOrder = (sortBy, sortOrder) => {
             return [[col('updated_by'), direction]];
         case SortBy.SEQUENCE:
         default:
-            return [[col('shift_id_seq'), direction]];
+            return [[col('shift_seq'), direction]];
     }
 };
 
@@ -104,7 +104,7 @@ const productionShiftService = {
     getProductionShiftById: async (id, companyId) => {
         logger.info(`ProductionShiftService: Fetching shift with ID: ${id}, companyId: ${companyId}`);
         try {
-            const whereClause = { shiftIdSeq: id };
+            const whereClause = { shiftSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -136,7 +136,7 @@ const productionShiftService = {
                 createDate: new Date(),
                 updateDate: new Date()
             });
-            logger.info(`ProductionShiftService: Successfully created shift: ${shift.shiftId} (ID: ${shift.shiftIdSeq})`);
+            logger.info(`ProductionShiftService: Successfully created shift: ${shift.shiftId} (ID: ${shift.shiftSequence})`);
             return shift;
         } catch (error) {
             logger.error(`ProductionShiftService: Failed to create shift: ${shiftData.shiftId}`, { 
@@ -151,7 +151,7 @@ const productionShiftService = {
     updateProductionShift: async (id, shiftData, companyId, userId) => {
         logger.info(`ProductionShiftService: Updating shift with ID: ${id}, companyId: ${companyId}, userId: ${userId}`, { updateData: shiftData });
         try {
-            const whereClause = { shiftIdSeq: id };
+            const whereClause = { shiftSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -184,7 +184,7 @@ const productionShiftService = {
     deleteProductionShift: async (id, companyId) => {
         logger.info(`ProductionShiftService: Deleting shift with ID: ${id}, companyId: ${companyId}`);
         try {
-            const whereClause = { shiftIdSeq: id };
+            const whereClause = { shiftSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }

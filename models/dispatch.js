@@ -4,11 +4,11 @@ const sequelize = require("../db/sequelize");
 const Dispatch = sequelize.define(
     "Dispatch",
     {
-        dispatchIdSeq: {
+        dispatchSequence: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: 'dispatch_id_seq'
+            field: 'dispatch_seq'
         },
         prodId: { type: DataTypes.STRING(20), field: 'prod_id' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },

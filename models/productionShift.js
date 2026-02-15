@@ -13,11 +13,11 @@ const hasValue = (value) => {
 const ProductionShift = sequelize.define(
     "ProductionShift",
     {
-        shiftIdSeq: {
+        shiftSequence: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: 'shift_id_seq'
+            field: 'shift_seq'
         },
         orderId: {
             type: DataTypes.STRING(20),

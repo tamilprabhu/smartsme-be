@@ -45,7 +45,7 @@ const machineService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'machine_id_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'machine_seq')
             });
             logger.info(`MachineService: Successfully retrieved ${rows.length} machines out of ${count} total for company: ${companyId}`);
             return {
@@ -70,7 +70,7 @@ const machineService = {
     getMachineById: async (id, companyId = null) => {
         logger.info(`MachineService: Fetching machine with ID: ${id}, companyId: ${companyId}`);
         try {
-            const whereClause = { machineIdSeq: id };
+            const whereClause = { machineSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -111,8 +111,8 @@ const machineService = {
         });
         try {
             const machine = await Machine.create(enrichedData);
-            logger.info(`MachineService: Successfully created machine: ${machine.machineName} (ID: ${machine.machineIdSeq})`, {
-                machineId: machine.machineIdSeq,
+            logger.info(`MachineService: Successfully created machine: ${machine.machineName} (ID: ${machine.machineSequence})`, {
+                machineId: machine.machineSequence,
                 companyId: machine.companyId,
                 activeFlag: machine.activeFlag
             });
@@ -136,7 +136,7 @@ const machineService = {
         
         logger.info(`MachineService: Updating machine with ID: ${id}`, { updateData: enrichedData, companyId });
         try {
-            const whereClause = { machineIdSeq: id };
+            const whereClause = { machineSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -165,7 +165,7 @@ const machineService = {
     deleteMachine: async (id, companyId) => {
         logger.info(`MachineService: Deleting machine with ID: ${id}, companyId: ${companyId}`);
         try {
-            const whereClause = { machineIdSeq: id };
+            const whereClause = { machineSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }

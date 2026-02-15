@@ -4,11 +4,11 @@ const sequelize = require("../db/sequelize");
 const Order = sequelize.define(
     "Order",
     {
-        orderIdSeq: {
+        orderSequence: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: 'order_id_seq'
+            field: 'order_seq'
         },
         orderId: { type: DataTypes.STRING(20), field: 'order_id' },
         orderName: { type: DataTypes.STRING(50), field: 'order_name' },

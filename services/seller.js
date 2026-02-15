@@ -44,7 +44,7 @@ const sellerService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'seller_id_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'seller_seq')
             });
             logger.info(`SellerService: Successfully retrieved ${rows.length} sellers out of ${count} total for company: ${companyId}`);
             return {
@@ -70,7 +70,7 @@ const sellerService = {
         try {
             const seller = await Seller.findOne({
                 where: { 
-                    sellerIdSeq: id,
+                    sellerSequence: id,
                     companyId: companyId
                 }
             });
@@ -103,7 +103,7 @@ const sellerService = {
         });
         try {
             const seller = await Seller.create(enrichedData);
-            logger.info(`SellerService: Successfully created seller: ${seller.sellerName} (ID: ${seller.sellerIdSeq})`);
+            logger.info(`SellerService: Successfully created seller: ${seller.sellerName} (ID: ${seller.sellerSequence})`);
             return seller;
         } catch (error) {
             logger.error(`SellerService: Failed to create seller: ${enrichedData.sellerName}`, { 
@@ -125,7 +125,7 @@ const sellerService = {
         try {
             const [updatedRows] = await Seller.update(enrichedData, {
                 where: { 
-                    sellerIdSeq: id,
+                    sellerSequence: id,
                     companyId: companyId
                 }
             });
@@ -135,7 +135,7 @@ const sellerService = {
             }
             const updatedSeller = await Seller.findOne({
                 where: { 
-                    sellerIdSeq: id,
+                    sellerSequence: id,
                     companyId: companyId
                 }
             });
@@ -156,7 +156,7 @@ const sellerService = {
         try {
             const seller = await Seller.findOne({
                 where: { 
-                    sellerIdSeq: id,
+                    sellerSequence: id,
                     companyId: companyId
                 }
             });
@@ -164,7 +164,7 @@ const sellerService = {
                 { isDeleted: true, isActive: false },
                 {
                     where: {
-                        sellerIdSeq: id,
+                        sellerSequence: id,
                         companyId: companyId,
                         isDeleted: false
                     }

@@ -99,7 +99,7 @@ CREATE TABLE map_user_role (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE `buyer` (
-  `buyer_id_seq` int NOT NULL,
+  `buyer_seq` int NOT NULL,
   `buyer_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `buyer_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -113,11 +113,11 @@ CREATE TABLE `buyer` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`buyer_id_seq`)
+  PRIMARY KEY (`buyer_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `company` (
-  `company_id_seq` int NOT NULL,
+  `company_seq` int NOT NULL,
   `company_id` varchar(12) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `business_cons` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
@@ -138,11 +138,11 @@ CREATE TABLE `company` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`company_id_seq`)
+  PRIMARY KEY (`company_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `dispatch` (
-  `dispatch_id_seq` int NOT NULL,
+  `dispatch_seq` int NOT NULL,
   `prod_id` varchar(20) DEFAULT NULL,
   `company_id` varchar(20) DEFAULT NULL,
   `order_id` varchar(20) DEFAULT NULL,
@@ -159,11 +159,11 @@ CREATE TABLE `dispatch` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`dispatch_id_seq`)
+  PRIMARY KEY (`dispatch_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `employee` (
-  `employee_id_seq` int NOT NULL,
+  `employee_seq` int NOT NULL,
   `user_id` INT NOT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `salary` int DEFAULT NULL,
@@ -174,12 +174,12 @@ CREATE TABLE `employee` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`employee_id_seq`),
-  KEY `idx_employee_id_seq` (`employee_id_seq`)
+  PRIMARY KEY (`employee_seq`),
+  KEY `idx_employee_seq` (`employee_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `machine` (
-  `machine_id_seq` int NOT NULL,
+  `machine_seq` int NOT NULL,
   `machine_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `machine_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -193,11 +193,11 @@ CREATE TABLE `machine` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`machine_id_seq`)
+  PRIMARY KEY (`machine_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `order` (
-  `order_id_seq` int NOT NULL,
+  `order_seq` int NOT NULL,
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `order_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -216,7 +216,7 @@ CREATE TABLE `order` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`order_id_seq`)
+  PRIMARY KEY (`order_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `order_quantity` (
@@ -260,7 +260,7 @@ CREATE TABLE `order_quantity` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `product` (
-  `prod_id_seq` int NOT NULL,
+  `prod_seq` int NOT NULL,
   `prod_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `prod_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -279,7 +279,7 @@ CREATE TABLE `product` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`prod_id_seq`)
+  PRIMARY KEY (`prod_seq`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `production_entry` (
@@ -300,7 +300,7 @@ CREATE TABLE `production_entry` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `production_shift` (
-  `shift_id_seq` int NOT NULL,
+  `shift_seq` int NOT NULL,
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `shift_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -328,11 +328,11 @@ CREATE TABLE `production_shift` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`shift_id_seq`)
+  PRIMARY KEY (`shift_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `seller` (
-  `seller_id_seq` int NOT NULL,
+  `seller_seq` int NOT NULL,
   `seller_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `seller_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -345,11 +345,11 @@ CREATE TABLE `seller` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`seller_id_seq`)
+  PRIMARY KEY (`seller_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `stock` (
-  `stock_id_seq` int NOT NULL,
+  `stock_seq` int NOT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `seller_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `stock_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -363,7 +363,7 @@ CREATE TABLE `stock` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`stock_id_seq`)
+  PRIMARY KEY (`stock_seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `invoice` (

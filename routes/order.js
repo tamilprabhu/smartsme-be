@@ -112,7 +112,7 @@ router.post("/", authenticate, async (req, res) => {
         const order = await orderService.createOrder(req.body, companyId, userId);
         logger.info(`OrderRoute: POST /orders - Request completed successfully`, { 
             requestId: requestId,
-            orderIdSeq: order.orderIdSeq,
+            orderSequence: order.orderSequence,
             orderId: order.orderId,
             companyId: companyId,
             userId: userId

@@ -44,7 +44,7 @@ const dispatchService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'dispatch_id_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'dispatch_seq')
             });
             logger.info(`DispatchService: Successfully retrieved ${rows.length} dispatches out of ${count} total for company: ${companyId}`);
             return {
@@ -68,7 +68,7 @@ const dispatchService = {
     getDispatchById: async (id, companyId = null) => {
         logger.info(`DispatchService: Fetching dispatch with ID: ${id}, companyId: ${companyId}`);
         try {
-            let whereClause = { dispatchIdSeq: id };
+            let whereClause = { dispatchSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -108,7 +108,7 @@ const dispatchService = {
             }
             
             const dispatch = await Dispatch.create(enrichedData);
-            logger.info(`DispatchService: Successfully created dispatch: ${dispatch.dispatchId} (ID: ${dispatch.dispatchIdSeq}) for company: ${companyId}`);
+            logger.info(`DispatchService: Successfully created dispatch: ${dispatch.dispatchId} (ID: ${dispatch.dispatchSequence}) for company: ${companyId}`);
             return dispatch;
         } catch (error) {
             logger.error(`DispatchService: Failed to create dispatch: ${dispatchData.dispatchId}`, { 
@@ -129,7 +129,7 @@ const dispatchService = {
             userId: userId
         });
         try {
-            let whereClause = { dispatchIdSeq: id };
+            let whereClause = { dispatchSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -167,7 +167,7 @@ const dispatchService = {
             userId: userId
         });
         try {
-            let whereClause = { dispatchIdSeq: id };
+            let whereClause = { dispatchSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }

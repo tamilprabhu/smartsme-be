@@ -45,7 +45,7 @@ const buyerService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'buyer_id_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'buyer_seq')
             });
             logger.info(`BuyerService: Successfully retrieved ${rows.length} buyers out of ${count} total for company: ${companyId}`);
             return {
@@ -71,7 +71,7 @@ const buyerService = {
         try {
             const buyer = await Buyer.findOne({
                 where: { 
-                    buyerIdSeq: id,
+                    buyerSequence: id,
                     companyId: companyId
                 }
             });
@@ -103,7 +103,7 @@ const buyerService = {
                 updatedBy: userId
             };
             const buyer = await Buyer.create(buyerWithCompanyAndUser);
-            logger.info(`BuyerService: Successfully created buyer: ${buyer.buyerName} (ID: ${buyer.buyerIdSeq})`);
+            logger.info(`BuyerService: Successfully created buyer: ${buyer.buyerName} (ID: ${buyer.buyerSequence})`);
             return buyer;
         } catch (error) {
             logger.error(`BuyerService: Failed to create buyer: ${buyerData.buyerName}`, { 
@@ -124,7 +124,7 @@ const buyerService = {
             };
             const [updatedRows] = await Buyer.update(buyerWithUpdatedBy, {
                 where: { 
-                    buyerIdSeq: id,
+                    buyerSequence: id,
                     companyId: companyId
                 }
             });
@@ -134,7 +134,7 @@ const buyerService = {
             }
             const updatedBuyer = await Buyer.findOne({
                 where: { 
-                    buyerIdSeq: id,
+                    buyerSequence: id,
                     companyId: companyId
                 }
             });
@@ -155,7 +155,7 @@ const buyerService = {
         try {
             const buyer = await Buyer.findOne({
                 where: { 
-                    buyerIdSeq: id,
+                    buyerSequence: id,
                     companyId: companyId
                 }
             });
@@ -163,7 +163,7 @@ const buyerService = {
                 { isDeleted: true, isActive: false },
                 {
                     where: {
-                        buyerIdSeq: id,
+                        buyerSequence: id,
                         companyId: companyId,
                         isDeleted: false
                     }

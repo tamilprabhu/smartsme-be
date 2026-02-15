@@ -32,7 +32,7 @@ const companyService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'company_id_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'company_seq')
             });
             logger.info(`CompanyService: Successfully retrieved ${rows.length} companies out of ${count} total`);
             return {
@@ -80,7 +80,7 @@ const companyService = {
                 createDate: new Date(),
                 updateDate: new Date()
             });
-            logger.info(`CompanyService: Successfully created company: ${company.companyName} (ID: ${company.companyIdSeq})`);
+            logger.info(`CompanyService: Successfully created company: ${company.companyName} (ID: ${company.companySequence})`);
             return company;
         } catch (error) {
             logger.error(`CompanyService: Failed to create company: ${companyData.companyName}`, { 
@@ -99,7 +99,7 @@ const companyService = {
                 ...companyData,
                 updateDate: new Date()
             }, {
-                where: { companyIdSeq: id }
+                where: { companySequence: id }
             });
             if (updatedRows === 0) {
                 logger.warn(`CompanyService: No company found to update with ID: ${id}`);
@@ -124,7 +124,7 @@ const companyService = {
             const company = await Company.findByPk(id);
             const [updatedRows] = await Company.update(
                 { isDeleted: true, isActive: false },
-                { where: { companyIdSeq: id, isDeleted: false } }
+                { where: { companySequence: id, isDeleted: false } }
             );
             if (updatedRows === 0) {
                 logger.warn(`CompanyService: No company found to delete with ID: ${id}`);

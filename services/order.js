@@ -35,7 +35,7 @@ const orderService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'order_id_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'order_seq')
             });
             logger.info(`OrderService: Successfully retrieved ${rows.length} orders out of ${count} total for company ${companyId}`);
             return {
@@ -63,7 +63,7 @@ const orderService = {
         try {
             const order = await Order.findOne({
                 where: {
-                    orderIdSeq: id,
+                    orderSequence: id,
                     companyId: companyId
                 }
             });
@@ -102,8 +102,8 @@ const orderService = {
             };
             
             const order = await Order.create(enrichedOrderData);
-            logger.info(`OrderService: Successfully created order: ${order.orderId} (ID: ${order.orderIdSeq}) for company: ${companyId}`, {
-                orderId: order.orderIdSeq,
+            logger.info(`OrderService: Successfully created order: ${order.orderId} (ID: ${order.orderSequence}) for company: ${companyId}`, {
+                orderId: order.orderSequence,
                 companyId: order.companyId,
                 orderStatus: order.orderStatus,
                 orderValue: order.totalPrice,
@@ -125,7 +125,7 @@ const orderService = {
         logger.info(`OrderService: Updating order with ID: ${id}`, { updateData: orderData });
         try {
             const [updatedRows] = await Order.update(orderData, {
-                where: { orderIdSeq: id }
+                where: { orderSequence: id }
             });
             if (updatedRows === 0) {
                 logger.warn(`OrderService: No order found to update with ID: ${id}`);
@@ -153,7 +153,7 @@ const orderService = {
             const order = await Order.findByPk(id);
             const [updatedRows] = await Order.update(
                 { isDeleted: true, isActive: false },
-                { where: { orderIdSeq: id, isDeleted: false } }
+                { where: { orderSequence: id, isDeleted: false } }
             );
             if (updatedRows === 0) {
                 logger.warn(`OrderService: No order found to delete with ID: ${id}`);

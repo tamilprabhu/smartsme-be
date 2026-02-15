@@ -37,7 +37,7 @@ const productService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'prod_id_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'prod_seq')
             });
             logger.info(`ProductService: Successfully retrieved ${rows.length} products out of ${count} total for company ${companyId}`);
             return {
@@ -66,7 +66,7 @@ const productService = {
         try {
             const product = await Product.findOne({
                 where: {
-                    prodIdSeq: id,
+                    prodSequence: id,
                     companyId: companyId
                 }
             });
@@ -100,8 +100,8 @@ const productService = {
                 updateDate: new Date()
             };
             const product = await Product.create(enrichedProductData);
-            logger.info(`ProductService: Successfully created product: ${product.prodName} (ID: ${product.prodIdSeq}) for company: ${companyId}`, {
-                productId: product.prodIdSeq,
+            logger.info(`ProductService: Successfully created product: ${product.prodName} (ID: ${product.prodSequence}) for company: ${companyId}`, {
+                productId: product.prodSequence,
                 companyId: product.companyId,
                 userId: userId
             });
@@ -128,7 +128,7 @@ const productService = {
             };
             const [updatedRows] = await Product.update(enrichedProductData, {
                 where: { 
-                    prodIdSeq: id,
+                    prodSequence: id,
                     companyId: companyId
                 }
             });
@@ -138,7 +138,7 @@ const productService = {
             }
             const updatedProduct = await Product.findOne({
                 where: {
-                    prodIdSeq: id,
+                    prodSequence: id,
                     companyId: companyId
                 }
             });
@@ -165,7 +165,7 @@ const productService = {
             const product = await Product.findByPk(id);
             const [updatedRows] = await Product.update(
                 { isDeleted: true, isActive: false },
-                { where: { prodIdSeq: id, isDeleted: false } }
+                { where: { prodSequence: id, isDeleted: false } }
             );
             if (updatedRows === 0) {
                 logger.warn(`ProductService: No product found to delete with ID: ${id}`);

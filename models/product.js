@@ -4,11 +4,11 @@ const sequelize = require("../db/sequelize");
 const Product = sequelize.define(
     "Product",
     {
-        prodIdSeq: {
+        prodSequence: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: 'prod_id_seq'
+            field: 'prod_seq'
         },
         prodId: { type: DataTypes.STRING(20), field: 'prod_id' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },

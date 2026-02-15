@@ -115,7 +115,7 @@ router.post("/", authenticate, async (req, res) => {
         const product = await productService.createProduct(req.body, companyId, userId);
         logger.info(`ProductRoute: POST /products - Request completed successfully`, { 
             requestId: requestId,
-            productId: product.prodIdSeq,
+            productId: product.prodSequence,
             productName: product.prodName,
             companyId: companyId,
             userId: userId

@@ -103,7 +103,7 @@ router.post("/", authenticate, async (req, res) => {
         const buyer = await buyerService.createBuyer(req.body, companyId, userId);
         logger.info(`BuyerRoute: POST /buyers - Request completed successfully`, { 
             requestId: requestId,
-            buyerId: buyer.buyerIdSeq,
+            buyerId: buyer.buyerSequence,
             buyerName: buyer.buyerName,
             userId: req.auth?.id
         });

@@ -80,12 +80,12 @@ INSERT INTO `users` (`id`, `username`, `first_name`, `last_name`, `name`, `email
 -- Dumping data for table `buyer`
 --
 
-INSERT INTO `buyer` (`buyer_id_seq`, `buyer_id`, `company_id`, `buyer_name`, `buyer_address`, `buyer_phone`, `buyer_email`, `buyer_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `buyer` (`buyer_seq`, `buyer_id`, `company_id`, `buyer_name`, `buyer_address`, `buyer_phone`, `buyer_email`, `buyer_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_BY_001', 'FINO001', 'Construction Materials Ltd', 'Chennai, Tamil Nadu', '9876543210', 'orders@constmat.com', '33AABCA1234A1Z5', NOW(), NOW(), 0, 1),
 (1002, 'FINO_BY_002', 'FINO001', 'Plumbing Solutions Co', 'Bangalore, Karnataka', '9876543211', 'purchase@plumbsol.com', '29AABCA1234B1Z5', NOW(), NOW(), 0, 1),
 (1003, 'PRES_BY_001', 'PRES001', 'Kitchen Appliance Distributors', 'Mumbai, Maharashtra', '9876543212', 'orders@kitchendist.com', '27AABCA1234C1Z5', NOW(), NOW(), 0, 1),
 (1004, 'PRES_BY_002', 'PRES001', 'Home Products Retail', 'Delhi, NCR', '9876543213', 'purchase@homeretail.com', '07AABCA1234D1Z5', NOW(), NOW(), 0, 1);
-INSERT INTO `buyer` (`buyer_id_seq`, `buyer_id`, `company_id`, `buyer_name`, `buyer_address`, `buyer_phone`, `buyer_email`, `buyer_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `buyer` (`buyer_seq`, `buyer_id`, `company_id`, `buyer_name`, `buyer_address`, `buyer_phone`, `buyer_email`, `buyer_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1005, 'FINO_BY_003', 'FINO001', 'Industrial Pipes Ltd', 'Pune, Maharashtra', '9876543215', 'orders@indpipes.com', '27AABCA1234E1Z5', NOW(), NOW(), 0, 1),
 (1006, 'FINO_BY_004', 'FINO001', 'Water Solutions Co', 'Hyderabad, Telangana', '9876543216', 'purchase@watersol.com', '36AABCA1234F1Z5', NOW(), NOW(), 0, 1),
 (1007, 'FINO_BY_005', 'FINO001', 'Building Materials Hub', 'Coimbatore, Tamil Nadu', '9876543217', 'orders@buildmat.com', '33AABCA1234G1Z5', NOW(), NOW(), 0, 1),
@@ -130,7 +130,7 @@ INSERT INTO `buyer` (`buyer_id_seq`, `buyer_id`, `company_id`, `buyer_name`, `bu
 -- Dumping data for table `company`
 --
 
-INSERT INTO `company` (`company_id_seq`, `company_id`, `company_name`, `business_cons`, `company_type`, `address`, `pincode`, `prop_name`, `direct_phone`, `office_phone`, `mgmt_phone`, `mail_id`, `nature_of_business`, `auth_person`, `mobile_no`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `company` (`company_seq`, `company_id`, `company_name`, `business_cons`, `company_type`, `address`, `pincode`, `prop_name`, `direct_phone`, `office_phone`, `mgmt_phone`, `mail_id`, `nature_of_business`, `auth_person`, `mobile_no`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1000, 'FINO001', 'Finolex Industries Ltd', 'corporation', 'large scale', 'Finolex Bhavan, Pune-Bangalore Highway, Pune', 411045, 'Prakash P Chhabria', '2067121800', '2067121800', '2067121800', 'contact@finolex.com', 'manufacturing', 'Prakash P Chhabria', '2067121800', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
 (1001, 'PRES001', 'Prestige Smart Kitchen Ltd', 'corporation', 'large scale', 'TTK Prestige House, Bangalore', 560042, 'T T Jagannathan', '8025505555', '8025505555', '8025505555', 'contact@prestigesmartcooking.com', 'manufacturing', 'T T Jagannathan', '8025505555', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
 (1002, 'MILT001', 'Milton Industries Ltd', 'corporation', 'medium scale', 'Milton House, Rajkot, Gujarat', 360002, 'T M Louis', '2812234567', '2812234567', '2812234567', 'contact@milton.in', 'manufacturing', 'T M Louis', '2812234567', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
@@ -147,7 +147,7 @@ INSERT INTO `company` (`company_id_seq`, `company_id`, `company_name`, `business
 -- Dumping data for table `dispatch`
 --
 
-INSERT INTO `dispatch` (`dispatch_id_seq`, `prod_id`, `company_id`, `order_id`, `dispatch_id`, `dispatch_date`, `quantity`, `no_of_packs`, `total_weight`, `normal_weight`, `norms_weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `dispatch` (`dispatch_seq`, `prod_id`, `company_id`, `order_id`, `dispatch_id`, `dispatch_date`, `quantity`, `no_of_packs`, `total_weight`, `normal_weight`, `norms_weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1010, 'FINO_PR_001', 'FINO001', 'FINO_OR_001', 'FINO_DL_001', '2025-02-10 00:00:00', 500, 20, 1250.0000, 2.5000, 1312.5000, NOW(), NOW(), 0, 1),
 (1011, 'FINO_PR_002', 'FINO001', 'FINO_OR_002', 'FINO_DL_002', '2025-02-15 00:00:00', 1000, 50, 800.0000, 0.8000, 864.0000, NOW(), NOW(), 0, 1),
 (1012, 'PRES_PR_001', 'PRES001', 'PRES_OR_001', 'PRES_DL_001', '2025-02-12 00:00:00', 100, 5, 3500.0000, 35.0000, 3920.0000, NOW(), NOW(), 0, 1),
@@ -196,7 +196,7 @@ INSERT INTO `dispatch` (`dispatch_id_seq`, `prod_id`, `company_id`, `order_id`, 
 -- Dumping data for table `employee`
 --
 
-INSERT INTO `employee` (`employee_id_seq`, `user_id`, `company_id`, `salary`, `active_flag`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `employee` (`employee_seq`, `user_id`, `company_id`, `salary`, `active_flag`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 -- Finolex Industries employees (Tamil as Owner)
 (1000, 1001, 'FINO001', 200000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
 (1001, 1003, 'FINO001', 150000, 'Y', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 0, 1),
@@ -246,7 +246,7 @@ INSERT INTO `employee` (`employee_id_seq`, `user_id`, `company_id`, `salary`, `a
 -- Dumping data for table `machine`
 --
 
-INSERT INTO `machine` (`machine_id_seq`, `machine_id`, `company_id`, `machine_name`, `machine_type`, `capacity`, `model`, `active_flag`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `machine` (`machine_seq`, `machine_id`, `company_id`, `machine_name`, `machine_type`, `capacity`, `model`, `active_flag`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_DC_001', 'FINO001', 'Die Casting Machine', 'Production', '200T', 'DC-200', 'Y', NOW(), NOW(), 0, 1),
 (1002, 'FINO_TR_001', 'FINO001', 'Trimming Machine', 'Trimming', '150T', 'TR-150', 'Y', NOW(), NOW(), 0, 1),
 (1003, 'FINO_DM_001', 'FINO001', 'Drilling Machine', 'Drilling / Tapping', '50T', 'DM-50', 'Y', NOW(), NOW(), 0, 1),
@@ -295,7 +295,7 @@ INSERT INTO `machine` (`machine_id_seq`, `machine_id`, `company_id`, `machine_na
 -- Dumping data for table `order`
 --
 
-INSERT INTO `order` (`order_id_seq`, `order_id`, `order_name`, `company_id`, `prod_id`, `buyer_id`, `order_status`, `order_date`, `target_date`, `order_quantity`, `price`, `discount`, `total_price`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `order` (`order_seq`, `order_id`, `order_name`, `company_id`, `prod_id`, `buyer_id`, `order_status`, `order_date`, `target_date`, `order_quantity`, `price`, `discount`, `total_price`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_OR_001', 'PVC Pipe 4 inch - Batch A', 'FINO001', 'FINO_PR_001', 'FINO_BY_001', 'IN_PROGRESS', '2025-02-01 00:00:00', '2025-02-15 00:00:00', 1000, 25.00, 2.00, 23000.00, NOW(), NOW(), 0, 1),
 (1002, 'FINO_OR_002', 'PVC Fitting Elbow - High Volume', 'FINO001', 'FINO_PR_002', 'FINO_BY_002', 'SCHEDULED', '2025-02-05 00:00:00', '2025-02-20 00:00:00', 2000, 8.50, 1.00, 15000.00, NOW(), NOW(), 0, 1),
 (1003, 'PRES_OR_001', 'Pressure Cooker Base - Premium', 'PRES001', 'PRES_PR_001', 'PRES_BY_001', 'IN_PROGRESS', '2025-02-03 00:00:00', '2025-02-18 00:00:00', 200, 120.00, 8.00, 22400.00, NOW(), NOW(), 0, 1),
@@ -393,7 +393,7 @@ INSERT INTO `order_quantity` (`order_id`, `company_id`, `order_quantity`, `produ
 -- Dumping data for table `product`
 --
 
-INSERT INTO `product` (`prod_id_seq`, `prod_id`, `company_id`, `prod_name`, `raw_material`, `weight`, `wastage`, `norms`, `total_weight`, `cavity`, `shot_rate`, `per_item_rate`, `incentive_limit`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `product` (`prod_seq`, `prod_id`, `company_id`, `prod_name`, `raw_material`, `weight`, `wastage`, `norms`, `total_weight`, `cavity`, `shot_rate`, `per_item_rate`, `incentive_limit`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_PR_001', 'FINO001', 'PVC Pipe 4 inch', 'PVC-Resin', 2.5000, 5, 0.125, 2.625, 8, 1.20, 0.12, 200, NOW(), NOW(), 0, 1),
 (1002, 'FINO_PR_002', 'FINO001', 'PVC Fitting Elbow', 'PVC-Compound', 0.8000, 8, 0.064, 0.864, 12, 0.80, 0.08, 300, NOW(), NOW(), 0, 1),
 (1003, 'PRES_PR_001', 'PRES001', 'Pressure Cooker Base', 'ADC-12', 35.0000, 12, 4.2000, 39.2000, 1, 8.00, 0.80, 60, NOW(), NOW(), 0, 1),
@@ -550,7 +550,7 @@ INSERT INTO `production_entry` (`order_id`, `company_id`, `shift_id`, `shift_sta
 -- Dumping data for table `production_shift`
 --
 
-INSERT INTO `production_shift` (`shift_id_seq`, `order_id`, `company_id`, `shift_id`, `product_id`, `machine_id`, `shift_start_date`, `shift_end_date`, `entry_type`, `shift_type`, `shift_hours`, `operator1`, `operator2`, `operator3`, `supervisor`, `opening_count`, `closing_count`, `production`, `rejection`, `net_production`, `incentive`, `less_80_reason`, `create_date`, `update_date`, `created_by`, `updated_by`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `production_shift` (`shift_seq`, `order_id`, `company_id`, `shift_id`, `product_id`, `machine_id`, `shift_start_date`, `shift_end_date`, `entry_type`, `shift_type`, `shift_hours`, `operator1`, `operator2`, `operator3`, `supervisor`, `opening_count`, `closing_count`, `production`, `rejection`, `net_production`, `incentive`, `less_80_reason`, `create_date`, `update_date`, `created_by`, `updated_by`, `is_deleted`, `is_active`) VALUES
 (1001,	'FINO_OR_001',	'FINO001',	'FINO_SH_001',	'FINO_PR_001',	'FINO_DC_001',	'2025-02-01 06:00:00',	'2025-02-01 14:00:00',	'1',	'1',	'8',	1000005,	1000006,	NULL,	1000002,	0,	400,	400,	20,	380,	'Y',	'',	'2026-02-08 12:49:45',	'2026-02-08 12:50:08',	NULL,	NULL,	0,	1),
 (1002,	'FINO_OR_001',	'FINO001',	'FINO_SH_002',	'FINO_PR_001',	'FINO_DC_001',	'2025-02-01 14:00:00',	'2025-02-01 22:00:00',	'1',	'2',	'8',	1000007,	1000008,	NULL,	1000003,	400,	750,	350,	15,	335,	'Y',	'',	'2026-02-08 12:49:45',	'2026-02-08 12:50:08',	NULL,	NULL,	0,	1),
 (1003,	'PRES_OR_001',	'PRES001',	'PRES_SH_001',	'PRES_PR_001',	'PRES_DC_001',	'2025-02-03 06:00:00',	'2025-02-03 14:00:00',	'1',	'1',	'8',	1000014,	1000015,	NULL,	1000013,	0,	80,	80,	5,	75,	'Y',	'',	'2026-02-08 12:49:45',	'2026-02-08 12:50:08',	NULL,	NULL,	0,	1),
@@ -598,7 +598,7 @@ INSERT INTO `production_shift` (`shift_id_seq`, `order_id`, `company_id`, `shift
 -- Dumping data for table `seller`
 --
 
-INSERT INTO `seller` (`seller_id_seq`, `seller_id`, `company_id`, `seller_name`, `seller_address`, `seller_phone`, `seller_email`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `seller` (`seller_seq`, `seller_id`, `company_id`, `seller_name`, `seller_address`, `seller_phone`, `seller_email`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO_SL_001', 'FINO001', 'PVC Resin Suppliers Pvt Ltd', 'Coimbatore, Tamil Nadu', '9876543220', 'sales@pvcresin.com', NOW(), NOW(), 0, 1),
 (1002, 'FINO_SL_002', 'FINO001', 'Polymer Trading Corporation', 'Hyderabad, Telangana', '9876543221', 'info@polytrading.com', NOW(), NOW(), 0, 1),
 (1003, 'PRES_SL_001', 'PRES001', 'Aluminum Alloy Hub', 'Pune, Maharashtra', '9876543222', 'sales@aluhub.com', NOW(), NOW(), 0, 1),
@@ -647,7 +647,7 @@ INSERT INTO `seller` (`seller_id_seq`, `seller_id`, `company_id`, `seller_name`,
 -- Dumping data for table `stock`
 --
 
-INSERT INTO `stock` (`stock_id_seq`, `company_id`, `seller_id`, `stock_id`, `stock_date`, `raw_material`, `no_of_bars`, `weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `stock` (`stock_seq`, `company_id`, `seller_id`, `stock_id`, `stock_date`, `raw_material`, `no_of_bars`, `weight`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'FINO001', 'FINO_SL_001', 'FINO_ST_001', '2025-01-15 00:00:00', 'PVC Resin Grade S-65', 100, 5000.0000, NOW(), NOW(), 0, 1),
 (1002, 'FINO001', 'FINO_SL_002', 'FINO_ST_002', '2025-01-20 00:00:00', 'PVC Compound K-67', 80, 4000.0000, NOW(), NOW(), 0, 1),
 (1003, 'PRES001', 'PRES_SL_001', 'PRES_ST_001', '2025-01-18 00:00:00', 'Aluminum Alloy ADC-12', 40, 2000.0000, NOW(), NOW(), 0, 1),

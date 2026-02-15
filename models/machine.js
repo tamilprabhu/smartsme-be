@@ -4,11 +4,11 @@ const sequelize = require("../db/sequelize");
 const Machine = sequelize.define(
     "Machine",
     {
-        machineIdSeq: {
+        machineSequence: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: 'machine_id_seq'
+            field: 'machine_seq'
         },
         machineId: { type: DataTypes.STRING(20), field: 'machine_id' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },

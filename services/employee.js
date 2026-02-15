@@ -17,7 +17,7 @@ const buildEmployeeOrder = (sortBy, sortOrder) => {
             return [[col('updated_by'), direction]];
         case SortBy.SEQUENCE:
         default:
-            return [[col('employee_id_seq'), direction]];
+            return [[col('employee_seq'), direction]];
     }
 };
 
@@ -76,7 +76,7 @@ const employeeService = {
     getEmployeeById: async (id, companyId) => {
         logger.info(`EmployeeService: Fetching employee with ID: ${id} for company: ${companyId}`);
         try {
-            const whereClause = { employeeIdSeq: id };
+            const whereClause = { employeeSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -108,7 +108,7 @@ const employeeService = {
                 createDate: new Date(),
                 updateDate: new Date()
             });
-            logger.info(`EmployeeService: Successfully created employee (ID: ${employee.employeeIdSeq}) for company: ${companyId}`);
+            logger.info(`EmployeeService: Successfully created employee (ID: ${employee.employeeSequence}) for company: ${companyId}`);
             return employee;
         } catch (error) {
             logger.error(`EmployeeService: Failed to create employee`, { 
@@ -123,7 +123,7 @@ const employeeService = {
     updateEmployee: async (id, employeeData, companyId, userId) => {
         logger.info(`EmployeeService: Updating employee with ID: ${id} for company: ${companyId}`, { updateData: employeeData });
         try {
-            const whereClause = { employeeIdSeq: id };
+            const whereClause = { employeeSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -155,7 +155,7 @@ const employeeService = {
     deleteEmployee: async (id, companyId, userId) => {
         logger.info(`EmployeeService: Deleting employee with ID: ${id} for company: ${companyId}`);
         try {
-            const whereClause = { employeeIdSeq: id };
+            const whereClause = { employeeSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -209,7 +209,7 @@ const employeeService = {
 
             if (search) {
                 employeeWhere[Op.or] = [
-                    { employeeIdSeq: { [Op.like]: `%${search}%` } },
+                    { employeeSequence: { [Op.like]: `%${search}%` } },
                     { userId: { [Op.like]: `%${search}%` } },
                     where(col('User.first_name'), { [Op.like]: `%${search}%` }),
                     where(col('User.last_name'), { [Op.like]: `%${search}%` }),
@@ -283,9 +283,9 @@ const employeeService = {
                     : (user?.name || `User ${employee.userId}`);
                 uniqueByUserId.set(employee.userId, {
                     value: employee.userId,
-                    label: `${displayName} (${employee.employeeIdSeq})`,
+                    label: `${displayName} (${employee.employeeSequence})`,
                     userId: employee.userId,
-                    employeeId: employee.employeeIdSeq
+                    employeeId: employee.employeeSequence
                 });
             }
         }

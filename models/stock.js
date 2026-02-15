@@ -4,11 +4,11 @@ const sequelize = require("../db/sequelize");
 const Stock = sequelize.define(
     "Stock",
     {
-        stockIdSeq: {
+        stockSequence: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: 'stock_id_seq'
+            field: 'stock_seq'
         },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         sellerId: { type: DataTypes.STRING(20), field: 'seller_id' },

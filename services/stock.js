@@ -44,7 +44,7 @@ const stockService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'stock_id_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'stock_seq')
             });
             logger.info(`StockService: Successfully retrieved ${rows.length} stocks out of ${count} total for company: ${companyId}`);
             return {
@@ -68,7 +68,7 @@ const stockService = {
     getStockById: async (id, companyId) => {
         logger.info(`StockService: Fetching stock with ID: ${id} for company: ${companyId}`);
         try {
-            const whereClause = { stockIdSeq: id };
+            const whereClause = { stockSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -103,7 +103,7 @@ const stockService = {
             };
             
             const stock = await Stock.create(enrichedStockData);
-            logger.info(`StockService: Successfully created stock: ${stock.stockId} (ID: ${stock.stockIdSeq}) for company: ${companyId}`);
+            logger.info(`StockService: Successfully created stock: ${stock.stockId} (ID: ${stock.stockSequence}) for company: ${companyId}`);
             return stock;
         } catch (error) {
             logger.error(`StockService: Failed to create stock: ${stockData.stockId} for company: ${companyId}`, { 
@@ -123,7 +123,7 @@ const stockService = {
                 updatedBy: userId
             };
             
-            const whereClause = { stockIdSeq: id };
+            const whereClause = { stockSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -151,7 +151,7 @@ const stockService = {
     deleteStock: async (id, companyId) => {
         logger.info(`StockService: Deleting stock with ID: ${id} for company: ${companyId}`);
         try {
-            const whereClause = { stockIdSeq: id };
+            const whereClause = { stockSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }

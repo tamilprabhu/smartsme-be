@@ -157,7 +157,7 @@ router.post("/", authenticate, async (req, res) => {
         const shift = await productionShiftService.createProductionShift(req.body, companyId, userId);
         logger.info(`ProductionShiftRoute: POST /production-shift - Request completed successfully`, { 
             requestId: requestId,
-            shiftIdSeq: shift.shiftIdSeq,
+            shiftSequence: shift.shiftSequence,
             shiftId: shift.shiftId,
             userId: req.auth?.id
         });
