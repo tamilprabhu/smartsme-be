@@ -644,7 +644,7 @@ INSERT INTO `txn_stock` (`stock_seq`, `company_id`, `seller_id`, `stock_id`, `st
 -- Dumping data for table `txn_invoice`
 --
 
-INSERT INTO `txn_invoice` (`invoice_seq`, `invoice_id`, `invoice_date`, `comp_id`, `buyr_id`, `product_id`, `quantity`, `unit_price`, `cgst_rate`, `cgst_amount`, `sgst_rate`, `sgst_amount`, `total_amount`, `sac_code`, `buyr_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
+INSERT INTO `txn_invoice` (`invoice_seq`, `invoice_id`, `invoice_date`, `company_id`, `buyer_id`, `product_id`, `quantity`, `unit_price`, `cgst_rate`, `cgst_amount`, `sgst_rate`, `sgst_amount`, `total_amount`, `sac_code`, `buyr_gstin`, `create_date`, `update_date`, `is_deleted`, `is_active`) VALUES
 (1001, 'IN10000001', '2025-02-15 00:00:00', 'FINO001', 'FINO_BY_001', 'FINO_PR_001', 500, 25.00, 9.00, 1125.00, 9.00, 1125.00, 14750.00, 'SAC998314', '33AABCA1234A1Z5', NOW(), NOW(), 0, 1),
 (1002, 'IN10000002', '2025-02-20 00:00:00', 'FINO001', 'FINO_BY_002', 'FINO_PR_002', 1000, 8.50, 9.00, 765.00, 9.00, 765.00, 10030.00, 'SAC998314', '29AABCA1234B1Z5', NOW(), NOW(), 0, 1),
 (1003, 'IN10000003', '2025-02-18 00:00:00', 'PRES001', 'PRES_BY_001', 'PRES_PR_001', 100, 120.00, 9.00, 1080.00, 9.00, 1080.00, 14160.00, 'SAC998313', '27AABCA1234C1Z5', NOW(), NOW(), 0, 1),

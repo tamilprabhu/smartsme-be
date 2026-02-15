@@ -24,17 +24,17 @@ const invoiceService = {
             
             // Add company filter if provided
             if (companyId) {
-                whereClause.compId = companyId;
+                whereClause.companyId = companyId;
             }
             
             // Add search filter if provided
             if (search) {
                 whereClause[Op.and] = [
-                    ...(companyId ? [{ compId: companyId }] : []),
+                    ...(companyId ? [{ companyId: companyId }] : []),
                     {
                         [Op.or]: [
                             { invoiceId: { [Op.like]: `%${search}%` } },
-                            { buyrId: { [Op.like]: `%${search}%` } },
+                            { buyerId: { [Op.like]: `%${search}%` } },
                             { productId: { [Op.like]: `%${search}%` } }
                         ]
                     }
@@ -71,7 +71,7 @@ const invoiceService = {
         try {
             let whereClause = { invoiceSeq: id };
             if (companyId) {
-                whereClause.compId = companyId;
+                whereClause.companyId = companyId;
             }
             
             const invoice = await Invoice.findOne({ where: whereClause });
@@ -93,15 +93,15 @@ const invoiceService = {
 
     createInvoice: async (invoiceData, companyId = null, userId = null) => {
         logger.info(`InvoiceService: Creating new invoice: ${invoiceData.invoiceId}`, { 
-            compId: invoiceData.compId,
-            buyrId: invoiceData.buyrId,
+            companyId: invoiceData.companyId,
+            buyerId: invoiceData.buyerId,
             providedCompanyId: companyId,
             userId: userId
         });
         try {
-            // Automatically populate compId if not provided or override with authenticated user's company
+            // Automatically populate companyId if not provided or override with authenticated user's company
             if (companyId) {
-                invoiceData.compId = companyId;
+                invoiceData.companyId = companyId;
             }
             
             const invoice = await Invoice.create(invoiceData);
@@ -128,7 +128,7 @@ const invoiceService = {
         try {
             let whereClause = { invoiceSeq: id };
             if (companyId) {
-                whereClause.compId = companyId;
+                whereClause.companyId = companyId;
             }
             
             const [updatedRows] = await Invoice.update(invoiceData, {
@@ -161,7 +161,7 @@ const invoiceService = {
         try {
             let whereClause = { invoiceSeq: id };
             if (companyId) {
-                whereClause.compId = companyId;
+                whereClause.companyId = companyId;
             }
             
             const invoice = await Invoice.findOne({ where: whereClause });

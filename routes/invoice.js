@@ -93,7 +93,7 @@ router.post("/", authenticate, async (req, res) => {
     logger.info(`InvoiceRoute: POST /invoices - Request started`, { 
         requestId: requestId,
         invoiceId: req.body.invoiceId,
-        compId: req.body.compId,
+        companyId: req.body.companyId,
         userId: req.auth?.id
     });
     
