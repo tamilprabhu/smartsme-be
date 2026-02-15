@@ -282,23 +282,6 @@ CREATE TABLE `mst_product` (
   PRIMARY KEY (`prod_seq`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `txn_production_entry` (
-  `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `shift_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `shift_start_time` datetime DEFAULT NULL,
-  `shift_end_time` datetime DEFAULT NULL,
-  `opening_count` int DEFAULT NULL,
-  `closing_count` int DEFAULT NULL,
-  `production` int DEFAULT NULL,
-  `created_by` INT DEFAULT NULL,
-  `updated_by` INT DEFAULT NULL,
-  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 CREATE TABLE `txn_production_shift` (
   `shift_seq` int NOT NULL,
   `order_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,

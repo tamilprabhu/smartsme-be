@@ -9,7 +9,6 @@ const invoiceRouter = require('./invoice');
 const machineRouter = require('./machine');
 const orderRouter = require('./order');
 const orderQuantityRouter = require('./orderQuantity');
-const productionEntryRouter = require('./productionEntry');
 const productRouter = require('./product');
 const productionShiftRouter = require('./productionShift');
 const sellerRouter = require('./seller');
@@ -32,7 +31,6 @@ const apiRoutes = [
     ['machine', machineRouter],
     ['order', orderRouter],
     ['order-quantity', orderQuantityRouter],
-    ['production-entry', productionEntryRouter],
     ['product', productRouter],
     ['production-shift', productionShiftRouter],
     ['seller', sellerRouter],
