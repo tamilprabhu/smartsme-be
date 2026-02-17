@@ -73,11 +73,12 @@ router.get('/:id', authenticate, async (req, res) => {
 router.post('/', authenticate, async (req, res) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
+    const userId = req.auth.getUserId();
     
     logger.info('POST /users - Creating new user', { requestId, username, newUsername: req.body.username });
     
     try {
-        const user = await userService.createUser(req.body);
+        const user = await userService.createUser(req.body, userId);
         logger.info(`POST /users - Successfully created user`, { requestId, username, newUserId: user.id });
         res.status(201).json(user);
     } catch (error) {
@@ -94,12 +95,13 @@ router.post('/', authenticate, async (req, res) => {
 router.put('/:id', authenticate, async (req, res) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
+    const actingUserId = req.auth.getUserId();
     const { id } = req.params;
     
     logger.info(`PUT /users/${id} - Updating user`, { requestId, username, userId: id });
     
     try {
-        const user = await userService.updateUser(id, req.body);
+        const user = await userService.updateUser(id, req.body, actingUserId);
         if (!user) {
             logger.warn(`PUT /users/${id} - User not found for update`, { requestId, username, userId: id });
             return res.status(404).json({ error: 'User not found' });
