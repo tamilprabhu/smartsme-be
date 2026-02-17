@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const { User, Employee, UserRole } = require("../models");
+const { Op } = require("sequelize");
 const sequelize = require("../db/sequelize");
 const logger = require("../config/logger");
 const { validateCreate: validateUser } = require("../validators/user");
@@ -82,6 +83,268 @@ const employeeCreationService = {
                     error: error.message,
                     stack: error.stack,
                     username: userData?.username
+                });
+                throw error;
+            }
+        });
+    },
+
+    getAllEmployeesWithUser: async (page, itemsPerPage, search, companyId, sortBy, sortOrder) => {
+        logger.info("EmployeeCreationService: Fetching employees with user details", {
+            page, itemsPerPage, search, companyId
+        });
+
+        try {
+            const offset = (page - 1) * itemsPerPage;
+            
+            const whereClause = { companyId, isDeleted: false };
+            
+            const userWhere = { isDeleted: false };
+            const roleWhere = { isDeleted: false };
+            
+            if (search) {
+                userWhere[Op.or] = [
+                    { username: { [Op.like]: `%${search}%` } },
+                    { firstName: { [Op.like]: `%${search}%` } },
+                    { lastName: { [Op.like]: `%${search}%` } },
+                    { name: { [Op.like]: `%${search}%` } },
+                    { email: { [Op.like]: `%${search}%` } },
+                    { mobile: { [Op.like]: `%${search}%` } }
+                ];
+                
+                roleWhere[Op.or] = [
+                    { name: { [Op.like]: `%${search}%` } }
+                ];
+            }
+
+            const { count, rows } = await Employee.findAndCountAll({
+                where: whereClause,
+                include: [
+                    {
+                        model: User,
+                        required: true,
+                        where: userWhere,
+                        attributes: { exclude: ['password'] },
+                        include: [{
+                            model: UserRole,
+                            required: false,
+                            where: { isDeleted: false },
+                            attributes: ['roleId'],
+                            include: [{
+                                model: require("../models").Role,
+                                required: false,
+                                where: roleWhere,
+                                attributes: ['id', 'name']
+                            }]
+                        }]
+                    }
+                ],
+                limit: itemsPerPage,
+                offset,
+                order: [['employeeSequence', sortOrder === 'ASC' ? 'ASC' : 'DESC']],
+                distinct: true
+            });
+
+            logger.info(`EmployeeCreationService: Retrieved ${rows.length} employees with user details`);
+
+            return {
+                items: rows,
+                paging: {
+                    currentPage: page,
+                    totalPages: Math.ceil(count / itemsPerPage),
+                    itemsPerPage,
+                    totalItems: count
+                }
+            };
+        } catch (error) {
+            logger.error("EmployeeCreationService: Failed to fetch employees with user", {
+                error: error.message,
+                stack: error.stack
+            });
+            throw error;
+        }
+    },
+
+    getEmployeeWithUserById: async (userId, companyId) => {
+        logger.info(`EmployeeCreationService: Fetching employee by userId: ${userId}, companyId: ${companyId}`);
+
+        try {
+            const employee = await Employee.findOne({
+                where: { userId, companyId, isDeleted: false },
+                include: [
+                    {
+                        model: User,
+                        required: true,
+                        where: { isDeleted: false },
+                        attributes: { exclude: ['password'] },
+                        include: [{
+                            model: UserRole,
+                            required: false,
+                            where: { isDeleted: false },
+                            attributes: ['roleId']
+                        }]
+                    }
+                ]
+            });
+
+            if (!employee) {
+                logger.warn(`EmployeeCreationService: Employee not found - userId: ${userId}`);
+                return null;
+            }
+
+            logger.info(`EmployeeCreationService: Retrieved employee - userId: ${userId}`);
+            return employee;
+        } catch (error) {
+            logger.error(`EmployeeCreationService: Failed to fetch employee - userId: ${userId}`, {
+                error: error.message,
+                stack: error.stack
+            });
+            throw error;
+        }
+    },
+
+    updateEmployeeWithUser: async (userId, input, context) => {
+        const { user: userData, employee: employeeData, roleUser: roleUserData } = input;
+
+        logger.info(`EmployeeCreationService: Updating employee - userId: ${userId}`, {
+            companyId: context.companyId,
+            actorId: context.actor?.userId
+        });
+
+        return await sequelize.transaction(async (t) => {
+            try {
+                const employee = await Employee.findOne({
+                    where: { userId, companyId: context.companyId, isDeleted: false },
+                    transaction: t
+                });
+
+                if (!employee) {
+                    throw new Error('Employee not found');
+                }
+
+                if (userData && Object.keys(userData).length > 0) {
+                    const { password, ...updateData } = userData;
+                    
+                    if (password) {
+                        updateData.password = await bcrypt.hash(password, 10);
+                    }
+
+                    await User.update(updateData, {
+                        where: { id: userId, isDeleted: false },
+                        transaction: t,
+                        context
+                    });
+
+                    logger.info(`EmployeeCreationService: User updated - userId: ${userId}`);
+                }
+
+                if (employeeData && Object.keys(employeeData).length > 0) {
+                    await Employee.update({
+                        ...employeeData,
+                        updatedBy: context.actor?.userId
+                    }, {
+                        where: { userId, companyId: context.companyId, isDeleted: false },
+                        transaction: t,
+                        context
+                    });
+
+                    logger.info(`EmployeeCreationService: Employee updated - userId: ${userId}`);
+                }
+
+                if (roleUserData?.roleId) {
+                    await UserRole.update({
+                        roleId: roleUserData.roleId,
+                        updatedBy: context.actor?.userId
+                    }, {
+                        where: { userId, isDeleted: false },
+                        transaction: t,
+                        context
+                    });
+
+                    logger.info(`EmployeeCreationService: Role updated - userId: ${userId}, roleId: ${roleUserData.roleId}`);
+                }
+
+                const updatedEmployee = await Employee.findOne({
+                    where: { userId, companyId: context.companyId },
+                    include: [
+                        {
+                            model: User,
+                            attributes: { exclude: ['password'] },
+                            include: [{
+                                model: UserRole,
+                                where: { isDeleted: false },
+                                required: false,
+                                attributes: ['roleId']
+                            }]
+                        }
+                    ],
+                    transaction: t
+                });
+
+                return updatedEmployee;
+            } catch (error) {
+                logger.error(`EmployeeCreationService: Update failed - userId: ${userId}`, {
+                    error: error.message,
+                    stack: error.stack
+                });
+                throw error;
+            }
+        });
+    },
+
+    deleteEmployeeWithUser: async (userId, context) => {
+        logger.info(`EmployeeCreationService: Deleting employee - userId: ${userId}`, {
+            companyId: context.companyId,
+            actorId: context.actor?.userId
+        });
+
+        return await sequelize.transaction(async (t) => {
+            try {
+                const employee = await Employee.findOne({
+                    where: { userId, companyId: context.companyId, isDeleted: false },
+                    transaction: t
+                });
+
+                if (!employee) {
+                    throw new Error('Employee not found');
+                }
+
+                await Employee.update({
+                    isDeleted: true,
+                    isActive: false,
+                    updatedBy: context.actor?.userId
+                }, {
+                    where: { userId, companyId: context.companyId, isDeleted: false },
+                    transaction: t,
+                    context
+                });
+
+                await User.update({
+                    isDeleted: true,
+                    isActive: false,
+                    updatedBy: context.actor?.userId
+                }, {
+                    where: { id: userId, isDeleted: false },
+                    transaction: t,
+                    context
+                });
+
+                await UserRole.update({
+                    isDeleted: true,
+                    isActive: false,
+                    updatedBy: context.actor?.userId
+                }, {
+                    where: { userId, isDeleted: false },
+                    transaction: t,
+                    context
+                });
+
+                logger.info(`EmployeeCreationService: Employee deleted - userId: ${userId}`);
+                return true;
+            } catch (error) {
+                logger.error(`EmployeeCreationService: Delete failed - userId: ${userId}`, {
+                    error: error.message,
+                    stack: error.stack
                 });
                 throw error;
             }

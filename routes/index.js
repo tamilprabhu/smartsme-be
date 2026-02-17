@@ -15,6 +15,7 @@ const sellerRouter = require('./seller');
 const stockRouter = require('./stock');
 const assetsRouter = require('./assets');
 const usersRouter = require('./users');
+const roleRouter = require('./role');
 const referenceRouter = require('./reference');
 const homeRouter = require('./home'); // your existing index route
 
@@ -38,6 +39,7 @@ const apiRoutes = [
     ['stock', stockRouter],
     ['assets', assetsRouter],
     ['users', usersRouter],
+    ['role', roleRouter],
     ['reference', referenceRouter]
 ];
 

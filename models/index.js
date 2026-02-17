@@ -37,6 +37,11 @@ modelsWithAudit.forEach(model => attachAuditHooks(model));
 User.belongsToMany(Role, { through: UserRole, foreignKey: 'userId' });
 Role.belongsToMany(User, { through: UserRole, foreignKey: 'roleId' });
 
+User.hasMany(UserRole, { foreignKey: 'userId' });
+UserRole.belongsTo(User, { foreignKey: 'userId' });
+UserRole.belongsTo(Role, { foreignKey: 'roleId' });
+Role.hasMany(UserRole, { foreignKey: 'roleId' });
+
 Role.belongsToMany(Permission, { through: RolePermission, foreignKey: 'roleId' });
 Permission.belongsToMany(Role, { through: RolePermission, foreignKey: 'permissionId' });
 
