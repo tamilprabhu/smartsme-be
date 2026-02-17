@@ -20,6 +20,8 @@ const Asset = sequelize.define(
         visibility: { type: DataTypes.ENUM('public', 'private'), allowNull: false, defaultValue: 'private' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         metadata: { type: DataTypes.JSON, field: 'metadata' },
+        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
+        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
         isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
         isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
@@ -27,9 +29,7 @@ const Asset = sequelize.define(
     },
     {
         tableName: "mst_assets",
-        timestamps: true,
-        createdAt: "create_date",
-        updatedAt: "update_date",
+        timestamps: false,
     }
 );
 

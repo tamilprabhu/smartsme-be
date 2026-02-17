@@ -35,7 +35,7 @@ const orderService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'order_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'order_seq', 'Order')
             });
             logger.info(`OrderService: Successfully retrieved ${rows.length} orders out of ${count} total for company ${companyId}`);
             return {

@@ -17,6 +17,8 @@ const Stock = sequelize.define(
         rawMaterial: { type: DataTypes.STRING(20), field: 'raw_material' },
         noOfBars: { type: DataTypes.INTEGER, field: 'no_of_bars' },
         weight: { type: DataTypes.DECIMAL(10, 4) },
+        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
+        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
         isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
         isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
@@ -24,9 +26,7 @@ const Stock = sequelize.define(
     },
     {
         tableName: "txn_stock",
-        timestamps: true,
-        createdAt: "create_date",
-        updatedAt: "update_date",
+        timestamps: false,
     }
 );
 

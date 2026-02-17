@@ -39,7 +39,7 @@ const productService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'product_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'product_seq', 'Product')
             });
             logger.info(`ProductService: Successfully retrieved ${rows.length} products out of ${count} total for company ${companyId}`);
             return {
@@ -98,8 +98,8 @@ const productService = {
             const enrichedProductData = {
                 ...productData,
                 companyId: companyId,
-                createDate: new Date(),
-                updateDate: new Date()
+                createdAt: new Date(),
+                updatedAt: new Date()
             };
             const product = await Product.create(enrichedProductData);
             logger.info(`ProductService: Successfully created product: ${product.productName} (ID: ${product.prodSequence}) for company: ${companyId}`, {
@@ -126,7 +126,7 @@ const productService = {
         try {
             const enrichedProductData = {
                 ...productData,
-                updateDate: new Date()
+                updatedAt: new Date()
             };
             const [updatedRows] = await Product.update(enrichedProductData, {
                 where: { 

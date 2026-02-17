@@ -44,7 +44,7 @@ const dispatchService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'dispatch_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'dispatch_seq', 'Dispatch')
             });
             logger.info(`DispatchService: Successfully retrieved ${rows.length} dispatches out of ${count} total for company: ${companyId}`);
             return {

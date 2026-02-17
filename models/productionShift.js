@@ -137,6 +137,8 @@ const ProductionShift = sequelize.define(
         netProduction: { type: DataTypes.INTEGER, field: 'net_production' },
         incentive: { type: DataTypes.CHAR(1) },
         less80Reason: { type: DataTypes.STRING(50), field: 'less_80_reason' },
+        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
+        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
         isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
         isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
@@ -144,9 +146,7 @@ const ProductionShift = sequelize.define(
     },
     {
         tableName: "txn_production_shift",
-        timestamps: true,
-        createdAt: "create_date",
-        updatedAt: "update_date",
+        timestamps: false,
     }
 );
 

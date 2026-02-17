@@ -32,7 +32,7 @@ const companyService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'company_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'company_seq', 'Company')
             });
             logger.info(`CompanyService: Successfully retrieved ${rows.length} companies out of ${count} total`);
             return {
@@ -77,8 +77,8 @@ const companyService = {
         try {
             const company = await Company.create({
                 ...companyData,
-                createDate: new Date(),
-                updateDate: new Date()
+                createdAt: new Date(),
+                updatedAt: new Date()
             });
             logger.info(`CompanyService: Successfully created company: ${company.companyName} (ID: ${company.companySequence})`);
             return company;
@@ -97,7 +97,7 @@ const companyService = {
         try {
             const [updatedRows] = await Company.update({
                 ...companyData,
-                updateDate: new Date()
+                updatedAt: new Date()
             }, {
                 where: { companySequence: id }
             });

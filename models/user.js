@@ -17,6 +17,8 @@ const User = sequelize.define(
         mobile: { type: DataTypes.STRING(10), unique: true },
         address: { type: DataTypes.STRING(50) },
         password: { type: DataTypes.STRING(255) },
+        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
+        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
         isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
         isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
@@ -24,9 +26,7 @@ const User = sequelize.define(
     },
     {
         tableName: "mst_users",
-        timestamps: true,
-        createdAt: "create_date",
-        updatedAt: "update_date",
+        timestamps: false,
     }
 );
 

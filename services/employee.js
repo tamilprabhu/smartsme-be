@@ -3,23 +3,7 @@ const { Op, col, where } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
-
-const buildEmployeeOrder = (sortBy, sortOrder) => {
-    const direction = sortOrder === SortOrder.DESC ? 'DESC' : 'ASC';
-    switch (sortBy) {
-        case SortBy.CREATE_DATE:
-            return [[col('create_date'), direction]];
-        case SortBy.UPDATE_DATE:
-            return [[col('update_date'), direction]];
-        case SortBy.CREATED_BY:
-            return [[col('created_by'), direction]];
-        case SortBy.UPDATED_BY:
-            return [[col('updated_by'), direction]];
-        case SortBy.SEQUENCE:
-        default:
-            return [[col('employee_seq'), direction]];
-    }
-};
+const { buildSortOrder } = require("../utils/sort");
 
 const employeeService = {
     getAllEmployees: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null, sortBy = SortBy.SEQUENCE, sortOrder = SortOrder.DESC) => {
@@ -52,7 +36,7 @@ const employeeService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildEmployeeOrder(sortBy, sortOrder)
+                order: buildSortOrder(sortBy, sortOrder, 'employee_seq', 'Employee')
             });
             logger.info(`EmployeeService: Successfully retrieved ${rows.length} employees out of ${count} total for company: ${companyId}`);
             return {
@@ -105,8 +89,8 @@ const employeeService = {
                 companyId,
                 createUserId: userId,
                 updateUserId: userId,
-                createDate: new Date(),
-                updateDate: new Date()
+                createdAt: new Date(),
+                updatedAt: new Date()
             });
             logger.info(`EmployeeService: Successfully created employee (ID: ${employee.employeeSequence}) for company: ${companyId}`);
             return employee;
@@ -131,7 +115,7 @@ const employeeService = {
             const [updatedRows] = await Employee.update({
                 ...employeeData,
                 updateUserId: userId,
-                updateDate: new Date()
+                updatedAt: new Date()
             }, {
                 where: whereClause
             });
@@ -232,7 +216,7 @@ const employeeService = {
                 subQuery: false,
                 limit: validLimit,
                 offset,
-                order: buildEmployeeOrder(sortBy, sortOrder),
+                order: buildSortOrder(sortBy, sortOrder, 'employee_seq', 'Employee'),
                 include: [{
                     model: User,
                     required: true,

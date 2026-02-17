@@ -24,6 +24,8 @@ const Company = sequelize.define(
         natureOfBusiness: { type: DataTypes.STRING(20), field: 'nature_of_business' },
         authPerson: { type: DataTypes.STRING(30), field: 'auth_person' },
         mobileNo: { type: DataTypes.STRING(10), field: 'mobile_no' },
+        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
+        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
         isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
         isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
@@ -31,9 +33,7 @@ const Company = sequelize.define(
     },
     {
         tableName: "mst_company",
-        timestamps: true,
-        createdAt: "create_date",
-        updatedAt: "update_date",
+        timestamps: false,
     }
 );
 

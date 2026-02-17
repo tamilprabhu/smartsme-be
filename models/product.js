@@ -25,6 +25,8 @@ const Product = sequelize.define(
         salesType: { type: DataTypes.STRING(20), field: 'sales_type' },
         salesCode: { type: DataTypes.STRING(20), field: 'sales_code' },
         salesPercent: { type: DataTypes.DECIMAL(10, 2), field: 'sales_percent' },
+        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
+        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
         isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
         isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
@@ -32,9 +34,7 @@ const Product = sequelize.define(
     },
     {
         tableName: "mst_product",
-        timestamps: true,
-        createdAt: "create_date",
-        updatedAt: "update_date",
+        timestamps: false,
     }
 );
 

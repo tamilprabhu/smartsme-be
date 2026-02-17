@@ -45,7 +45,7 @@ const invoiceService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'invoice_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'invoice_seq', 'Invoice')
             });
             logger.info(`InvoiceService: Successfully retrieved ${rows.length} invoices out of ${count} total for company: ${companyId}`);
             return {

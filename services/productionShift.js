@@ -3,23 +3,7 @@ const { Op, col, where, fn } = require("sequelize");
 const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
-
-const buildProductionShiftOrder = (sortBy, sortOrder) => {
-    const direction = sortOrder === SortOrder.DESC ? 'DESC' : 'ASC';
-    switch (sortBy) {
-        case SortBy.CREATE_DATE:
-            return [[col('create_date'), direction]];
-        case SortBy.UPDATE_DATE:
-            return [[col('update_date'), direction]];
-        case SortBy.CREATED_BY:
-            return [[col('created_by'), direction]];
-        case SortBy.UPDATED_BY:
-            return [[col('updated_by'), direction]];
-        case SortBy.SEQUENCE:
-        default:
-            return [[col('shift_seq'), direction]];
-    }
-};
+const { buildSortOrder } = require("../utils/sort");
 
 const productionShiftService = {
     // Get all production shifts with pagination and search
@@ -79,7 +63,7 @@ const productionShiftService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildProductionShiftOrder(sortBy, sortOrder),
+                order: buildSortOrder(sortBy, sortOrder, 'shift_seq', 'ProductionShift'),
                 include
             });
             logger.info(`ProductionShiftService: Successfully retrieved ${rows.length} shifts out of ${count} total`);
@@ -133,8 +117,8 @@ const productionShiftService = {
                 companyId: companyId,
                 createdBy: userId,
                 updatedBy: userId,
-                createDate: new Date(),
-                updateDate: new Date()
+                createdAt: new Date(),
+                updatedAt: new Date()
             });
             logger.info(`ProductionShiftService: Successfully created shift: ${shift.shiftId} (ID: ${shift.shiftSequence})`);
             return shift;
@@ -165,7 +149,7 @@ const productionShiftService = {
             shift.set({
                 ...shiftData,
                 updatedBy: userId,
-                updateDate: new Date()
+                updatedAt: new Date()
             });
 
             await shift.save();

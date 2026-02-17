@@ -22,6 +22,8 @@ const Order = sequelize.define(
         price: { type: DataTypes.DECIMAL(10, 2) },
         discount: { type: DataTypes.DECIMAL(10, 2) },
         totalPrice: { type: DataTypes.DECIMAL(10, 2), field: 'total_price' },
+        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
+        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
         isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
         isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
@@ -29,9 +31,7 @@ const Order = sequelize.define(
     },
     {
         tableName: "txn_order",
-        timestamps: true,
-        createdAt: "create_date",
-        updatedAt: "update_date",
+        timestamps: false,
     }
 );
 

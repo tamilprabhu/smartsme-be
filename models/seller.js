@@ -16,6 +16,8 @@ const Seller = sequelize.define(
         sellerAddress: { type: DataTypes.STRING(100), field: 'seller_address' },
         sellerPhone: { type: DataTypes.STRING(10), field: 'seller_phone' },
         sellerEmail: { type: DataTypes.STRING(30), field: 'seller_email' },
+        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
+        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
         isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
         isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
@@ -23,9 +25,7 @@ const Seller = sequelize.define(
     },
     {
         tableName: "mst_seller",
-        timestamps: true,
-        createdAt: "create_date",
-        updatedAt: "update_date",
+        timestamps: false,
     }
 );
 

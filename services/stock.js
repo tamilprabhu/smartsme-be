@@ -44,7 +44,7 @@ const stockService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'stock_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'stock_seq', 'Stock')
             });
             logger.info(`StockService: Successfully retrieved ${rows.length} stocks out of ${count} total for company: ${companyId}`);
             return {

@@ -14,6 +14,8 @@ const Employee = sequelize.define(
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         salary: { type: DataTypes.INTEGER },
         activeFlag: { type: DataTypes.CHAR(1), field: 'active_flag' },
+        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
+        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
         isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
         isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
@@ -21,9 +23,7 @@ const Employee = sequelize.define(
     },
     {
         tableName: "mst_employee",
-        timestamps: true,
-        createdAt: "create_date",
-        updatedAt: "update_date",
+        timestamps: false,
     }
 );
 

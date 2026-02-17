@@ -33,7 +33,7 @@ const userService = {
                 attributes: { exclude: ['password'] },
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'id')
+                order: buildSortOrder(sortBy, sortOrder, 'id', 'User')
             });
             logger.info(`UserService: Successfully retrieved ${rows.length} users out of ${count} total`);
             return {

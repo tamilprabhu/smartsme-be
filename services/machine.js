@@ -45,7 +45,7 @@ const machineService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'machine_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'machine_seq', 'Machine')
             });
             logger.info(`MachineService: Successfully retrieved ${rows.length} machines out of ${count} total for company: ${companyId}`);
             return {

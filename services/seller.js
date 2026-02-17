@@ -44,7 +44,7 @@ const sellerService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'seller_seq')
+                order: buildSortOrder(sortBy, sortOrder, 'seller_seq', 'Seller')
             });
             logger.info(`SellerService: Successfully retrieved ${rows.length} sellers out of ${count} total for company: ${companyId}`);
             return {

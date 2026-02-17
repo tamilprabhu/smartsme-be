@@ -32,7 +32,7 @@ const orderQuantityService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'order_id')
+                order: buildSortOrder(sortBy, sortOrder, 'order_id', 'OrderQuantity')
             });
             logger.info(`OrderQuantityService: Successfully retrieved ${rows.length} order quantities out of ${count} total`);
             return {
@@ -82,8 +82,8 @@ const orderQuantityService = {
                 companyId,
                 createUserId: userId,
                 updateUserId: userId,
-                createDate: new Date(),
-                updateDate: new Date()
+                createdAt: new Date(),
+                updatedAt: new Date()
             });
             logger.info(`OrderQuantityService: Successfully created order quantity`);
             return orderQuantity;
@@ -103,7 +103,7 @@ const orderQuantityService = {
             const [updatedRows] = await OrderQuantity.update({
                 ...orderQuantityData,
                 updateUserId: userId,
-                updateDate: new Date()
+                updatedAt: new Date()
             }, {
                 where: { orderId, companyId }
             });

@@ -20,6 +20,8 @@ const Dispatch = sequelize.define(
         totalWeight: { type: DataTypes.DECIMAL(10, 4), field: 'total_weight' },
         normalWeight: { type: DataTypes.DECIMAL(10, 4), field: 'normal_weight' },
         normsWeight: { type: DataTypes.DECIMAL(10, 4), field: 'norms_weight' },
+        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
+        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
         isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
         isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
@@ -27,9 +29,7 @@ const Dispatch = sequelize.define(
     },
     {
         tableName: "txn_dispatch",
-        timestamps: true,
-        createdAt: "create_date",
-        updatedAt: "update_date",
+        timestamps: false,
     }
 );
 
