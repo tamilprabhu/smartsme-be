@@ -1,5 +1,5 @@
 INSERT INTO `mst_users` (`id`, `username`, `first_name`, `last_name`, `name`, `email`, `mobile`, `address`, `password`, `is_active`, `is_deleted`, `created_by`, `updated_by`, `create_date`, `update_date`) VALUES
-(911,  'root',    'SmartSME',  'Admin',    'SmartSME Admin',    'no-reply@smartsme.com',   '+91-9443661223',   'Chennai',  'set-no-password', 0,  1,  NULL,   NULL,   '2026-01-01 23:59:59',  '2026-01-01 23:59:59');
+(911,  'root',    'SmartSME',  'Admin',    'SmartSME Admin',    'no-reply@smartsme.com',   '+91-9443661223',   'Chennai',  '$2b$10$QBPvhl1rr7Ipn6dWtZn9kOCRuhEptO4ZzdMiz6OoQyL1ph1o1Jw/.', 1,  0,  NULL,   NULL,   '2026-01-01 23:59:59',  '2026-01-01 23:59:59');
 
 INSERT INTO mst_roles (`id`, `name`, `description`, `is_deleted`, `is_active`, `created_by`, `updated_by`, `create_date`, `update_date`) VALUES
 (1, 'OWNER', 'Company Owner with all rights and permissions', 0, 1, 911, 911, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
