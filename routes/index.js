@@ -15,6 +15,7 @@ const sellerRouter = require('./seller');
 const stockRouter = require('./stock');
 const assetsRouter = require('./assets');
 const usersRouter = require('./users');
+const referenceRouter = require('./reference');
 const homeRouter = require('./home'); // your existing index route
 
 const API_BASE = '/api/1.0.0';
@@ -36,7 +37,8 @@ const apiRoutes = [
     ['seller', sellerRouter],
     ['stock', stockRouter],
     ['assets', assetsRouter],
-    ['users', usersRouter]
+    ['users', usersRouter],
+    ['reference', referenceRouter]
 ];
 
 module.exports = (app) => {

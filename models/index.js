@@ -21,6 +21,9 @@ const Seller = require("./seller");
 const Stock = require("./stock");
 const Asset = require("./asset");
 const Invoice = require("./invoice");
+const State = require("./state");
+const District = require("./district");
+const Pincode = require("./pincode");
 
 // Attach audit hooks to models that have audit fields
 const modelsWithAudit = [
@@ -66,6 +69,10 @@ Machine.hasMany(ProductionShift, { foreignKey: 'machineId', sourceKey: 'machineI
 ProductionShift.belongsTo(Order, { foreignKey: 'orderId', targetKey: 'orderId' });
 Order.hasMany(ProductionShift, { foreignKey: 'orderId', sourceKey: 'orderId' });
 
+// Reference data associations
+District.belongsTo(State, { foreignKey: 'stateId' });
+State.hasMany(District, { foreignKey: 'stateId' });
+
 module.exports = {
     sequelize,
     User,
@@ -88,4 +95,7 @@ module.exports = {
     Stock,
     Asset,
     Invoice,
+    State,
+    District,
+    Pincode,
 };

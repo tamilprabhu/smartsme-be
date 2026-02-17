@@ -42,6 +42,42 @@ CREATE TABLE mst_actions (
   `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE ref_states (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  state_name VARCHAR(100) NOT NULL,
+  state_code VARCHAR(2) NOT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `unique_state` (`state_name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE ref_districts (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  state_id INT NOT NULL,
+  district_name VARCHAR(100) NOT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (state_id) REFERENCES ref_states(id),
+  UNIQUE KEY `unique_district_per_state` (`state_id`, `district_name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE ref_pincodes (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  post_office_name VARCHAR(200) NOT NULL,
+  pincode VARCHAR(10) NOT NULL,
+  state_name VARCHAR(100) NOT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_pincode` (`pincode`),
+  INDEX `idx_state` (`state_name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
 CREATE TABLE mst_permissions (
   id INT PRIMARY KEY AUTO_INCREMENT,
   resource VARCHAR(100) NOT NULL,          -- e.g. USER, ORDER, PRODUCT
