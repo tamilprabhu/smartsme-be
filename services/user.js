@@ -5,6 +5,7 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { validateCreate, validateUpdate } = require("../validators/user");
 
 const userService = {
     // Get all users with pagination and search
@@ -84,11 +85,13 @@ const userService = {
             actorId: context.actor?.userId 
         });
         try {
-            if (userData.password) {
-                userData.password = await bcrypt.hash(userData.password, 10);
+            const validatedData = await validateCreate(userData);
+            
+            if (validatedData.password) {
+                validatedData.password = await bcrypt.hash(validatedData.password, 10);
             }
 
-            const user = await User.create(userData, { context });
+            const user = await User.create(validatedData, { context });
             logger.info(`UserService: Successfully created user: ${user.username} (ID: ${user.id})`);
             const { password, ...userWithoutPassword } = user.toJSON();
             return userWithoutPassword;
@@ -109,11 +112,19 @@ const userService = {
             actorId: context.actor?.userId 
         });
         try {
-            if (userData.password) {
-                userData.password = await bcrypt.hash(userData.password, 10);
+            const currentUser = await User.findByPk(id);
+            if (!currentUser) {
+                logger.warn(`UserService: No user found to update with ID: ${id}`);
+                return null;
+            }
+            
+            const validatedData = await validateUpdate(id, userData, currentUser.password);
+            
+            if (validatedData.password) {
+                validatedData.password = await bcrypt.hash(validatedData.password, 10);
             }
 
-            const [updatedRowsCount] = await User.update(userData, {
+            const [updatedRowsCount] = await User.update(validatedData, {
                 where: { id },
                 context
             });

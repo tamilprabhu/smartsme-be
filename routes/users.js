@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userService = require('../services/user');
 const authenticate = require('../middlewares/authenticate');
+const errorHandler = require('../middlewares/errorHandler');
 const logger = require('../config/logger');
 const { SortBy, SortOrder } = require('../constants/sort');
 const { fromHttpRequest } = require('../utils/context');
@@ -71,7 +72,7 @@ router.get('/:id', authenticate, async (req, res) => {
 });
 
 // POST /users - Create new user
-router.post('/', authenticate, async (req, res) => {
+router.post('/', authenticate, async (req, res, next) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
     
@@ -88,12 +89,12 @@ router.post('/', authenticate, async (req, res) => {
             username, 
             error: error.message 
         });
-        res.status(500).json({ error: 'Failed to create user' });
+        next(error);
     }
 });
 
 // PUT /users/:id - Update user
-router.put('/:id', authenticate, async (req, res) => {
+router.put('/:id', authenticate, async (req, res, next) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
     const { id } = req.params;
@@ -117,7 +118,7 @@ router.put('/:id', authenticate, async (req, res) => {
             userId: id, 
             error: error.message 
         });
-        res.status(500).json({ error: 'Failed to update user' });
+        next(error);
     }
 });
 
@@ -149,5 +150,7 @@ router.delete('/:id', authenticate, async (req, res) => {
         res.status(500).json({ error: 'Failed to delete user' });
     }
 });
+
+router.use(errorHandler);
 
 module.exports = router;
