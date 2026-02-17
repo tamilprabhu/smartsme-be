@@ -1,27 +1,29 @@
 extends layout
 
 block content
-  .container.mt-5
-    .row.justify-content-center
-      .col-md-8.text-center
-        h1.mb-3= title
-        p.lead Welcome to #{title}
+  main.container-fluid.py-4.py-md-5.min-vh-100.d-flex.align-items-center
+    .row.justify-content-center.w-100.mx-0
+      .col-12.col-sm-10.col-md-8.col-lg-6.col-xl-5
+        .card.shadow-sm.border-0
+          .card-body.p-4.p-md-5.text-center
+            h1.h3.mb-3= title
+            p.lead.mb-4 Welcome to #{title}
 
-        .d-grid.gap-3.mt-4
-          a.btn.btn-success(
-            href="/smartsme-latest.apk",
-            target="_blank",
-            rel="noopener noreferrer"
-          ) Download Android APK
+            .d-grid.gap-2.gap-md-3
+              a.btn.btn-success.btn-lg.py-2.py-md-3(
+                href="/smartsme-latest.apk",
+                target="_blank",
+                rel="noopener noreferrer"
+              ) Download Android APK
 
-          a.btn.btn-primary(
-            href="/web/",
-            target="_blank",
-            rel="noopener noreferrer"
-          ) Desktop View
+              a.btn.btn-primary.btn-lg.py-2.py-md-3(
+                href="/web/",
+                target="_blank",
+                rel="noopener noreferrer"
+              ) Desktop View
 
-          a.btn.btn-dark(
-            href="/admin/",
-            target="_blank",
-            rel="noopener noreferrer"
-          ) Admin Dashboard
+              a.btn.btn-dark.btn-lg.py-2.py-md-3(
+                href="/admin/",
+                target="_blank",
+                rel="noopener noreferrer"
+              ) Admin Dashboard

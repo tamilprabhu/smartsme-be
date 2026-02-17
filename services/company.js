@@ -32,7 +32,7 @@ const companyService = {
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'companySequence', 'Company')
+                order: buildSortOrder(sortBy, sortOrder, 'company_seq', 'Company')
             });
             logger.info(`CompanyService: Successfully retrieved ${rows.length} companies out of ${count} total`);
             return {
