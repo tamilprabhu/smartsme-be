@@ -5,9 +5,17 @@ const { Op } = require('sequelize');
 const userSchema = Joi.object({
     username: Joi.string()
         .trim()
+        .min(8)
+        .max(15)
+        .pattern(/^[a-zA-Z0-9]+$/)
+        .invalid('admin', 'root', 'super')
         .required()
         .messages({
             'string.empty': 'username cannot be blank',
+            'string.min': 'username must be at least 8 characters',
+            'string.max': 'username must not exceed 15 characters',
+            'string.pattern.base': 'username must be alphanumeric only, no symbols allowed',
+            'any.invalid': 'username cannot be admin, root, or super',
             'any.required': 'username is required'
         }),
     
@@ -41,14 +49,14 @@ const userSchema = Joi.object({
     
     name: Joi.string()
         .trim()
-        .min(3)
-        .max(10)
+        .min(8)
+        .max(20)
         .pattern(/^[a-zA-Z\s]+$/)
         .required()
         .messages({
             'string.empty': 'name cannot be blank',
-            'string.min': 'name must be at least 3 characters',
-            'string.max': 'name must not exceed 10 characters',
+            'string.min': 'name must be at least 8 characters',
+            'string.max': 'name must not exceed 20 characters',
             'string.pattern.base': 'name must contain only alphabets',
             'any.required': 'name is required'
         }),
@@ -83,14 +91,14 @@ const userSchema = Joi.object({
     
     password: Joi.string()
         .min(8)
-        .max(10)
-        .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]+$/)
+        .max(15)
+        .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]+$/)
         .required()
         .messages({
             'string.empty': 'password cannot be blank',
             'string.min': 'password must be at least 8 characters',
             'string.max': 'password must not exceed 10 characters',
-            'string.pattern.base': 'password must contain at least one number and one symbol',
+            'string.pattern.base': 'password must contain at least one uppercase, one lowercase, one number and one symbol, no spaces allowed',
             'any.required': 'password is required'
         })
 });
@@ -101,13 +109,7 @@ const updateUserSchema = userSchema.fork(
 );
 
 const checkUniqueness = async (field, value, excludeId = null) => {
-    const where = {
-        [field]: value,
-        [Op.or]: [
-            { isDeleted: 0 },
-            { isActive: 0 }
-        ]
-    };
+    const where = { [field]: value };
     
     if (excludeId) {
         where.id = { [Op.ne]: excludeId };
