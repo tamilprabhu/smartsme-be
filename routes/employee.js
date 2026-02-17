@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const employeeService = require('../services/employee');
+const employeeCreationService = require('../services/employeeCreation');
 const { SortBy, SortOrder } = require('../constants/sort');
 const authenticateToken = require('../middlewares/authenticate');
+const errorHandler = require('../middlewares/errorHandler');
+const { fromHttpRequest } = require('../utils/context');
 
 // Get all employees with pagination and search
 router.get('/', authenticateToken, async (req, res) => {
@@ -85,6 +88,19 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 });
 
+// Create employee with user account and role
+router.post('/with-user', authenticateToken, async (req, res, next) => {
+    try {
+        const context = fromHttpRequest(req);
+        context.companyId = req.auth.getPrimaryCompanyId();
+        
+        const result = await employeeCreationService.createEmployeeWithUser(req.body, context);
+        res.status(201).json(result);
+    } catch (error) {
+        next(error);
+    }
+});
+
 // Update employee
 router.put('/:id', authenticateToken, async (req, res) => {
     try {
@@ -114,5 +130,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+router.use(errorHandler);
 
 module.exports = router;
