@@ -1,4 +1,6 @@
 const sequelize = require("../db/sequelize");
+const { attachAuditHooks } = require("../utils/auditHooks");
+
 const User = require("./user");
 const Role = require("./role");
 const Action = require("./action");
@@ -19,6 +21,14 @@ const Seller = require("./seller");
 const Stock = require("./stock");
 const Asset = require("./asset");
 const Invoice = require("./invoice");
+
+// Attach audit hooks to models that have audit fields
+const modelsWithAudit = [
+    User, Company, Employee, Product, Machine, Order, 
+    OrderQuantity, Buyer, Dispatch, Seller, Stock, Asset, Invoice, ProductionShift
+];
+
+modelsWithAudit.forEach(model => attachAuditHooks(model));
 
 // Associations
 User.belongsToMany(Role, { through: UserRole, foreignKey: 'userId' });

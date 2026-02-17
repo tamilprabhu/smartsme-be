@@ -78,19 +78,18 @@ const userService = {
     },
 
     // Create new user
-    createUser: async (userData, userId) => {
-        logger.info("UserService: Creating new user", { username: userData.username });
+    createUser: async (userData, context) => {
+        logger.info("UserService: Creating new user", { 
+            username: userData.username,
+            actorId: context.actor?.userId 
+        });
         try {
-            const dataToCreate = { ...userData };
-            if (dataToCreate.password) {
-                dataToCreate.password = await bcrypt.hash(dataToCreate.password, 10);
+            if (userData.password) {
+                userData.password = await bcrypt.hash(userData.password, 10);
             }
-            dataToCreate.createdBy = userId;
-            dataToCreate.updatedBy = userId;
 
-            const user = await User.create(dataToCreate);
+            const user = await User.create(userData, { context });
             logger.info(`UserService: Successfully created user: ${user.username} (ID: ${user.id})`);
-            // Return user without password
             const { password, ...userWithoutPassword } = user.toJSON();
             return userWithoutPassword;
         } catch (error) {
@@ -104,17 +103,19 @@ const userService = {
     },
 
     // Update user
-    updateUser: async (id, userData, userId) => {
-        logger.info(`UserService: Updating user with ID: ${id}`, { updates: Object.keys(userData) });
+    updateUser: async (id, userData, context) => {
+        logger.info(`UserService: Updating user with ID: ${id}`, { 
+            updates: Object.keys(userData),
+            actorId: context.actor?.userId 
+        });
         try {
-            const dataToUpdate = { ...userData };
-            if (dataToUpdate.password) {
-                dataToUpdate.password = await bcrypt.hash(dataToUpdate.password, 10);
+            if (userData.password) {
+                userData.password = await bcrypt.hash(userData.password, 10);
             }
-            dataToUpdate.updatedBy = userId;
 
-            const [updatedRowsCount] = await User.update(dataToUpdate, {
-                where: { id }
+            const [updatedRowsCount] = await User.update(userData, {
+                where: { id },
+                context
             });
             
             if (updatedRowsCount === 0) {
@@ -137,8 +138,8 @@ const userService = {
     },
 
     // Delete user
-    deleteUser: async (id) => {
-        logger.info(`UserService: Deleting user with ID: ${id}`);
+    deleteUser: async (id, context) => {
+        logger.info(`UserService: Deleting user with ID: ${id}`, { actorId: context.actor?.userId });
         try {
             const user = await User.findByPk(id);
             if (!user) {
@@ -148,7 +149,7 @@ const userService = {
             
             const [updatedRows] = await User.update(
                 { isDeleted: true, isActive: false },
-                { where: { id, isDeleted: false } }
+                { where: { id, isDeleted: false }, context }
             );
             if (updatedRows === 0) {
                 logger.warn(`UserService: User already deleted with ID: ${id}`);
