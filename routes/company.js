@@ -1,103 +1,156 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const companyService = require("../services/company");
-const optionalAuth = require("../middlewares/optionalAuth");
-const authenticate = require("../middlewares/authenticate");
-const { SYSTEM_ROLES } = require("../constants/roles");
-const { SortBy, SortOrder } = require("../constants/sort");
+const companyService = require('../services/company');
+const authenticate = require('../middlewares/authenticate');
+const errorHandler = require('../middlewares/errorHandler');
+const logger = require('../config/logger');
+const { SortBy, SortOrder } = require('../constants/sort');
+const { fromHttpRequest } = require('../utils/context');
 
-// Helper function to check permissions
-const hasPermission = (userRoles, requiredPermission) => {
-    if (userRoles.some(role => role.id === SYSTEM_ROLES.GUEST.id)) {
-        return requiredPermission.includes('READ');
-    }
-    // For now, allow OWNER, ADMIN, PLANT_HEAD full access
-    return userRoles.some(role => ['OWNER', 'ADMIN', 'PLANT_HEAD'].includes(role.name));
-};
-
-// GET /companies - Get all companies (with guest access)
-router.get("/", optionalAuth, async (req, res) => {
+// GET /company - Get all companies with pagination and search
+router.get('/', authenticate, async (req, res) => {
+    const requestId = req.requestId;
+    const username = req.auth?.username;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
     const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
     const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
     
+    logger.info('GET /company - Fetching companies with pagination', { 
+        requestId, 
+        username, 
+        page, 
+        itemsPerPage,
+        search 
+    });
+    
     try {
-        if (!hasPermission(req.auth.roles, 'COMPANY_READ')) {
-            return res.status(403).json({ error: "Insufficient permissions" });
-        }
-
         const result = await companyService.getAllCompanies(page, itemsPerPage, search, sortBy, sortOrder);
+        logger.info(`GET /company - Successfully retrieved ${result.items.length} companies`, { 
+            requestId, 
+            username,
+            totalCount: result.paging.totalItems
+        });
         res.json(result);
-    } catch (err) {
-        res.status(500).json({ error: "Internal server error" });
+    } catch (error) {
+        logger.error('GET /company - Failed to fetch companies', { 
+            requestId, 
+            username, 
+            error: error.message 
+        });
+        res.status(500).json({ error: 'Failed to fetch companies' });
     }
 });
 
-// GET /companies/:id - Get company by ID (with guest access)
-router.get("/:id", optionalAuth, async (req, res) => {
+// GET /company/:id - Get company by ID
+router.get('/:id', authenticate, async (req, res) => {
+    const requestId = req.requestId;
+    const username = req.auth?.username;
+    const { id } = req.params;
+    
+    logger.info(`GET /company/${id} - Fetching company`, { requestId, username, companyId: id });
+    
     try {
-        if (!hasPermission(req.auth.roles, 'COMPANY_READ')) {
-            return res.status(403).json({ error: "Insufficient permissions" });
-        }
-
-        const company = await companyService.getCompanyById(req.params.id);
+        const company = await companyService.getCompanyById(id);
         if (!company) {
-            return res.status(404).json({ error: "Company not found" });
+            logger.warn(`GET /company/${id} - Company not found`, { requestId, username, companyId: id });
+            return res.status(404).json({ error: 'Company not found' });
         }
+        
+        logger.info(`GET /company/${id} - Successfully retrieved company`, { requestId, username, companyId: id });
         res.json(company);
-    } catch (err) {
-        res.status(500).json({ error: "Internal server error" });
+    } catch (error) {
+        logger.error(`GET /company/${id} - Failed to fetch company`, { 
+            requestId, 
+            username, 
+            companyId: id, 
+            error: error.message 
+        });
+        res.status(500).json({ error: 'Failed to fetch company' });
     }
 });
 
-// POST /companies - Create company (authenticated only)
-router.post("/", authenticate, async (req, res) => {
+// POST /company - Create new company
+router.post('/', authenticate, async (req, res, next) => {
+    const requestId = req.requestId;
+    const username = req.auth?.username;
+    
+    logger.info('POST /company - Creating new company', { requestId, username, companyName: req.body.companyName });
+    
     try {
-        if (!hasPermission(req.auth.roles, 'COMPANY_CREATE')) {
-            return res.status(403).json({ error: "Insufficient permissions" });
-        }
-
-        const company = await companyService.createCompany(req.body);
+        const context = fromHttpRequest(req);
+        const company = await companyService.createCompany(req.body, context);
+        logger.info(`POST /company - Successfully created company`, { requestId, username, companyId: company.companySequence });
         res.status(201).json(company);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
+    } catch (error) {
+        logger.error('POST /company - Failed to create company', { 
+            requestId, 
+            username, 
+            error: error.message 
+        });
+        next(error);
     }
 });
 
-// PUT /companies/:id - Update company (authenticated only)
-router.put("/:id", authenticate, async (req, res) => {
+// PUT /company/:id - Update company
+router.put('/:id', authenticate, async (req, res, next) => {
+    const requestId = req.requestId;
+    const username = req.auth?.username;
+    const { id } = req.params;
+    
+    logger.info(`PUT /company/${id} - Updating company`, { requestId, username, companyId: id });
+    
     try {
-        if (!hasPermission(req.auth.roles, 'COMPANY_UPDATE')) {
-            return res.status(403).json({ error: "Insufficient permissions" });
+        const context = fromHttpRequest(req);
+        const company = await companyService.updateCompany(id, req.body, context);
+        if (!company) {
+            logger.warn(`PUT /company/${id} - Company not found for update`, { requestId, username, companyId: id });
+            return res.status(404).json({ error: 'Company not found' });
         }
-
-        const company = await companyService.updateCompany(req.params.id, req.body);
+        
+        logger.info(`PUT /company/${id} - Successfully updated company`, { requestId, username, companyId: id });
         res.json(company);
-    } catch (err) {
-        if (err.message === 'Company not found') {
-            return res.status(404).json({ error: err.message });
-        }
-        res.status(400).json({ error: err.message });
+    } catch (error) {
+        logger.error(`PUT /company/${id} - Failed to update company`, { 
+            requestId, 
+            username, 
+            companyId: id, 
+            error: error.message 
+        });
+        next(error);
     }
 });
 
-// DELETE /companies/:id - Delete company (authenticated only)
-router.delete("/:id", authenticate, async (req, res) => {
+// DELETE /company/:id - Delete company
+router.delete('/:id', authenticate, async (req, res) => {
+    const requestId = req.requestId;
+    const username = req.auth?.username;
+    const { id } = req.params;
+    
+    logger.info(`DELETE /company/${id} - Deleting company`, { requestId, username, companyId: id });
+    
     try {
-        if (!hasPermission(req.auth.roles, 'COMPANY_DELETE')) {
-            return res.status(403).json({ error: "Insufficient permissions" });
+        const context = fromHttpRequest(req);
+        const deleted = await companyService.deleteCompany(id, context);
+        if (!deleted) {
+            logger.warn(`DELETE /company/${id} - Company not found for deletion`, { requestId, username, companyId: id });
+            return res.status(404).json({ error: 'Company not found' });
         }
-
-        const result = await companyService.deleteCompany(req.params.id);
-        res.json(result);
-    } catch (err) {
-        if (err.message === 'Company not found') {
-            return res.status(404).json({ error: err.message });
-        }
-        res.status(500).json({ error: "Internal server error" });
+        
+        logger.info(`DELETE /company/${id} - Successfully deleted company`, { requestId, username, companyId: id });
+        res.status(204).send();
+    } catch (error) {
+        logger.error(`DELETE /company/${id} - Failed to delete company`, { 
+            requestId, 
+            username, 
+            companyId: id, 
+            error: error.message 
+        });
+        res.status(500).json({ error: 'Failed to delete company' });
     }
 });
+
+router.use(errorHandler);
 
 module.exports = router;
