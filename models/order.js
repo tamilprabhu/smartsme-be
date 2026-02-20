@@ -10,7 +10,12 @@ const Order = sequelize.define(
             autoIncrement: true,
             field: 'order_seq'
         },
-        orderId: { type: DataTypes.STRING(20), field: 'order_id' },
+        orderId: {
+            type: DataTypes.STRING(20),
+            allowNull: false,
+            unique: true,
+            field: 'order_id'
+        },
         orderName: { type: DataTypes.STRING(50), field: 'order_name' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         productId: { type: DataTypes.STRING(20), field: 'product_id' },

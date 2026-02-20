@@ -253,7 +253,8 @@ CREATE TABLE `txn_order` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`order_seq`)
+  PRIMARY KEY (`order_seq`),
+  UNIQUE KEY `uq_order_id` (`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `txn_order_quantity` (

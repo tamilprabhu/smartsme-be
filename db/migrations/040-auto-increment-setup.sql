@@ -19,13 +19,16 @@ ALTER TABLE `mst_machine` MODIFY `machine_seq` int NOT NULL AUTO_INCREMENT, AUTO
 ALTER TABLE `mst_machine` ADD KEY `mst_machine_machine_id` (`machine_id`);
 ALTER TABLE `mst_machine` ADD FOREIGN KEY (`company_id`) REFERENCES `mst_company` (`company_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-ALTER TABLE `txn_order` MODIFY `order_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-ALTER TABLE `txn_order` ADD KEY `order_order_id` (`order_id`);
-ALTER TABLE `txn_order` ADD FOREIGN KEY (`company_id`) REFERENCES `mst_company` (`company_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
 ALTER TABLE `mst_product` MODIFY `product_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 ALTER TABLE `mst_product` ADD KEY `product_product_id` (`product_id`);
 ALTER TABLE `mst_product` ADD FOREIGN KEY (`company_id`) REFERENCES `mst_company` (`company_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE `txn_order` MODIFY `order_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+ALTER TABLE `txn_order` ADD KEY `order_order_id` (`order_id`);
+ALTER TABLE `txn_order` ADD KEY `order_company_id` (`company_id`);
+ALTER TABLE `txn_order` ADD KEY `order_product_id` (`product_id`);
+ALTER TABLE `txn_order` ADD FOREIGN KEY (`company_id`) REFERENCES `mst_company` (`company_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `txn_order` ADD FOREIGN KEY (`product_id`) REFERENCES `mst_product` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE `txn_production_shift` MODIFY `shift_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 ALTER TABLE `txn_production_shift` ADD FOREIGN KEY (`product_id`) REFERENCES `mst_product`(`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -41,4 +44,3 @@ ALTER TABLE `txn_stock` ADD FOREIGN KEY (`company_id`) REFERENCES `mst_company` 
 
 ALTER TABLE `txn_invoice` MODIFY `invoice_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
 ALTER TABLE `txn_invoice` ADD FOREIGN KEY (`company_id`) REFERENCES `mst_company` (`company_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-

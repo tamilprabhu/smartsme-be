@@ -4,6 +4,10 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { generateOrderId } = require("../utils/idGenerator");
+const { validateCreate, validateUpdate } = require("../validators/order");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const orderService = {
     // Get all orders with pagination and search
@@ -88,20 +92,47 @@ const orderService = {
 
     // Create new order
     createOrder: async (orderData, companyId, userId) => {
-        logger.info(`OrderService: Creating new order: ${orderData.orderId} for company: ${companyId} by user: ${userId}`, { 
+        logger.info(`OrderService: Creating new order for company: ${companyId} by user: ${userId}`, {
+            orderName: orderData.orderName,
             productId: orderData.productId,
             orderQuantity: orderData.orderQuantity,
             totalPrice: orderData.totalPrice
         });
         try {
-            const enrichedOrderData = {
-                ...orderData,
+            const validatedData = await validateCreate(orderData);
+            const baseOrderData = {
+                ...validatedData,
                 companyId: companyId,
                 createdBy: userId,
                 updatedBy: userId
             };
-            
-            const order = await Order.create(enrichedOrderData);
+
+            let order;
+            let attempts = 0;
+            while (attempts < MAX_RETRY_ATTEMPTS) {
+                try {
+                    const enrichedOrderData = {
+                        ...baseOrderData,
+                        orderId: generateOrderId()
+                    };
+                    order = await Order.create(enrichedOrderData);
+                    break;
+                } catch (error) {
+                    const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
+                        error.errors?.some((e) => e.path === "order_id" || e.path === "orderId");
+
+                    if (isUniqueError) {
+                        attempts++;
+                        if (attempts >= MAX_RETRY_ATTEMPTS) {
+                            throw new Error("Failed to generate unique order_id after maximum retries");
+                        }
+                        logger.warn(`OrderService: Duplicate order_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
+
             logger.info(`OrderService: Successfully created order: ${order.orderId} (ID: ${order.orderSequence}) for company: ${companyId}`, {
                 orderId: order.orderSequence,
                 companyId: order.companyId,
@@ -121,17 +152,32 @@ const orderService = {
     },
 
     // Update order
-    updateOrder: async (id, orderData) => {
-        logger.info(`OrderService: Updating order with ID: ${id}`, { updateData: orderData });
+    updateOrder: async (id, orderData, companyId, userId) => {
+        logger.info(`OrderService: Updating order with ID: ${id}`, { updateData: orderData, companyId, userId });
         try {
-            const [updatedRows] = await Order.update(orderData, {
-                where: { orderSequence: id }
+            const validatedData = await validateUpdate(orderData);
+            const { orderId, ...safeOrderData } = validatedData;
+            const enrichedOrderData = {
+                ...safeOrderData,
+                updatedBy: userId
+            };
+
+            const [updatedRows] = await Order.update(enrichedOrderData, {
+                where: {
+                    orderSequence: id,
+                    companyId: companyId
+                }
             });
             if (updatedRows === 0) {
                 logger.warn(`OrderService: No order found to update with ID: ${id}`);
                 throw new Error("Order not found");
             }
-            const updatedOrder = await Order.findByPk(id);
+            const updatedOrder = await Order.findOne({
+                where: {
+                    orderSequence: id,
+                    companyId: companyId
+                }
+            });
             logger.info(`OrderService: Successfully updated order: ${updatedOrder.orderId} (ID: ${id})`, {
                 orderStatus: updatedOrder.orderStatus
             });
@@ -147,13 +193,24 @@ const orderService = {
     },
 
     // Delete order
-    deleteOrder: async (id) => {
-        logger.info(`OrderService: Deleting order with ID: ${id}`);
+    deleteOrder: async (id, companyId) => {
+        logger.info(`OrderService: Deleting order with ID: ${id} for company: ${companyId}`);
         try {
-            const order = await Order.findByPk(id);
+            const order = await Order.findOne({
+                where: {
+                    orderSequence: id,
+                    companyId: companyId
+                }
+            });
             const [updatedRows] = await Order.update(
                 { isDeleted: true, isActive: false },
-                { where: { orderSequence: id, isDeleted: false } }
+                {
+                    where: {
+                        orderSequence: id,
+                        companyId: companyId,
+                        isDeleted: false
+                    }
+                }
             );
             if (updatedRows === 0) {
                 logger.warn(`OrderService: No order found to delete with ID: ${id}`);
