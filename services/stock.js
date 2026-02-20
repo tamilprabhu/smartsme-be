@@ -38,6 +38,7 @@ const stockService = {
                         [Op.or]: [
                             { stockId: { [Op.like]: `%${search}%` } },
                             { rawMaterial: { [Op.like]: `%${search}%` } },
+                            { inwardType: { [Op.like]: `%${search}%` } },
                             { sellerId: { [Op.like]: `%${search}%` } }
                         ]
                     }

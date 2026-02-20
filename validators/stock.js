@@ -17,6 +17,12 @@ const createStockSchema = Joi.object({
         "string.min": "rawMaterial cannot be blank",
         "any.required": "rawMaterial is required"
     }),
+    inwardType: Joi.string().trim().min(1).required().messages({
+        "string.base": "inwardType must be a string",
+        "string.empty": "inwardType cannot be blank",
+        "string.min": "inwardType cannot be blank",
+        "any.required": "inwardType is required"
+    }),
     noOfBars: Joi.number().integer().required().messages({
         "number.base": "noOfBars must be a number",
         "number.integer": "noOfBars must be an integer",
@@ -25,6 +31,10 @@ const createStockSchema = Joi.object({
     weight: Joi.number().required().messages({
         "number.base": "weight must be a number",
         "any.required": "weight is required"
+    }),
+    rate: Joi.number().required().messages({
+        "number.base": "rate must be a number",
+        "any.required": "rate is required"
     })
 }).unknown(true);
 
@@ -42,12 +52,20 @@ const updateStockSchema = Joi.object({
         "string.empty": "rawMaterial cannot be blank",
         "string.min": "rawMaterial cannot be blank"
     }),
+    inwardType: Joi.string().trim().min(1).optional().messages({
+        "string.base": "inwardType must be a string",
+        "string.empty": "inwardType cannot be blank",
+        "string.min": "inwardType cannot be blank"
+    }),
     noOfBars: Joi.number().integer().optional().messages({
         "number.base": "noOfBars must be a number",
         "number.integer": "noOfBars must be an integer"
     }),
     weight: Joi.number().optional().messages({
         "number.base": "weight must be a number"
+    }),
+    rate: Joi.number().optional().messages({
+        "number.base": "rate must be a number"
     })
 }).unknown(true);
 
