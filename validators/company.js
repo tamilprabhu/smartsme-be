@@ -3,16 +3,6 @@ const { Company } = require('../models');
 const { Op } = require('sequelize');
 
 const companySchema = Joi.object({
-    companyId: Joi.string()
-        .trim()
-        .pattern(/^[A-Z]{4}\d{4}$/)
-        .required()
-        .messages({
-            'string.empty': 'companyId cannot be blank',
-            'string.pattern.base': 'companyId must have first 4 uppercase letters and last 4 digits',
-            'any.required': 'companyId is required'
-        }),
-    
     companyName: Joi.string()
         .trim()
         .min(5)
@@ -183,10 +173,6 @@ const validateCreate = async (companyData) => {
             errors[field].push(detail.message);
         });
         throw { name: 'ValidationError', errors };
-    }
-    
-    if (!await checkUniqueness('companyId', value.companyId)) {
-        throw { name: 'ValidationError', errors: { companyId: ['companyId must be unique'] } };
     }
     
     if (!await checkUniqueness('companyName', value.companyName)) {

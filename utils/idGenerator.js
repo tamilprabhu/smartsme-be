@@ -1,0 +1,52 @@
+const crypto = require('crypto');
+
+const ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"; // Crockford Base32 (no I, L, O, U)
+
+function randomBody(len) {
+    let s = "";
+    for (let i = 0; i < len; i++) {
+        s += ALPHABET[crypto.randomInt(0, ALPHABET.length)];
+    }
+    return s;
+}
+
+function checksum(str) {
+    let sum = 0;
+    for (let i = 0; i < str.length; i++) {
+        sum += ALPHABET.indexOf(str[i]) * (i + 1);
+    }
+    return ALPHABET[sum % 32];
+}
+
+function generateCompanyId() {
+    const body = randomBody(9);
+    return `CMP${body}${checksum(body)}`;
+}
+
+function generateProductId() {
+    const body = randomBody(9);
+    return `PRD${body}${checksum(body)}`;
+}
+
+function generateOrderId() {
+    const body = randomBody(9);
+    return `ORD${body}${checksum(body)}`;
+}
+
+function generateInvoiceId() {
+    const body = randomBody(9);
+    return `INV${body}${checksum(body)}`;
+}
+
+function generateMachineId() {
+    const body = randomBody(9);
+    return `MCH${body}${checksum(body)}`;
+}
+
+module.exports = {
+    generateCompanyId,
+    generateProductId,
+    generateOrderId,
+    generateInvoiceId,
+    generateMachineId
+};

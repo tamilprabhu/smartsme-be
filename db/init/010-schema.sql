@@ -29,7 +29,6 @@ CREATE TABLE mst_roles (
   `update_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-
 CREATE TABLE mst_actions (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(50) UNIQUE NOT NULL,        -- e.g. READ, CREATE, UPDATE, DELETE
@@ -154,7 +153,7 @@ CREATE TABLE `mst_buyer` (
 
 CREATE TABLE `mst_company` (
   `company_seq` int NOT NULL,
-  `company_id` varchar(12) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `company_id` varchar(13) COLLATE utf8mb4_general_ci NOT NULL,
   `company_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `business_cons` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `company_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
@@ -174,7 +173,8 @@ CREATE TABLE `mst_company` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`company_seq`)
+  PRIMARY KEY (`company_seq`),
+  UNIQUE KEY `uq_company_id` (`company_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `txn_dispatch` (

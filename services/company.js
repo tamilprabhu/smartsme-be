@@ -5,6 +5,9 @@ const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
 const { validateCreate, validateUpdate } = require("../validators/company");
+const { generateCompanyId } = require("../utils/idGenerator");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const companyService = {
     getAllCompanies: async (
@@ -79,8 +82,32 @@ const companyService = {
         });
         try {
             const validatedData = await validateCreate(companyData);
-            const company = await Company.create(validatedData, { context });
-            logger.info(`CompanyService: Successfully created company: ${company.companyName} (ID: ${company.companySequence})`);
+            
+            let company;
+            let attempts = 0;
+            
+            while (attempts < MAX_RETRY_ATTEMPTS) {
+                try {
+                    validatedData.companyId = generateCompanyId();
+                    company = await Company.create(validatedData, { context });
+                    break;
+                } catch (error) {
+                    const isUniqueError = error.name === 'SequelizeUniqueConstraintError' && 
+                        error.errors?.some(e => e.path === 'company_id' || e.path === 'companyId');
+                    
+                    if (isUniqueError) {
+                        attempts++;
+                        if (attempts >= MAX_RETRY_ATTEMPTS) {
+                            throw new Error('Failed to generate unique company_id after maximum retries');
+                        }
+                        logger.warn(`CompanyService: Duplicate company_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
+            
+            logger.info(`CompanyService: Successfully created company: ${company.companyName} (ID: ${company.companySequence}, company_id: ${company.companyId})`);
             return company;
         } catch (error) {
             logger.error("CompanyService: Failed to create company", { 

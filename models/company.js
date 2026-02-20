@@ -10,7 +10,12 @@ const Company = sequelize.define(
             autoIncrement: true,
             field: 'company_seq'
         },
-        companyId: { type: DataTypes.STRING(12), field: 'company_id' },
+        companyId: { 
+            type: DataTypes.STRING(13), 
+            allowNull: false,
+            unique: true,
+            field: 'company_id' 
+        },
         companyName: { type: DataTypes.STRING(100), allowNull: false, field: 'company_name' },
         businessCons: { type: DataTypes.STRING(20), allowNull: false, field: 'business_cons' },
         companyType: { type: DataTypes.STRING(20), allowNull: false, field: 'company_type' },
@@ -33,7 +38,7 @@ const Company = sequelize.define(
     },
     {
         tableName: "mst_company",
-        timestamps: false,
+        timestamps: false
     }
 );
 
