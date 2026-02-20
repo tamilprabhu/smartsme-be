@@ -3,6 +3,7 @@ const permissionsRouter = require('./permissions');
 const actionsRouter = require('./actions');
 const buyerRouter = require('./buyer');
 const companyRouter = require('./company');
+const companyCreationRouter = require('./companyCreation');
 const dispatchRouter = require('./dispatch');
 const employeeRouter = require('./employee');
 const invoiceRouter = require('./invoice');
@@ -20,6 +21,7 @@ const referenceRouter = require('./reference');
 const homeRouter = require('./home'); // your existing index route
 
 const API_BASE = '/api/1.0.0';
+const API_BASE_V1 = '/api/v1';
 
 const apiRoutes = [
     ['auth', authRouter],
@@ -27,6 +29,7 @@ const apiRoutes = [
     ['actions', actionsRouter],
     ['buyer', buyerRouter],
     ['company', companyRouter],
+    ['company-creation', companyCreationRouter],
     ['dispatch', dispatchRouter],
     ['employee', employeeRouter],
     ['invoice', invoiceRouter],
@@ -45,5 +48,6 @@ const apiRoutes = [
 
 module.exports = (app) => {
     apiRoutes.forEach(([path, router]) => app.use(`${API_BASE}/${path}`, router));
+    app.use(`${API_BASE_V1}/company-registrations`, companyCreationRouter);
     app.use('/', homeRouter);
 };
