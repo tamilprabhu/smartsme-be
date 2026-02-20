@@ -201,12 +201,12 @@ const employeeCreationService = {
         }
     },
 
-    getEmployeeWithUserById: async (userId, companyId) => {
-        logger.info(`EmployeeCreationService: Fetching employee by userId: ${userId}, companyId: ${companyId}`);
+    getEmployeeWithUserByEmployeeSequence: async (employeeSequence, companyId) => {
+        logger.info(`EmployeeCreationService: Fetching employee by employeeSequence: ${employeeSequence}, companyId: ${companyId}`);
 
         try {
             const employee = await Employee.findOne({
-                where: { userId, companyId, isDeleted: false },
+                where: { employeeSequence, companyId, isDeleted: false },
                 include: [
                     {
                         model: User,
@@ -224,14 +224,14 @@ const employeeCreationService = {
             });
 
             if (!employee) {
-                logger.warn(`EmployeeCreationService: Employee not found - userId: ${userId}`);
+                logger.warn(`EmployeeCreationService: Employee not found - employeeSequence: ${employeeSequence}`);
                 return null;
             }
 
-            logger.info(`EmployeeCreationService: Retrieved employee - userId: ${userId}`);
+            logger.info(`EmployeeCreationService: Retrieved employee - employeeSequence: ${employeeSequence}`);
             return employee;
         } catch (error) {
-            logger.error(`EmployeeCreationService: Failed to fetch employee - userId: ${userId}`, {
+            logger.error(`EmployeeCreationService: Failed to fetch employee - employeeSequence: ${employeeSequence}`, {
                 error: error.message,
                 stack: error.stack
             });
@@ -239,10 +239,10 @@ const employeeCreationService = {
         }
     },
 
-    updateEmployeeWithUser: async (userId, input, context) => {
+    updateEmployeeWithUser: async (employeeSequence, input, context) => {
         const { user: userData, employee: employeeData, roleUser: roleUserData } = input;
 
-        logger.info(`EmployeeCreationService: Updating employee - userId: ${userId}`, {
+        logger.info(`EmployeeCreationService: Updating employee - employeeSequence: ${employeeSequence}`, {
             companyId: context.companyId,
             actorId: context.actor?.userId
         });
@@ -250,13 +250,15 @@ const employeeCreationService = {
         return await sequelize.transaction(async (t) => {
             try {
                 const employee = await Employee.findOne({
-                    where: { userId, companyId: context.companyId, isDeleted: false },
+                    where: { employeeSequence, companyId: context.companyId, isDeleted: false },
                     transaction: t
                 });
 
                 if (!employee) {
                     throw new Error('Employee not found');
                 }
+
+                const userId = employee.userId;
 
                 if (userData && Object.keys(userData).length > 0) {
                     const { password, ...updateData } = userData;
@@ -281,7 +283,7 @@ const employeeCreationService = {
                         ...safeEmployeeData,
                         updatedBy: context.actor?.userId
                     }, {
-                        where: { userId, companyId: context.companyId, isDeleted: false },
+                        where: { employeeSequence, companyId: context.companyId, isDeleted: false },
                         transaction: t,
                         context
                     });
@@ -303,7 +305,7 @@ const employeeCreationService = {
                 }
 
                 const updatedEmployee = await Employee.findOne({
-                    where: { userId, companyId: context.companyId },
+                    where: { employeeSequence, companyId: context.companyId },
                     include: [
                         {
                             model: User,
@@ -321,7 +323,7 @@ const employeeCreationService = {
 
                 return updatedEmployee;
             } catch (error) {
-                logger.error(`EmployeeCreationService: Update failed - userId: ${userId}`, {
+                logger.error(`EmployeeCreationService: Update failed - employeeSequence: ${employeeSequence}`, {
                     error: error.message,
                     stack: error.stack
                 });
@@ -330,8 +332,8 @@ const employeeCreationService = {
         });
     },
 
-    deleteEmployeeWithUser: async (userId, context) => {
-        logger.info(`EmployeeCreationService: Deleting employee - userId: ${userId}`, {
+    deleteEmployeeWithUser: async (employeeSequence, context) => {
+        logger.info(`EmployeeCreationService: Deleting employee - employeeSequence: ${employeeSequence}`, {
             companyId: context.companyId,
             actorId: context.actor?.userId
         });
@@ -339,7 +341,7 @@ const employeeCreationService = {
         return await sequelize.transaction(async (t) => {
             try {
                 const employee = await Employee.findOne({
-                    where: { userId, companyId: context.companyId, isDeleted: false },
+                    where: { employeeSequence, companyId: context.companyId, isDeleted: false },
                     transaction: t
                 });
 
@@ -347,12 +349,14 @@ const employeeCreationService = {
                     throw new Error('Employee not found');
                 }
 
+                const userId = employee.userId;
+
                 await Employee.update({
                     isDeleted: true,
                     isActive: false,
                     updatedBy: context.actor?.userId
                 }, {
-                    where: { userId, companyId: context.companyId, isDeleted: false },
+                    where: { employeeSequence, companyId: context.companyId, isDeleted: false },
                     transaction: t,
                     context
                 });
@@ -377,10 +381,10 @@ const employeeCreationService = {
                     context
                 });
 
-                logger.info(`EmployeeCreationService: Employee deleted - userId: ${userId}`);
+                logger.info(`EmployeeCreationService: Employee deleted - employeeSequence: ${employeeSequence}`);
                 return true;
             } catch (error) {
-                logger.error(`EmployeeCreationService: Delete failed - userId: ${userId}`, {
+                logger.error(`EmployeeCreationService: Delete failed - employeeSequence: ${employeeSequence}`, {
                     error: error.message,
                     stack: error.stack
                 });
