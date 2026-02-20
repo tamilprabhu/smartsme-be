@@ -216,7 +216,7 @@ CREATE TABLE `mst_employee` (
 
 CREATE TABLE `mst_machine` (
   `machine_seq` int NOT NULL,
-  `machine_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `machine_id` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `machine_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `machine_type` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -229,7 +229,8 @@ CREATE TABLE `mst_machine` (
   `updated_by` INT DEFAULT NULL,
   `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`machine_seq`)
+  PRIMARY KEY (`machine_seq`),
+  UNIQUE KEY `uq_machine_id` (`machine_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `txn_order` (

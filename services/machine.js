@@ -4,6 +4,10 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { generateMachineId } = require("../utils/idGenerator");
+const { validateCreate, validateUpdate } = require("../validators/machine");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const machineService = {
     // Get all machines with pagination and search
@@ -96,31 +100,58 @@ const machineService = {
 
     // Create new machine
     createMachine: async (machineData, companyId, userId) => {
-        const enrichedData = {
-            ...machineData,
+        const baseData = {
             companyId: companyId,
             createdBy: userId,
             updatedBy: userId
         };
         
-        logger.info(`MachineService: Creating new machine: ${enrichedData.machineName}`, { 
-            companyId: enrichedData.companyId,
-            machineType: enrichedData.machineType,
-            capacity: enrichedData.capacity,
+        logger.info(`MachineService: Creating new machine: ${machineData.machineName}`, { 
+            companyId: companyId,
+            machineType: machineData.machineType,
+            capacity: machineData.capacity,
             createdBy: userId
         });
         try {
-            const machine = await Machine.create(enrichedData);
+            const validatedData = await validateCreate(machineData, companyId);
+
+            let machine;
+            let attempts = 0;
+            while (attempts < MAX_RETRY_ATTEMPTS) {
+                try {
+                    const enrichedData = {
+                        ...validatedData,
+                        ...baseData,
+                        machineId: generateMachineId()
+                    };
+                    machine = await Machine.create(enrichedData);
+                    break;
+                } catch (error) {
+                    const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
+                        error.errors?.some((e) => e.path === "machine_id" || e.path === "machineId");
+
+                    if (isUniqueError) {
+                        attempts++;
+                        if (attempts >= MAX_RETRY_ATTEMPTS) {
+                            throw new Error("Failed to generate unique machine_id after maximum retries");
+                        }
+                        logger.warn(`MachineService: Duplicate machine_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
+
             logger.info(`MachineService: Successfully created machine: ${machine.machineName} (ID: ${machine.machineSequence})`, {
-                machineId: machine.machineSequence,
+                machineId: machine.machineId,
                 companyId: machine.companyId,
                 activeFlag: machine.activeFlag
             });
             return machine;
         } catch (error) {
-            logger.error(`MachineService: Failed to create machine: ${enrichedData.machineName}`, { 
+            logger.error(`MachineService: Failed to create machine: ${machineData.machineName}`, { 
                 error: error.message, 
-                machineData: enrichedData,
+                machineData: machineData,
                 stack: error.stack 
             });
             throw error;
@@ -129,13 +160,15 @@ const machineService = {
 
     // Update machine
     updateMachine: async (id, machineData, companyId, userId) => {
-        const enrichedData = {
-            ...machineData,
-            updatedBy: userId
-        };
-        
-        logger.info(`MachineService: Updating machine with ID: ${id}`, { updateData: enrichedData, companyId });
+        logger.info(`MachineService: Updating machine with ID: ${id}`, { updateData: machineData, companyId });
         try {
+            const validatedData = await validateUpdate(id, machineData, companyId);
+            const { machineId, ...safeData } = validatedData;
+            const enrichedData = {
+                ...safeData,
+                updatedBy: userId
+            };
+
             const whereClause = { machineSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
@@ -154,7 +187,7 @@ const machineService = {
         } catch (error) {
             logger.error(`MachineService: Failed to update machine with ID: ${id}`, { 
                 error: error.message, 
-                updateData: enrichedData,
+                updateData: machineData,
                 stack: error.stack 
             });
             throw error;

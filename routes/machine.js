@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const machineService = require("../services/machine");
 const authenticate = require("../middlewares/authenticate");
+const errorHandler = require("../middlewares/errorHandler");
 const logger = require("../config/logger");
 const { SortBy, SortOrder } = require("../constants/sort");
 
@@ -87,7 +88,7 @@ router.get("/:id", authenticate, async (req, res) => {
 });
 
 // POST /machines - Create new machine
-router.post("/", authenticate, async (req, res) => {
+router.post("/", authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     logger.info(`MachineRoute: POST /machines - Request started`, { 
@@ -116,12 +117,12 @@ router.post("/", authenticate, async (req, res) => {
             userId: req.auth?.id,
             stack: error.stack
         });
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
 // PUT /machines/:id - Update machine
-router.put("/:id", authenticate, async (req, res) => {
+router.put("/:id", authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const machineId = req.params.id;
     
@@ -159,7 +160,7 @@ router.put("/:id", authenticate, async (req, res) => {
             userId: req.auth?.id,
             stack: error.stack
         });
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
@@ -202,5 +203,7 @@ router.delete("/:id", authenticate, async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+router.use(errorHandler);
 
 module.exports = router;

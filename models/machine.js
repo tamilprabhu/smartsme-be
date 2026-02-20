@@ -10,7 +10,12 @@ const Machine = sequelize.define(
             autoIncrement: true,
             field: 'machine_seq'
         },
-        machineId: { type: DataTypes.STRING(20), field: 'machine_id' },
+        machineId: {
+            type: DataTypes.STRING(20),
+            allowNull: false,
+            unique: true,
+            field: 'machine_id'
+        },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         machineName: { type: DataTypes.STRING(50), field: 'machine_name' },
         machineType: { type: DataTypes.STRING(20), field: 'machine_type' },
