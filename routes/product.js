@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const productService = require("../services/product");
 const authenticate = require("../middlewares/authenticate");
+const errorHandler = require("../middlewares/errorHandler");
 const logger = require("../config/logger");
 const { SortBy, SortOrder } = require("../constants/sort");
 
@@ -99,7 +100,7 @@ router.get("/:id", authenticate, async (req, res) => {
 });
 
 // POST /products - Create new product
-router.post("/", authenticate, async (req, res) => {
+router.post("/", authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const companyId = req.auth.getPrimaryCompanyId();
     const userId = req.auth.getUserId();
@@ -131,12 +132,12 @@ router.post("/", authenticate, async (req, res) => {
             userId: userId,
             stack: error.stack
         });
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
 // PUT /products/:id - Update product
-router.put("/:id", authenticate, async (req, res) => {
+router.put("/:id", authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const productId = req.params.id;
     const companyId = req.auth.getPrimaryCompanyId();
@@ -178,7 +179,7 @@ router.put("/:id", authenticate, async (req, res) => {
             userId: userId,
             stack: error.stack
         });
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
@@ -226,5 +227,7 @@ router.delete("/:id", authenticate, async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+router.use(errorHandler);
 
 module.exports = router;

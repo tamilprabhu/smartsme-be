@@ -5,6 +5,7 @@ const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
 const { generateProductId } = require("../utils/idGenerator");
+const { validateCreate, validateUpdate } = require("../validators/product");
 
 const MAX_RETRY_ATTEMPTS = 5;
 
@@ -98,8 +99,9 @@ const productService = {
             productId: productData.productId 
         });
         try {
+            const validatedData = await validateCreate(productData, companyId);
             const baseProductData = {
-                ...productData,
+                ...validatedData,
                 companyId: companyId,
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -153,7 +155,8 @@ const productService = {
     updateProduct: async (id, productData, companyId, userId) => {
         logger.info(`ProductService: Updating product with ID: ${id} for company: ${companyId}, user: ${userId}`, { updateData: productData });
         try {
-            const { productId, ...safeProductData } = productData;
+            const validatedData = await validateUpdate(id, productData, companyId);
+            const { productId, ...safeProductData } = validatedData;
             const enrichedProductData = {
                 ...safeProductData,
                 updatedAt: new Date()
