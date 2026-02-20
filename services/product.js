@@ -4,6 +4,9 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { generateProductId } = require("../utils/idGenerator");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const productService = {
     // Get all products with pagination and search
@@ -95,15 +98,41 @@ const productService = {
             productId: productData.productId 
         });
         try {
-            const enrichedProductData = {
+            const baseProductData = {
                 ...productData,
                 companyId: companyId,
                 createdAt: new Date(),
                 updatedAt: new Date()
             };
-            const product = await Product.create(enrichedProductData);
+
+            let product;
+            let attempts = 0;
+            while (attempts < MAX_RETRY_ATTEMPTS) {
+                try {
+                    const enrichedProductData = {
+                        ...baseProductData,
+                        productId: generateProductId()
+                    };
+                    product = await Product.create(enrichedProductData);
+                    break;
+                } catch (error) {
+                    const isUniqueError = error.name === 'SequelizeUniqueConstraintError' &&
+                        error.errors?.some(e => e.path === 'product_id' || e.path === 'productId');
+
+                    if (isUniqueError) {
+                        attempts++;
+                        if (attempts >= MAX_RETRY_ATTEMPTS) {
+                            throw new Error('Failed to generate unique product_id after maximum retries');
+                        }
+                        logger.warn(`ProductService: Duplicate product_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
+
             logger.info(`ProductService: Successfully created product: ${product.productName} (ID: ${product.prodSequence}) for company: ${companyId}`, {
-                productId: product.prodSequence,
+                productId: product.productId,
                 companyId: product.companyId,
                 userId: userId
             });
@@ -124,8 +153,9 @@ const productService = {
     updateProduct: async (id, productData, companyId, userId) => {
         logger.info(`ProductService: Updating product with ID: ${id} for company: ${companyId}, user: ${userId}`, { updateData: productData });
         try {
+            const { productId, ...safeProductData } = productData;
             const enrichedProductData = {
-                ...productData,
+                ...safeProductData,
                 updatedAt: new Date()
             };
             const [updatedRows] = await Product.update(enrichedProductData, {

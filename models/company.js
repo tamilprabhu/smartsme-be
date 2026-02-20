@@ -11,7 +11,7 @@ const Company = sequelize.define(
             field: 'company_seq'
         },
         companyId: { 
-            type: DataTypes.STRING(13), 
+            type: DataTypes.STRING(20), 
             allowNull: false,
             unique: true,
             field: 'company_id' 
