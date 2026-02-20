@@ -4,6 +4,10 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { generateStockId } = require("../utils/idGenerator");
+const { validateCreate, validateUpdate } = require("../validators/stock");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const stockService = {
     getAllStocks: async (
@@ -95,14 +99,38 @@ const stockService = {
             weight: stockData.weight 
         });
         try {
-            const enrichedStockData = {
-                ...stockData,
+            const validatedData = await validateCreate(stockData);
+            const baseStockData = {
+                ...validatedData,
                 companyId,
                 createdBy: userId,
                 updatedBy: userId
             };
-            
-            const stock = await Stock.create(enrichedStockData);
+
+            let stock;
+            let attempts = 0;
+            while (attempts < MAX_RETRY_ATTEMPTS) {
+                try {
+                    stock = await Stock.create({
+                        ...baseStockData,
+                        stockId: generateStockId()
+                    });
+                    break;
+                } catch (error) {
+                    const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
+                        error.errors?.some((e) => e.path === "stock_id" || e.path === "stockId");
+
+                    if (isUniqueError) {
+                        attempts++;
+                        if (attempts >= MAX_RETRY_ATTEMPTS) {
+                            throw new Error("Failed to generate unique stock_id after maximum retries");
+                        }
+                        logger.warn(`StockService: Duplicate stock_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
             logger.info(`StockService: Successfully created stock: ${stock.stockId} (ID: ${stock.stockSequence}) for company: ${companyId}`);
             return stock;
         } catch (error) {
@@ -118,8 +146,10 @@ const stockService = {
     updateStock: async (id, stockData, companyId, userId) => {
         logger.info(`StockService: Updating stock with ID: ${id} for company: ${companyId}`, { updateData: stockData });
         try {
+            const validatedData = await validateUpdate(stockData);
+            const { stockId, ...safeStockData } = validatedData;
             const enrichedStockData = {
-                ...stockData,
+                ...safeStockData,
                 updatedBy: userId
             };
             

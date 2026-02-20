@@ -43,10 +43,40 @@ function generateMachineId() {
     return `MCH${body}${checksum(body)}`;
 }
 
+function generateBuyerId() {
+    const body = randomBody(9);
+    return `BYR${body}${checksum(body)}`;
+}
+
+function generateDispatchId() {
+    const body = randomBody(9);
+    return `DSP${body}${checksum(body)}`;
+}
+
+function generateShiftId() {
+    const body = randomBody(9);
+    return `SFT${body}${checksum(body)}`;
+}
+
+function generateSellerId() {
+    const body = randomBody(9);
+    return `SLR${body}${checksum(body)}`;
+}
+
+function generateStockId() {
+    const body = randomBody(9);
+    return `STK${body}${checksum(body)}`;
+}
+
 module.exports = {
     generateCompanyId,
     generateProductId,
     generateOrderId,
     generateInvoiceId,
-    generateMachineId
+    generateMachineId,
+    generateBuyerId,
+    generateDispatchId,
+    generateShiftId,
+    generateSellerId,
+    generateStockId
 };

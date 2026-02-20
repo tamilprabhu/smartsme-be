@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const stockService = require("../services/stock");
 const authenticate = require("../middlewares/authenticate");
+const errorHandler = require("../middlewares/errorHandler");
 const logger = require("../config/logger");
 const { SortBy, SortOrder } = require("../constants/sort");
 
@@ -39,19 +40,19 @@ router.get("/:id", authenticate, async (req, res) => {
 });
 
 // POST /stocks - Create new stock
-router.post("/", authenticate, async (req, res) => {
+router.post("/", authenticate, async (req, res, next) => {
     try {
         const companyId = req.auth.getPrimaryCompanyId();
         const userId = req.auth.getUserId();
         const stock = await stockService.createStock(req.body, companyId, userId);
         res.status(201).json(stock);
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
 // PUT /stocks/:id - Update stock
-router.put("/:id", authenticate, async (req, res) => {
+router.put("/:id", authenticate, async (req, res, next) => {
     const stockId = req.params.id;
     
     try {
@@ -63,7 +64,7 @@ router.put("/:id", authenticate, async (req, res) => {
         if (error.message === "Stock not found") {
             return res.status(404).json({ error: error.message });
         }
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
@@ -82,5 +83,7 @@ router.delete("/:id", authenticate, async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+router.use(errorHandler);
 
 module.exports = router;

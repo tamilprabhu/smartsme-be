@@ -12,7 +12,7 @@ const Stock = sequelize.define(
         },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         sellerId: { type: DataTypes.STRING(20), field: 'seller_id' },
-        stockId: { type: DataTypes.STRING(20), field: 'stock_id' },
+        stockId: { type: DataTypes.STRING(20), allowNull: false, unique: true, field: 'stock_id' },
         stockDate: { type: DataTypes.DATE, field: 'stock_date' },
         rawMaterial: { type: DataTypes.STRING(20), field: 'raw_material' },
         noOfBars: { type: DataTypes.INTEGER, field: 'no_of_bars' },

@@ -4,6 +4,10 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { generateShiftId } = require("../utils/idGenerator");
+const { validateCreate, validateUpdate } = require("../validators/productionShift");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const productionShiftService = {
     // Get all production shifts with pagination and search
@@ -112,14 +116,40 @@ const productionShiftService = {
     createProductionShift: async (shiftData, companyId, userId) => {
         logger.info(`ProductionShiftService: Creating new shift: ${shiftData.shiftId}, companyId: ${companyId}, userId: ${userId}`);
         try {
-            const shift = await ProductionShift.create({
-                ...shiftData,
+            const validatedData = await validateCreate(shiftData);
+            const baseData = {
+                ...validatedData,
                 companyId: companyId,
                 createdBy: userId,
                 updatedBy: userId,
                 createdAt: new Date(),
                 updatedAt: new Date()
-            });
+            };
+
+            let shift;
+            let attempts = 0;
+            while (attempts < MAX_RETRY_ATTEMPTS) {
+                try {
+                    shift = await ProductionShift.create({
+                        ...baseData,
+                        shiftId: generateShiftId()
+                    });
+                    break;
+                } catch (error) {
+                    const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
+                        error.errors?.some((e) => e.path === "shift_id" || e.path === "shiftId");
+
+                    if (isUniqueError) {
+                        attempts++;
+                        if (attempts >= MAX_RETRY_ATTEMPTS) {
+                            throw new Error("Failed to generate unique shift_id after maximum retries");
+                        }
+                        logger.warn(`ProductionShiftService: Duplicate shift_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
             logger.info(`ProductionShiftService: Successfully created shift: ${shift.shiftId} (ID: ${shift.shiftSequence})`);
             return shift;
         } catch (error) {
@@ -135,6 +165,8 @@ const productionShiftService = {
     updateProductionShift: async (id, shiftData, companyId, userId) => {
         logger.info(`ProductionShiftService: Updating shift with ID: ${id}, companyId: ${companyId}, userId: ${userId}`, { updateData: shiftData });
         try {
+            const validatedData = await validateUpdate(shiftData);
+            const { shiftId, ...safeShiftData } = validatedData;
             const whereClause = { shiftSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
@@ -147,7 +179,7 @@ const productionShiftService = {
             }
 
             shift.set({
-                ...shiftData,
+                ...safeShiftData,
                 updatedBy: userId,
                 updatedAt: new Date()
             });

@@ -3,6 +3,7 @@ const router = express.Router();
 const productionShiftService = require("../services/productionShift");
 const optionalAuth = require("../middlewares/optionalAuth");
 const authenticate = require("../middlewares/authenticate");
+const errorHandler = require("../middlewares/errorHandler");
 const { SYSTEM_ROLES } = require("../constants/roles");
 const { SortBy, SortOrder } = require("../constants/sort");
 const logger = require("../config/logger");
@@ -131,7 +132,7 @@ router.get("/:id", authenticate, async (req, res) => {
     }
 });
 
-router.post("/", authenticate, async (req, res) => {
+router.post("/", authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     logger.info(`ProductionShiftRoute: POST /production-shift - Request started`, { 
@@ -163,6 +164,9 @@ router.post("/", authenticate, async (req, res) => {
         });
         res.status(201).json(shift);
     } catch (err) {
+        if (err.name === "ValidationError") {
+            return next(err);
+        }
         const validationErrors = getFieldwiseValidationErrors(err);
         logger.error(`ProductionShiftRoute: POST /production-shift - Request failed`, { 
             requestId: requestId,
@@ -178,7 +182,7 @@ router.post("/", authenticate, async (req, res) => {
     }
 });
 
-router.put("/:id", authenticate, async (req, res) => {
+router.put("/:id", authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const shiftId = req.params.id;
     
@@ -217,6 +221,9 @@ router.put("/:id", authenticate, async (req, res) => {
                 userId: req.auth?.id
             });
             return res.status(404).json({ error: err.message });
+        }
+        if (err.name === "ValidationError") {
+            return next(err);
         }
         const validationErrors = getFieldwiseValidationErrors(err);
         logger.error(`ProductionShiftRoute: PUT /production-shift/${shiftId} - Request failed`, { 
@@ -280,5 +287,7 @@ router.delete("/:id", authenticate, async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+router.use(errorHandler);
 
 module.exports = router;

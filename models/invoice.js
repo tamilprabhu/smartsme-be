@@ -10,7 +10,7 @@ const Invoice = sequelize.define(
             autoIncrement: true,
             field: 'invoice_seq'
         },
-        invoiceId: { type: DataTypes.STRING(20), field: 'invoice_id' },
+        invoiceId: { type: DataTypes.STRING(20), allowNull: false, unique: true, field: 'invoice_id' },
         invoiceDate: { type: DataTypes.DATE, field: 'invoice_date' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         buyerId: { type: DataTypes.STRING(10), field: 'buyer_id' },

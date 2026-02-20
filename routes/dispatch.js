@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const dispatchService = require("../services/dispatch");
 const authenticate = require("../middlewares/authenticate");
+const errorHandler = require("../middlewares/errorHandler");
 const logger = require("../config/logger");
 const { SortBy, SortOrder } = require("../constants/sort");
 
@@ -67,7 +68,7 @@ router.get("/:id", authenticate, async (req, res) => {
 });
 
 // POST /dispatches - Create new dispatch
-router.post("/", authenticate, async (req, res) => {
+router.post("/", authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     try {
@@ -81,12 +82,12 @@ router.post("/", authenticate, async (req, res) => {
             error: error.message,
             stack: error.stack
         });
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
 // PUT /dispatches/:id - Update dispatch
-router.put("/:id", authenticate, async (req, res) => {
+router.put("/:id", authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const dispatchId = req.params.id;
     
@@ -104,7 +105,7 @@ router.put("/:id", authenticate, async (req, res) => {
             error: error.message,
             stack: error.stack
         });
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
@@ -130,5 +131,7 @@ router.delete("/:id", authenticate, async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+router.use(errorHandler);
 
 module.exports = router;

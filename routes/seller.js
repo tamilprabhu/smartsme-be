@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const sellerService = require("../services/seller");
 const authenticate = require("../middlewares/authenticate");
+const errorHandler = require("../middlewares/errorHandler");
 const logger = require("../config/logger");
 const { SortBy, SortOrder } = require("../constants/sort");
 
@@ -45,19 +46,19 @@ router.get("/:id", authenticate, async (req, res) => {
 });
 
 // POST /sellers - Create new seller
-router.post("/", authenticate, async (req, res) => {
+router.post("/", authenticate, async (req, res, next) => {
     try {
         const companyId = req.auth.getPrimaryCompanyId();
         const userId = req.auth.getUserId();
         const seller = await sellerService.createSeller(req.body, companyId, userId);
         res.status(201).json(seller);
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
 // PUT /sellers/:id - Update seller
-router.put("/:id", authenticate, async (req, res) => {
+router.put("/:id", authenticate, async (req, res, next) => {
     const sellerId = req.params.id;
     
     try {
@@ -69,7 +70,7 @@ router.put("/:id", authenticate, async (req, res) => {
         if (error.message === "Seller not found") {
             return res.status(404).json({ error: error.message });
         }
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
@@ -88,5 +89,7 @@ router.delete("/:id", authenticate, async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+router.use(errorHandler);
 
 module.exports = router;

@@ -10,7 +10,7 @@ const Seller = sequelize.define(
             autoIncrement: true,
             field: 'seller_seq'
         },
-        sellerId: { type: DataTypes.STRING(20), field: 'seller_id' },
+        sellerId: { type: DataTypes.STRING(20), allowNull: false, unique: true, field: 'seller_id' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         sellerName: { type: DataTypes.STRING(50), field: 'seller_name' },
         sellerAddress: { type: DataTypes.STRING(100), field: 'seller_address' },

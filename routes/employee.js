@@ -64,14 +64,14 @@ router.get('/role/:roleName', authenticateToken, async (req, res) => {
 });
 
 // Create new employee
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, async (req, res, next) => {
     try {
         const companyId = req.auth.getPrimaryCompanyId();
         const userId = req.auth.getUserId();
         const employee = await employeeService.createEmployee(req.body, companyId, userId);
         res.status(201).json(employee);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        next(error);
     }
 });
 
@@ -165,7 +165,7 @@ router.delete('/with-user/:userId(\\d+)', authenticateToken, async (req, res) =>
 });
 
 // Update employee
-router.put('/:id(\\d+)', authenticateToken, async (req, res) => {
+router.put('/:id(\\d+)', authenticateToken, async (req, res, next) => {
     try {
         const companyId = req.auth.getPrimaryCompanyId();
         const userId = req.auth.getUserId();
@@ -175,7 +175,7 @@ router.put('/:id(\\d+)', authenticateToken, async (req, res) => {
         if (error.message === 'Employee not found') {
             return res.status(404).json({ error: error.message });
         }
-        res.status(400).json({ error: error.message });
+        next(error);
     }
 });
 

@@ -4,6 +4,10 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { generateBuyerId } = require("../utils/idGenerator");
+const { validateCreate, validateUpdate } = require("../validators/buyer");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const buyerService = {
     // Get all buyers with pagination and search
@@ -96,13 +100,38 @@ const buyerService = {
             buyerId: buyerData.buyerId 
         });
         try {
-            const buyerWithCompanyAndUser = {
-                ...buyerData,
+            const validatedData = await validateCreate(buyerData);
+            const baseData = {
+                ...validatedData,
                 companyId: companyId,
                 createdBy: userId,
                 updatedBy: userId
             };
-            const buyer = await Buyer.create(buyerWithCompanyAndUser);
+
+            let buyer;
+            let attempts = 0;
+            while (attempts < MAX_RETRY_ATTEMPTS) {
+                try {
+                    buyer = await Buyer.create({
+                        ...baseData,
+                        buyerId: generateBuyerId()
+                    });
+                    break;
+                } catch (error) {
+                    const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
+                        error.errors?.some((e) => e.path === "buyer_id" || e.path === "buyerId");
+
+                    if (isUniqueError) {
+                        attempts++;
+                        if (attempts >= MAX_RETRY_ATTEMPTS) {
+                            throw new Error("Failed to generate unique buyer_id after maximum retries");
+                        }
+                        logger.warn(`BuyerService: Duplicate buyer_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
             logger.info(`BuyerService: Successfully created buyer: ${buyer.buyerName} (ID: ${buyer.buyerSequence})`);
             return buyer;
         } catch (error) {
@@ -118,8 +147,10 @@ const buyerService = {
     updateBuyer: async (id, buyerData, companyId, userId) => {
         logger.info(`BuyerService: Updating buyer with ID: ${id} for company: ${companyId}`, { updateData: buyerData });
         try {
+            const validatedData = await validateUpdate(buyerData);
+            const { buyerId, ...safeBuyerData } = validatedData;
             const buyerWithUpdatedBy = {
-                ...buyerData,
+                ...safeBuyerData,
                 updatedBy: userId
             };
             const [updatedRows] = await Buyer.update(buyerWithUpdatedBy, {

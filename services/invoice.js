@@ -4,6 +4,10 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { generateInvoiceId } = require("../utils/idGenerator");
+const { validateCreate, validateUpdate } = require("../validators/invoice");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const invoiceService = {
     // Get all invoices with pagination and search
@@ -99,12 +103,37 @@ const invoiceService = {
             userId: userId
         });
         try {
+            const validatedData = await validateCreate(invoiceData);
+            const baseData = { ...validatedData };
             // Automatically populate companyId if not provided or override with authenticated user's company
             if (companyId) {
-                invoiceData.companyId = companyId;
+                baseData.companyId = companyId;
             }
-            
-            const invoice = await Invoice.create(invoiceData);
+
+            let invoice;
+            let attempts = 0;
+            while (attempts < MAX_RETRY_ATTEMPTS) {
+                try {
+                    invoice = await Invoice.create({
+                        ...baseData,
+                        invoiceId: generateInvoiceId()
+                    });
+                    break;
+                } catch (error) {
+                    const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
+                        error.errors?.some((e) => e.path === "invoice_id" || e.path === "invoiceId");
+
+                    if (isUniqueError) {
+                        attempts++;
+                        if (attempts >= MAX_RETRY_ATTEMPTS) {
+                            throw new Error("Failed to generate unique invoice_id after maximum retries");
+                        }
+                        logger.warn(`InvoiceService: Duplicate invoice_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
             logger.info(`InvoiceService: Successfully created invoice: ${invoice.invoiceId} (ID: ${invoice.invoiceSeq}) for company: ${companyId}`);
             return invoice;
         } catch (error) {
@@ -126,12 +155,14 @@ const invoiceService = {
             userId: userId 
         });
         try {
+            const validatedData = await validateUpdate(invoiceData);
+            const { invoiceId, ...safeInvoiceData } = validatedData;
             let whereClause = { invoiceSeq: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
             
-            const [updatedRows] = await Invoice.update(invoiceData, {
+            const [updatedRows] = await Invoice.update(safeInvoiceData, {
                 where: whereClause
             });
             if (updatedRows === 0) {

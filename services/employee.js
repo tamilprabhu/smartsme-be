@@ -4,6 +4,7 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { validateCreate, validateUpdate } = require("../validators/employee");
 
 const employeeService = {
     getAllEmployees: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null, sortBy = SortBy.SEQUENCE, sortOrder = SortOrder.DESC) => {
@@ -84,8 +85,9 @@ const employeeService = {
     createEmployee: async (employeeData, companyId, userId) => {
         logger.info(`EmployeeService: Creating new employee for user: ${employeeData.userId}, company: ${companyId}`);
         try {
+            const validatedData = await validateCreate(employeeData);
             const employee = await Employee.create({
-                ...employeeData,
+                ...validatedData,
                 companyId,
                 createUserId: userId,
                 updateUserId: userId,
@@ -107,13 +109,14 @@ const employeeService = {
     updateEmployee: async (id, employeeData, companyId, userId) => {
         logger.info(`EmployeeService: Updating employee with ID: ${id} for company: ${companyId}`, { updateData: employeeData });
         try {
+            const validatedData = await validateUpdate(employeeData);
             const whereClause = { employeeSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
             
             const [updatedRows] = await Employee.update({
-                ...employeeData,
+                ...validatedData,
                 updateUserId: userId,
                 updatedAt: new Date()
             }, {

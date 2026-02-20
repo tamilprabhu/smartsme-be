@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const invoiceService = require("../services/invoice");
 const authenticate = require("../middlewares/authenticate");
+const errorHandler = require("../middlewares/errorHandler");
 const logger = require("../config/logger");
 const { SortBy, SortOrder } = require("../constants/sort");
 
@@ -87,7 +88,7 @@ router.get("/:id", authenticate, async (req, res) => {
 });
 
 // POST /invoices - Create new invoice
-router.post("/", authenticate, async (req, res) => {
+router.post("/", authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     logger.info(`InvoiceRoute: POST /invoices - Request started`, { 
@@ -116,12 +117,12 @@ router.post("/", authenticate, async (req, res) => {
             userId: req.auth?.id,
             stack: error.stack
         });
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
 // PUT /invoices/:id - Update invoice
-router.put("/:id", authenticate, async (req, res) => {
+router.put("/:id", authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const invoiceId = req.params.id;
     
@@ -159,7 +160,7 @@ router.put("/:id", authenticate, async (req, res) => {
             userId: req.auth?.id,
             stack: error.stack
         });
-        res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 });
 
@@ -203,5 +204,7 @@ router.delete("/:id", authenticate, async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+router.use(errorHandler);
 
 module.exports = router;

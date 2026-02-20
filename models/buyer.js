@@ -10,7 +10,7 @@ const Buyer = sequelize.define(
             autoIncrement: true,
             field: 'buyer_seq'
         },
-        buyerId: { type: DataTypes.STRING(20), field: 'buyer_id' },
+        buyerId: { type: DataTypes.STRING(20), allowNull: false, unique: true, field: 'buyer_id' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         buyerName: { type: DataTypes.STRING(50), field: 'buyer_name' },
         buyerAddress: { type: DataTypes.STRING(100), field: 'buyer_address' },

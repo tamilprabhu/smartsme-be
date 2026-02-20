@@ -4,6 +4,10 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { generateSellerId } = require("../utils/idGenerator");
+const { validateCreate, validateUpdate } = require("../validators/seller");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const sellerService = {
     getAllSellers: async (
@@ -90,25 +94,50 @@ const sellerService = {
     },
 
     createSeller: async (sellerData, companyId, userId) => {
-        const enrichedData = {
-            ...sellerData,
+        const baseData = {
             companyId: companyId,
             createdBy: userId,
             updatedBy: userId
         };
         
-        logger.info(`SellerService: Creating new seller: ${enrichedData.sellerName}`, { 
+        logger.info(`SellerService: Creating new seller: ${sellerData.sellerName}`, { 
             companyId: companyId,
-            sellerId: enrichedData.sellerId 
+            sellerId: sellerData.sellerId 
         });
         try {
-            const seller = await Seller.create(enrichedData);
+            const validatedData = await validateCreate(sellerData);
+
+            let seller;
+            let attempts = 0;
+            while (attempts < MAX_RETRY_ATTEMPTS) {
+                try {
+                    seller = await Seller.create({
+                        ...validatedData,
+                        ...baseData,
+                        sellerId: generateSellerId()
+                    });
+                    break;
+                } catch (error) {
+                    const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
+                        error.errors?.some((e) => e.path === "seller_id" || e.path === "sellerId");
+
+                    if (isUniqueError) {
+                        attempts++;
+                        if (attempts >= MAX_RETRY_ATTEMPTS) {
+                            throw new Error("Failed to generate unique seller_id after maximum retries");
+                        }
+                        logger.warn(`SellerService: Duplicate seller_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
             logger.info(`SellerService: Successfully created seller: ${seller.sellerName} (ID: ${seller.sellerSequence})`);
             return seller;
         } catch (error) {
-            logger.error(`SellerService: Failed to create seller: ${enrichedData.sellerName}`, { 
+            logger.error(`SellerService: Failed to create seller: ${sellerData.sellerName}`, { 
                 error: error.message, 
-                sellerData: enrichedData,
+                sellerData: sellerData,
                 stack: error.stack 
             });
             throw error;
@@ -116,13 +145,16 @@ const sellerService = {
     },
 
     updateSeller: async (id, sellerData, companyId, userId) => {
-        const enrichedData = {
-            ...sellerData,
-            updatedBy: userId
-        };
-        
-        logger.info(`SellerService: Updating seller with ID: ${id} for company: ${companyId}`, { updateData: enrichedData });
+        logger.info(`SellerService: Updating seller with ID: ${id} for company: ${companyId}`, { updateData: sellerData });
+        let enrichedData;
         try {
+            const validatedData = await validateUpdate(sellerData);
+            const { sellerId, ...safeSellerData } = validatedData;
+            enrichedData = {
+                ...safeSellerData,
+                updatedBy: userId
+            };
+
             const [updatedRows] = await Seller.update(enrichedData, {
                 where: { 
                     sellerSequence: id,

@@ -4,6 +4,10 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { generateDispatchId } = require("../utils/idGenerator");
+const { validateCreate, validateUpdate } = require("../validators/dispatch");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const dispatchService = {
     getAllDispatches: async (
@@ -98,16 +102,40 @@ const dispatchService = {
             userId: userId
         });
         try {
-            const enrichedData = { ...dispatchData };
+            const validatedData = await validateCreate(dispatchData);
+            const baseData = { ...validatedData };
             if (companyId) {
-                enrichedData.companyId = companyId;
+                baseData.companyId = companyId;
             }
             if (userId) {
-                enrichedData.createdBy = userId;
-                enrichedData.updatedBy = userId;
+                baseData.createdBy = userId;
+                baseData.updatedBy = userId;
             }
-            
-            const dispatch = await Dispatch.create(enrichedData);
+
+            let dispatch;
+            let attempts = 0;
+            while (attempts < MAX_RETRY_ATTEMPTS) {
+                try {
+                    dispatch = await Dispatch.create({
+                        ...baseData,
+                        dispatchId: generateDispatchId()
+                    });
+                    break;
+                } catch (error) {
+                    const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
+                        error.errors?.some((e) => e.path === "dispatch_id" || e.path === "dispatchId");
+
+                    if (isUniqueError) {
+                        attempts++;
+                        if (attempts >= MAX_RETRY_ATTEMPTS) {
+                            throw new Error("Failed to generate unique dispatch_id after maximum retries");
+                        }
+                        logger.warn(`DispatchService: Duplicate dispatch_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
             logger.info(`DispatchService: Successfully created dispatch: ${dispatch.dispatchId} (ID: ${dispatch.dispatchSequence}) for company: ${companyId}`);
             return dispatch;
         } catch (error) {
@@ -129,12 +157,14 @@ const dispatchService = {
             userId: userId
         });
         try {
+            const validatedData = await validateUpdate(dispatchData);
+            const { dispatchId, ...safeDispatchData } = validatedData;
             let whereClause = { dispatchSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
             
-            const enrichedData = { ...dispatchData };
+            const enrichedData = { ...safeDispatchData };
             if (userId) {
                 enrichedData.updatedBy = userId;
             }

@@ -40,7 +40,7 @@ const ProductionShift = sequelize.define(
             },
         },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
-        shiftId: { type: DataTypes.STRING(20), field: 'shift_id' },
+        shiftId: { type: DataTypes.STRING(20), allowNull: false, unique: true, field: 'shift_id' },
         productId: {
             type: DataTypes.STRING(20),
             field: 'product_id',
