@@ -73,7 +73,7 @@ const invoiceService = {
     getInvoiceById: async (id, companyId = null) => {
         logger.info(`InvoiceService: Fetching invoice with ID: ${id}, companyId: ${companyId}`);
         try {
-            let whereClause = { invoiceSeq: id };
+            let whereClause = { invoiceSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -134,7 +134,7 @@ const invoiceService = {
                     }
                 }
             }
-            logger.info(`InvoiceService: Successfully created invoice: ${invoice.invoiceId} (ID: ${invoice.invoiceSeq}) for company: ${companyId}`);
+            logger.info(`InvoiceService: Successfully created invoice: ${invoice.invoiceId} (ID: ${invoice.invoiceSequence}) for company: ${companyId}`);
             return invoice;
         } catch (error) {
             logger.error(`InvoiceService: Failed to create invoice: ${invoiceData.invoiceId}`, { 
@@ -157,7 +157,7 @@ const invoiceService = {
         try {
             const validatedData = await validateUpdate(invoiceData);
             const { invoiceId, ...safeInvoiceData } = validatedData;
-            let whereClause = { invoiceSeq: id };
+            let whereClause = { invoiceSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
@@ -190,7 +190,7 @@ const invoiceService = {
             userId: userId 
         });
         try {
-            let whereClause = { invoiceSeq: id };
+            let whereClause = { invoiceSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }

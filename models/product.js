@@ -4,7 +4,7 @@ const sequelize = require("../db/sequelize");
 const Product = sequelize.define(
     "Product",
     {
-        prodSequence: {
+        productSequence: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,

@@ -4,7 +4,7 @@ const sequelize = require("../db/sequelize");
 const Invoice = sequelize.define(
     "Invoice",
     {
-        invoiceSeq: {
+        invoiceSequence: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,

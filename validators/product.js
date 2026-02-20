@@ -200,7 +200,7 @@ const isProductNameUniqueWithinCompany = async (productName, companyId, excludeI
     };
 
     if (excludeId) {
-        where.prodSequence = { [Op.ne]: excludeId };
+        where.productSequence = { [Op.ne]: excludeId };
     }
 
     const existing = await Product.findOne({ where });

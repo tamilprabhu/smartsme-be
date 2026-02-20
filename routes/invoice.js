@@ -104,7 +104,7 @@ router.post("/", authenticate, async (req, res, next) => {
         const invoice = await invoiceService.createInvoice(req.body, companyId, userId);
         logger.info(`InvoiceRoute: POST /invoices - Request completed successfully`, { 
             requestId: requestId,
-            invoiceSeq: invoice.invoiceSeq,
+            invoiceSequence: invoice.invoiceSequence,
             invoiceId: invoice.invoiceId,
             userId: req.auth?.id
         });

@@ -72,7 +72,7 @@ const productService = {
         try {
             const product = await Product.findOne({
                 where: {
-                    prodSequence: id,
+                    productSequence: id,
                     companyId: companyId
                 }
             });
@@ -133,7 +133,7 @@ const productService = {
                 }
             }
 
-            logger.info(`ProductService: Successfully created product: ${product.productName} (ID: ${product.prodSequence}) for company: ${companyId}`, {
+            logger.info(`ProductService: Successfully created product: ${product.productName} (ID: ${product.productSequence}) for company: ${companyId}`, {
                 productId: product.productId,
                 companyId: product.companyId,
                 userId: userId
@@ -163,7 +163,7 @@ const productService = {
             };
             const [updatedRows] = await Product.update(enrichedProductData, {
                 where: { 
-                    prodSequence: id,
+                    productSequence: id,
                     companyId: companyId
                 }
             });
@@ -173,7 +173,7 @@ const productService = {
             }
             const updatedProduct = await Product.findOne({
                 where: {
-                    prodSequence: id,
+                    productSequence: id,
                     companyId: companyId
                 }
             });
@@ -200,7 +200,7 @@ const productService = {
             const product = await Product.findByPk(id);
             const [updatedRows] = await Product.update(
                 { isDeleted: true, isActive: false },
-                { where: { prodSequence: id, isDeleted: false } }
+                { where: { productSequence: id, isDeleted: false } }
             );
             if (updatedRows === 0) {
                 logger.warn(`ProductService: No product found to delete with ID: ${id}`);
