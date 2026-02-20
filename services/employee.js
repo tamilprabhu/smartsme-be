@@ -4,7 +4,10 @@ const logger = require("../config/logger");
 const ItemsPerPage = require("../constants/pagination");
 const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
+const { generateEmployeeId } = require("../utils/idGenerator");
 const { validateCreate, validateUpdate } = require("../validators/employee");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const employeeService = {
     getAllEmployees: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null, sortBy = SortBy.SEQUENCE, sortOrder = SortOrder.DESC) => {
@@ -26,6 +29,7 @@ const employeeService = {
                     ...(companyId ? [{ companyId }] : []),
                     {
                         [Op.or]: [
+                            { employeeId: { [Op.like]: `%${search}%` } },
                             { userId: { [Op.like]: `%${search}%` } },
                             { salary: { [Op.like]: `%${search}%` } }
                         ]
@@ -86,14 +90,39 @@ const employeeService = {
         logger.info(`EmployeeService: Creating new employee for user: ${employeeData.userId}, company: ${companyId}`);
         try {
             const validatedData = await validateCreate(employeeData);
-            const employee = await Employee.create({
+            const baseData = {
                 ...validatedData,
                 companyId,
-                createUserId: userId,
-                updateUserId: userId,
+                createdBy: userId,
+                updatedBy: userId,
                 createdAt: new Date(),
                 updatedAt: new Date()
-            });
+            };
+
+            let employee;
+            let attempts = 0;
+            while (attempts < MAX_RETRY_ATTEMPTS) {
+                try {
+                    employee = await Employee.create({
+                        ...baseData,
+                        employeeId: generateEmployeeId()
+                    });
+                    break;
+                } catch (error) {
+                    const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
+                        error.errors?.some((e) => e.path === "employee_id" || e.path === "employeeId");
+
+                    if (isUniqueError) {
+                        attempts++;
+                        if (attempts >= MAX_RETRY_ATTEMPTS) {
+                            throw new Error("Failed to generate unique employee_id after maximum retries");
+                        }
+                        logger.warn(`EmployeeService: Duplicate employee_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
             logger.info(`EmployeeService: Successfully created employee (ID: ${employee.employeeSequence}) for company: ${companyId}`);
             return employee;
         } catch (error) {
@@ -110,14 +139,15 @@ const employeeService = {
         logger.info(`EmployeeService: Updating employee with ID: ${id} for company: ${companyId}`, { updateData: employeeData });
         try {
             const validatedData = await validateUpdate(employeeData);
+            const { employeeId, ...safeEmployeeData } = validatedData;
             const whereClause = { employeeSequence: id };
             if (companyId) {
                 whereClause.companyId = companyId;
             }
             
             const [updatedRows] = await Employee.update({
-                ...validatedData,
-                updateUserId: userId,
+                ...safeEmployeeData,
+                updatedBy: userId,
                 updatedAt: new Date()
             }, {
                 where: whereClause
@@ -197,6 +227,7 @@ const employeeService = {
             if (search) {
                 employeeWhere[Op.or] = [
                     { employeeSequence: { [Op.like]: `%${search}%` } },
+                    { employeeId: { [Op.like]: `%${search}%` } },
                     { userId: { [Op.like]: `%${search}%` } },
                     where(col('User.first_name'), { [Op.like]: `%${search}%` }),
                     where(col('User.last_name'), { [Op.like]: `%${search}%` }),

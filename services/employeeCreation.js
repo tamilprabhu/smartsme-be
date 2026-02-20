@@ -4,6 +4,10 @@ const { Op } = require("sequelize");
 const sequelize = require("../db/sequelize");
 const logger = require("../config/logger");
 const { validateCreate: validateUser } = require("../validators/user");
+const { validateCreate: validateEmployeeCreate, validateUpdate: validateEmployeeUpdate } = require("../validators/employee");
+const { generateEmployeeId } = require("../utils/idGenerator");
+
+const MAX_RETRY_ATTEMPTS = 5;
 
 const employeeCreationService = {
     createEmployeeWithUser: async (input, context) => {
@@ -41,16 +45,47 @@ const employeeCreationService = {
 
                 logger.info(`EmployeeCreationService: User created - ID: ${user.id}, username: ${user.username}`);
 
-                const employee = await Employee.create({
+                const validatedEmployeeData = await validateEmployeeCreate({
                     ...employeeData,
+                    userId: user.id
+                });
+                const { employeeId, ...safeEmployeeData } = validatedEmployeeData;
+
+                const baseEmployeeData = {
+                    ...safeEmployeeData,
                     userId: user.id,
                     companyId: context.companyId,
                     createdBy: context.actor?.userId,
                     updatedBy: context.actor?.userId
-                }, { 
-                    transaction: t,
-                    context 
-                });
+                };
+
+                let employee;
+                let attempts = 0;
+                while (attempts < MAX_RETRY_ATTEMPTS) {
+                    try {
+                        employee = await Employee.create({
+                            ...baseEmployeeData,
+                            employeeId: generateEmployeeId()
+                        }, {
+                            transaction: t,
+                            context
+                        });
+                        break;
+                    } catch (error) {
+                        const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
+                            error.errors?.some((e) => e.path === "employee_id" || e.path === "employeeId");
+
+                        if (isUniqueError) {
+                            attempts++;
+                            if (attempts >= MAX_RETRY_ATTEMPTS) {
+                                throw new Error("Failed to generate unique employee_id after maximum retries");
+                            }
+                            logger.warn(`EmployeeCreationService: Duplicate employee_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                        } else {
+                            throw error;
+                        }
+                    }
+                }
 
                 logger.info(`EmployeeCreationService: Employee created - ID: ${employee.employeeSequence}, userId: ${user.id}`);
 
@@ -71,6 +106,7 @@ const employeeCreationService = {
                 
                 return {
                     employeeSequence: employee.employeeSequence,
+                    employeeId: employee.employeeId,
                     userId: user.id,
                     companyId: employee.companyId,
                     salary: employee.salary,
@@ -239,8 +275,10 @@ const employeeCreationService = {
                 }
 
                 if (employeeData && Object.keys(employeeData).length > 0) {
+                    const validatedEmployeeData = await validateEmployeeUpdate(employeeData);
+                    const { employeeId, ...safeEmployeeData } = validatedEmployeeData;
                     await Employee.update({
-                        ...employeeData,
+                        ...safeEmployeeData,
                         updatedBy: context.actor?.userId
                     }, {
                         where: { userId, companyId: context.companyId, isDeleted: false },

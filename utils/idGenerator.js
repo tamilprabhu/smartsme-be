@@ -68,6 +68,11 @@ function generateStockId() {
     return `STK${body}${checksum(body)}`;
 }
 
+function generateEmployeeId() {
+    const body = randomBody(9);
+    return `EMP${body}${checksum(body)}`;
+}
+
 module.exports = {
     generateCompanyId,
     generateProductId,
@@ -78,5 +83,6 @@ module.exports = {
     generateDispatchId,
     generateShiftId,
     generateSellerId,
-    generateStockId
+    generateStockId,
+    generateEmployeeId
 };

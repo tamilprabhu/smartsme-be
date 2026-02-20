@@ -200,6 +200,7 @@ CREATE TABLE `txn_dispatch` (
 
 CREATE TABLE `mst_employee` (
   `employee_seq` int NOT NULL,
+  `employee_id` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `user_id` INT NOT NULL,
   `company_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `salary` int DEFAULT NULL,

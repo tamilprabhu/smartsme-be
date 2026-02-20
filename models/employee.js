@@ -10,6 +10,12 @@ const Employee = sequelize.define(
             autoIncrement: true,
             field: 'employee_seq'
         },
+        employeeId: {
+            type: DataTypes.STRING(20),
+            allowNull: false,
+            unique: true,
+            field: 'employee_id'
+        },
         userId: { type: DataTypes.INTEGER, allowNull: false, field: 'user_id' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         salary: { type: DataTypes.INTEGER },

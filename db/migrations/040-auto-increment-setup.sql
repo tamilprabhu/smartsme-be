@@ -12,6 +12,7 @@ ALTER TABLE `txn_dispatch` MODIFY `dispatch_seq` int NOT NULL AUTO_INCREMENT, AU
 ALTER TABLE `txn_dispatch` ADD FOREIGN KEY (`company_id`) REFERENCES `mst_company` (`company_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE `mst_employee` MODIFY `employee_seq` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
+ALTER TABLE `mst_employee` ADD UNIQUE KEY `uq_employee_id` (`employee_id`);
 ALTER TABLE `mst_employee` ADD FOREIGN KEY (`user_id`) REFERENCES `mst_users`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE `mst_employee` ADD FOREIGN KEY (`company_id`) REFERENCES `mst_company` (`company_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
