@@ -7,13 +7,13 @@ const companySchema = Joi.object({
         .trim()
         .min(5)
         .max(50)
-        .pattern(/^[a-zA-Z0-9\s]+$/)
+        .pattern(/^[a-zA-Z0-9\s,.-]+$/)
         .required()
         .messages({
             'string.empty': 'companyName cannot be blank',
             'string.min': 'companyName must be at least 5 characters',
             'string.max': 'companyName must not exceed 20 characters',
-            'string.pattern.base': 'companyName must be alphanumeric only, no special characters except spaces',
+            'string.pattern.base': 'companyName must be alphanumeric only, no special characters except spaces, hyphens, commas, and dots',
             'any.required': 'companyName is required'
         }),
     
@@ -51,13 +51,13 @@ const companySchema = Joi.object({
         .trim()
         .min(8)
         .max(20)
-        .pattern(/^[a-zA-Z0-9\s]+$/)
+        .pattern(/^[a-zA-Z0-9\s,.-]+$/)
         .required()
         .messages({
             'string.empty': 'propName cannot be blank',
             'string.min': 'propName must be at least 8 characters',
             'string.max': 'propName must not exceed 20 characters',
-            'string.pattern.base': 'propName must be alphanumeric only, no special characters except spaces',
+            'string.pattern.base': 'propName must be alphanumeric only, no special characters except spaces, hyphens, commas, and dots',
             'any.required': 'propName is required'
         }),
     
@@ -119,13 +119,13 @@ const companySchema = Joi.object({
         .trim()
         .min(8)
         .max(20)
-        .pattern(/^[a-zA-Z0-9\s]+$/)
+        .pattern(/^[a-zA-Z0-9\s,.-]+$/)
         .required()
         .messages({
             'string.empty': 'authPerson cannot be blank',
             'string.min': 'authPerson must be at least 8 characters',
             'string.max': 'authPerson must not exceed 20 characters',
-            'string.pattern.base': 'authPerson must be alphanumeric only, no special characters except spaces',
+            'string.pattern.base': 'authPerson must be alphanumeric only, no special characters except spaces, hyphens, commas, and dots',
             'any.required': 'authPerson is required'
         }),
     

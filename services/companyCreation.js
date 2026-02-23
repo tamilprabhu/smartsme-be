@@ -11,7 +11,7 @@ const { validateCreate: validateUserCreate } = require("../validators/user");
 const { generateCompanyId, generateEmployeeId } = require("../utils/idGenerator");
 
 const MAX_RETRY_ATTEMPTS = 5;
-const DEFAULT_ADMIN_ROLE_NAME = "ADMIN";
+const DEFAULT_ADMIN_ROLE_NAME = "OWNER";
 
 const toValidationError = (errors) => ({ name: "ValidationError", errors });
 
@@ -46,50 +46,8 @@ const sanitizeUserForResponse = (user) => {
     return safeUser;
 };
 
-const hasRoleName = (user, roleName) => {
-    const roles = user?.UserRoles || [];
-    return roles.some((mapping) => mapping?.Role?.name === roleName);
-};
-
-const findAdminUserByCompany = async (company, transaction = null) => {
-    const candidates = await User.findAll({
-        where: {
-            isDeleted: false,
-            [Op.or]: [
-                ...(company?.mailId ? [{ email: company.mailId }] : []),
-                ...(company?.mobileNo ? [{ mobile: company.mobileNo }] : [])
-            ]
-        },
-        attributes: { exclude: ["password"] },
-        include: [
-            {
-                model: UserRole,
-                required: false,
-                where: { isDeleted: false },
-                attributes: ["roleId"],
-                include: [
-                    {
-                        model: Role,
-                        required: false,
-                        where: { isDeleted: false },
-                        attributes: ["id", "name"]
-                    }
-                ]
-            }
-        ],
-        transaction
-    });
-
-    if (!candidates.length) return null;
-    const admin = candidates.find((user) => hasRoleName(user, DEFAULT_ADMIN_ROLE_NAME));
-    return admin || candidates[0];
-};
-
-const resolveLinkedUser = async (company, usersById, transaction = null) => {
-    const directUser = usersById.get(company.createdBy);
-    if (directUser) return directUser;
-
-    const employees = await Employee.findAll({
+const resolveLinkedUser = async (company, transaction = null) => {
+    const employee = await Employee.findOne({
         where: {
             companyId: company.companyId,
             isDeleted: false
@@ -102,72 +60,31 @@ const resolveLinkedUser = async (company, usersById, transaction = null) => {
                 attributes: { exclude: ["password"] },
                 include: [
                     {
-                        model: UserRole,
-                        required: false,
-                        where: { isDeleted: false },
-                        attributes: ["roleId"],
-                        include: [
-                            {
-                                model: Role,
-                                required: false,
-                                where: { isDeleted: false },
-                                attributes: ["id", "name"]
-                            }
-                        ]
+                        model: Role,
+                        required: true,
+                        attributes: [],
+                        where: { name: DEFAULT_ADMIN_ROLE_NAME, isDeleted: false, isActive: true },
+                        through: {
+                            model: UserRole,
+                            attributes: [],
+                            where: { isDeleted: false }
+                        }
                     }
                 ]
             }
         ],
+        order: [["employeeSequence", "ASC"]],
         transaction
     });
 
-    if (employees.length) {
-        const users = employees.map((item) => item.User).filter(Boolean);
-        const admin = users.find((user) => hasRoleName(user, DEFAULT_ADMIN_ROLE_NAME));
-        if (admin) return admin;
-        if (users.length) return users[0];
-    }
-
-    return findAdminUserByCompany(company, transaction);
+    return employee?.User || null;
 };
 
 const attachUserDetails = async (companies, transaction = null) => {
     const rows = Array.isArray(companies) ? companies : [companies];
-    const creatorIds = [...new Set(rows.map((item) => item?.createdBy).filter(Boolean))];
-
-    if (creatorIds.length === 0) {
-        return rows.map((item) => ({ ...item.toJSON(), User: null }));
-    }
-
-    const users = await User.findAll({
-        where: {
-            id: { [Op.in]: creatorIds },
-            isDeleted: false
-        },
-        attributes: { exclude: ["password"] },
-        include: [
-            {
-                model: UserRole,
-                required: false,
-                where: { isDeleted: false },
-                attributes: ["roleId"],
-                include: [
-                    {
-                        model: Role,
-                        required: false,
-                        where: { isDeleted: false },
-                        attributes: ["id", "name"]
-                    }
-                ]
-            }
-        ],
-        transaction
-    });
-
-    const usersById = new Map(users.map((user) => [user.id, user]));
 
     const withUsers = await Promise.all(rows.map(async (item) => {
-        const linkedUser = await resolveLinkedUser(item, usersById, transaction);
+        const linkedUser = await resolveLinkedUser(item, transaction);
         return {
             ...item.toJSON(),
             User: sanitizeUserForResponse(linkedUser || null)
@@ -385,7 +302,7 @@ const companyCreationService = {
                 );
             }
 
-            const linkedUser = await resolveLinkedUser(company, new Map(), transaction);
+            const linkedUser = await resolveLinkedUser(company, transaction);
             const linkedUserId = linkedUser?.id || null;
             if (linkedUserId && userData && Object.keys(userData).length > 0) {
                 const updateData = { ...userData };
@@ -473,7 +390,7 @@ const companyCreationService = {
                 }
             );
 
-            const linkedUser = await resolveLinkedUser(company, new Map(), transaction);
+            const linkedUser = await resolveLinkedUser(company, transaction);
             const linkedUserId = linkedUser?.id || null;
             if (linkedUserId) {
                 await Employee.update(

@@ -21,7 +21,6 @@ const referenceRouter = require('./reference');
 const homeRouter = require('./home'); // your existing index route
 
 const API_BASE = '/api/1.0.0';
-const API_BASE_V1 = '/api/v1';
 
 const apiRoutes = [
     ['auth', authRouter],
@@ -48,6 +47,6 @@ const apiRoutes = [
 
 module.exports = (app) => {
     apiRoutes.forEach(([path, router]) => app.use(`${API_BASE}/${path}`, router));
-    app.use(`${API_BASE_V1}/company-registrations`, companyCreationRouter);
+    app.use(`${API_BASE}/company-registrations`, companyCreationRouter);
     app.use('/', homeRouter);
 };
