@@ -97,7 +97,9 @@ const createProductSchema = Joi.object({
             "number.base": "salesPercent must be a number",
             "any.required": "salesPercent is required"
         })
-}).unknown(true);
+}).unknown(false).messages({
+    "object.unknown": "{{#label}} is not allowed"
+});
 
 const updateProductSchema = Joi.object({
     productName: Joi.string()
@@ -181,7 +183,10 @@ const updateProductSchema = Joi.object({
         .messages({
             "number.base": "salesPercent must be a number"
         })
-}).unknown(true);
+}).min(1).unknown(false).messages({
+    "object.min": "At least one valid product field must be provided for update",
+    "object.unknown": "{{#label}} is not allowed"
+});
 
 const toValidationError = (joiError) => {
     const errors = {};
