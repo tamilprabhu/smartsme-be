@@ -52,7 +52,9 @@ const createMachineSchema = Joi.object({
             "any.only": "activeFlag must be Y or N",
             "any.required": "activeFlag is required"
         })
-}).unknown(true);
+}).unknown(false).messages({
+    "object.unknown": "{{#label}} is not allowed"
+});
 
 const updateMachineSchema = Joi.object({
     machineName: Joi.string()
@@ -99,7 +101,10 @@ const updateMachineSchema = Joi.object({
             "string.base": "activeFlag must be a string",
             "any.only": "activeFlag must be Y or N"
         })
-}).unknown(true);
+}).min(1).unknown(false).messages({
+    "object.min": "At least one valid machine field must be provided for update",
+    "object.unknown": "{{#label}} is not allowed"
+});
 
 const toValidationError = (joiError) => {
     const errors = {};
