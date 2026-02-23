@@ -11,6 +11,7 @@ const { fromHttpRequest } = require('../utils/context');
 router.get('/', authenticate, async (req, res) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
+    const activeCompanyId = req.auth?.getPrimaryCompanyId?.() || null;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
@@ -20,13 +21,18 @@ router.get('/', authenticate, async (req, res) => {
     logger.info('GET /company - Fetching companies with pagination', { 
         requestId, 
         username, 
+        activeCompanyId,
         page, 
         itemsPerPage,
         search 
     });
     
     try {
-        const result = await companyService.getAllCompanies(page, itemsPerPage, search, sortBy, sortOrder);
+        if (!activeCompanyId) {
+            return res.status(403).json({ error: 'Active company context is required' });
+        }
+
+        const result = await companyService.getAllCompanies(page, itemsPerPage, search, sortBy, sortOrder, activeCompanyId);
         logger.info(`GET /company - Successfully retrieved ${result.items.length} companies`, { 
             requestId, 
             username,
@@ -47,12 +53,17 @@ router.get('/', authenticate, async (req, res) => {
 router.get('/:id', authenticate, async (req, res) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
+    const activeCompanyId = req.auth?.getPrimaryCompanyId?.() || null;
     const { id } = req.params;
     
     logger.info(`GET /company/${id} - Fetching company`, { requestId, username, companyId: id });
     
     try {
-        const company = await companyService.getCompanyById(id);
+        if (!activeCompanyId) {
+            return res.status(403).json({ error: 'Active company context is required' });
+        }
+
+        const company = await companyService.getCompanyById(id, activeCompanyId);
         if (!company) {
             logger.warn(`GET /company/${id} - Company not found`, { requestId, username, companyId: id });
             return res.status(404).json({ error: 'Company not found' });
@@ -97,11 +108,16 @@ router.post('/', authenticate, async (req, res, next) => {
 router.put('/:id', authenticate, async (req, res, next) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
+    const activeCompanyId = req.auth?.getPrimaryCompanyId?.() || null;
     const { id } = req.params;
     
     logger.info(`PUT /company/${id} - Updating company`, { requestId, username, companyId: id });
     
     try {
+        if (!activeCompanyId) {
+            return res.status(403).json({ error: 'Active company context is required' });
+        }
+
         const context = fromHttpRequest(req);
         const company = await companyService.updateCompany(id, req.body, context);
         if (!company) {
@@ -126,11 +142,16 @@ router.put('/:id', authenticate, async (req, res, next) => {
 router.delete('/:id', authenticate, async (req, res) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
+    const activeCompanyId = req.auth?.getPrimaryCompanyId?.() || null;
     const { id } = req.params;
     
     logger.info(`DELETE /company/${id} - Deleting company`, { requestId, username, companyId: id });
     
     try {
+        if (!activeCompanyId) {
+            return res.status(403).json({ error: 'Active company context is required' });
+        }
+
         const context = fromHttpRequest(req);
         const deleted = await companyService.deleteCompany(id, context);
         if (!deleted) {

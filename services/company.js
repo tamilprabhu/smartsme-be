@@ -15,21 +15,26 @@ const companyService = {
         itemsPerPage = ItemsPerPage.TEN,
         search = '',
         sortBy = SortBy.SEQUENCE,
-        sortOrder = SortOrder.DESC
+        sortOrder = SortOrder.DESC,
+        activeCompanyId = null
     ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`CompanyService: Fetching companies - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
+        logger.info(`CompanyService: Fetching companies - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, activeCompanyId: ${activeCompanyId}`);
         try {
             const offset = (page - 1) * validLimit;
-            
-            const whereClause = search ? {
-                [Op.or]: [
-                    { companyId: { [Op.like]: `%${search}%` } },
-                    { companyName: { [Op.like]: `%${search}%` } },
-                    { propName: { [Op.like]: `%${search}%` } },
-                    { mailId: { [Op.like]: `%${search}%` } }
-                ]
-            } : {};
+
+            const whereClause = {
+                isDeleted: false,
+                companyId: activeCompanyId,
+                ...(search ? {
+                    [Op.or]: [
+                        { companyId: { [Op.like]: `%${search}%` } },
+                        { companyName: { [Op.like]: `%${search}%` } },
+                        { propName: { [Op.like]: `%${search}%` } },
+                        { mailId: { [Op.like]: `%${search}%` } }
+                    ]
+                } : {})
+            };
             
             const { count, rows } = await Company.findAndCountAll({
                 where: whereClause,
@@ -56,10 +61,16 @@ const companyService = {
         }
     },
 
-    getCompanyById: async (id) => {
-        logger.info(`CompanyService: Fetching company with ID: ${id}`);
+    getCompanyById: async (id, activeCompanyId = null) => {
+        logger.info(`CompanyService: Fetching company with ID: ${id}, activeCompanyId: ${activeCompanyId}`);
         try {
-            const company = await Company.findByPk(id);
+            const company = await Company.findOne({
+                where: {
+                    companySequence: id,
+                    companyId: activeCompanyId,
+                    isDeleted: false
+                }
+            });
             if (company) {
                 logger.info(`CompanyService: Successfully retrieved company: ${company.companyName} (ID: ${id})`);
             } else {
@@ -120,12 +131,20 @@ const companyService = {
     },
 
     updateCompany: async (id, companyData, context) => {
+        const activeCompanyId = context?.actor?.companyId || null;
         logger.info(`CompanyService: Updating company with ID: ${id}`, { 
             updates: Object.keys(companyData),
-            actorId: context.actor?.userId 
+            actorId: context.actor?.userId,
+            activeCompanyId
         });
         try {
-            const currentCompany = await Company.findByPk(id);
+            const currentCompany = await Company.findOne({
+                where: {
+                    companySequence: id,
+                    companyId: activeCompanyId,
+                    isDeleted: false
+                }
+            });
             if (!currentCompany) {
                 logger.warn(`CompanyService: No company found to update with ID: ${id}`);
                 return null;
@@ -134,7 +153,7 @@ const companyService = {
             const validatedData = await validateUpdate(id, companyData);
             
             const [updatedRowsCount] = await Company.update(validatedData, {
-                where: { companySequence: id },
+                where: { companySequence: id, companyId: activeCompanyId, isDeleted: false },
                 context
             });
             
@@ -143,7 +162,13 @@ const companyService = {
                 return null;
             }
             
-            const updatedCompany = await Company.findByPk(id);
+            const updatedCompany = await Company.findOne({
+                where: {
+                    companySequence: id,
+                    companyId: activeCompanyId,
+                    isDeleted: false
+                }
+            });
             logger.info(`CompanyService: Successfully updated company: ${updatedCompany.companyName} (ID: ${id})`);
             return updatedCompany;
         } catch (error) {
@@ -156,9 +181,16 @@ const companyService = {
     },
 
     deleteCompany: async (id, context) => {
-        logger.info(`CompanyService: Deleting company with ID: ${id}`, { actorId: context.actor?.userId });
+        const activeCompanyId = context?.actor?.companyId || null;
+        logger.info(`CompanyService: Deleting company with ID: ${id}`, { actorId: context.actor?.userId, activeCompanyId });
         try {
-            const company = await Company.findByPk(id);
+            const company = await Company.findOne({
+                where: {
+                    companySequence: id,
+                    companyId: activeCompanyId,
+                    isDeleted: false
+                }
+            });
             if (!company) {
                 logger.warn(`CompanyService: Company not found for deletion with ID: ${id}`);
                 return false;
@@ -166,7 +198,7 @@ const companyService = {
             
             const [updatedRows] = await Company.update(
                 { isDeleted: true, isActive: false },
-                { where: { companySequence: id, isDeleted: false }, context }
+                { where: { companySequence: id, companyId: activeCompanyId, isDeleted: false }, context }
             );
             if (updatedRows === 0) {
                 logger.warn(`CompanyService: Company already deleted with ID: ${id}`);
