@@ -12,31 +12,33 @@ const { generateCompanyId, generateEmployeeId } = require("../utils/idGenerator"
 
 const MAX_RETRY_ATTEMPTS = 5;
 const DEFAULT_ADMIN_ROLE_NAME = "OWNER";
+const OWNER_ROLE_ID = 1;
 
 const toValidationError = (errors) => ({ name: "ValidationError", errors });
 
 const getRoleId = async (roleUserData = null, transaction = null) => {
     if (roleUserData?.roleId) {
-        const role = await Role.findOne({
-            where: { id: roleUserData.roleId, isDeleted: false, isActive: true },
-            transaction
-        });
-        if (!role) {
-            throw toValidationError({ roleId: ["roleId is invalid"] });
+        const requestedRoleId = Number(roleUserData.roleId);
+        if (!Number.isInteger(requestedRoleId) || requestedRoleId !== OWNER_ROLE_ID) {
+            throw toValidationError({ roleId: [`roleId must be ${OWNER_ROLE_ID} (${DEFAULT_ADMIN_ROLE_NAME})`] });
         }
-        return role.id;
     }
 
     const adminRole = await Role.findOne({
-        where: { name: DEFAULT_ADMIN_ROLE_NAME, isDeleted: false, isActive: true },
+        where: {
+            id: OWNER_ROLE_ID,
+            name: DEFAULT_ADMIN_ROLE_NAME,
+            isDeleted: false,
+            isActive: true
+        },
         transaction
     });
 
     if (!adminRole) {
-        throw toValidationError({ roleId: ["ADMIN role not found"] });
+        throw toValidationError({ roleId: [`${DEFAULT_ADMIN_ROLE_NAME} role not found`] });
     }
 
-    return adminRole.id;
+    return OWNER_ROLE_ID;
 };
 
 const sanitizeUserForResponse = (user) => {
