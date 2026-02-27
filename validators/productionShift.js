@@ -2,9 +2,8 @@ const Joi = require("joi");
 const { EntryType } = require("../constants/productionShift");
 
 const createShiftSchema = Joi.object({
-    orderId: Joi.string().trim().min(1).optional().messages({
+    orderId: Joi.string().trim().min(1).allow(null, '').optional().messages({
         "string.base": "orderId must be a string",
-        "string.empty": "orderId cannot be blank",
         "string.min": "orderId cannot be blank"
     }),
     productId: Joi.string().trim().min(1).required().messages({
@@ -59,6 +58,16 @@ const createShiftSchema = Joi.object({
         "number.integer": "operator1 must be an integer",
         "any.required": "operator1 is required"
     }),
+    operator2: Joi.number().integer().allow(null).optional().invalid(Joi.ref('operator1')).messages({
+        "number.base": "operator2 must be a number",
+        "number.integer": "operator2 must be an integer",
+        "any.invalid": "operator2 must be different from operator1"
+    }),
+    operator3: Joi.number().integer().allow(null).optional().invalid(Joi.ref('operator1'), Joi.ref('operator2')).messages({
+        "number.base": "operator3 must be a number",
+        "number.integer": "operator3 must be an integer",
+        "any.invalid": "operator3 must be different from operator1 and operator2"
+    }),
     supervisor: Joi.number().integer().required().messages({
         "number.base": "supervisor must be a number",
         "number.integer": "supervisor must be an integer",
@@ -67,9 +76,8 @@ const createShiftSchema = Joi.object({
 }).unknown(true);
 
 const updateShiftSchema = Joi.object({
-    orderId: Joi.string().trim().min(1).optional().messages({
+    orderId: Joi.string().trim().min(1).allow(null, '').optional().messages({
         "string.base": "orderId must be a string",
-        "string.empty": "orderId cannot be blank",
         "string.min": "orderId cannot be blank"
     }),
     productId: Joi.string().trim().min(1).optional().messages({
@@ -117,6 +125,16 @@ const updateShiftSchema = Joi.object({
     operator1: Joi.number().integer().optional().messages({
         "number.base": "operator1 must be a number",
         "number.integer": "operator1 must be an integer"
+    }),
+    operator2: Joi.number().integer().optional().invalid(Joi.ref('operator1')).messages({
+        "number.base": "operator2 must be a number",
+        "number.integer": "operator2 must be an integer",
+        "any.invalid": "operator2 must be different from operator1"
+    }),
+    operator3: Joi.number().integer().allow(null).optional().invalid(Joi.ref('operator1'), Joi.ref('operator2')).messages({
+        "number.base": "operator3 must be a number",
+        "number.integer": "operator3 must be an integer",
+        "any.invalid": "operator3 must be different from operator1 and operator2"
     }),
     supervisor: Joi.number().integer().optional().messages({
         "number.base": "supervisor must be a number",
