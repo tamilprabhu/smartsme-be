@@ -16,6 +16,7 @@ router.get("/", authenticate, async (req, res) => {
     const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
     const companyId = req.auth.getPrimaryCompanyId();
     const userId = req.auth.getUserId();
+    const roles = req.auth.roles;
     
     logger.info(`ProductRoute: GET /products - Request started`, { 
         requestId: requestId,
@@ -24,12 +25,13 @@ router.get("/", authenticate, async (req, res) => {
         search: search,
         companyId: companyId,
         userId: userId,
+        roles: roles.map(r => r.name),
         userAgent: req.get('User-Agent'),
         ip: req.ip
     });
     
     try {
-        const result = await productService.getAllProducts(page, itemsPerPage, search, companyId, userId, sortBy, sortOrder);
+        const result = await productService.getAllProducts(page, itemsPerPage, search, companyId, userId, roles, sortBy, sortOrder);
         logger.info(`ProductRoute: GET /products - Request completed successfully`, { 
             requestId: requestId,
             productCount: result.items.length,
@@ -58,6 +60,7 @@ router.get("/:id", authenticate, async (req, res) => {
     const productId = req.params.id;
     const companyId = req.auth.getPrimaryCompanyId();
     const userId = req.auth.getUserId();
+    const roles = req.auth.roles;
     
     logger.info(`ProductRoute: GET /products/${productId} - Request started`, { 
         requestId: requestId,
@@ -67,7 +70,7 @@ router.get("/:id", authenticate, async (req, res) => {
     });
     
     try {
-        const product = await productService.getProductById(productId, companyId, userId);
+        const product = await productService.getProductById(productId, companyId, userId, roles);
         if (!product) {
             logger.warn(`ProductRoute: GET /products/${productId} - Product not found`, { 
                 requestId: requestId,
@@ -142,6 +145,7 @@ router.put("/:id", authenticate, async (req, res, next) => {
     const productId = req.params.id;
     const companyId = req.auth.getPrimaryCompanyId();
     const userId = req.auth.getUserId();
+    const roles = req.auth.roles;
     
     logger.info(`ProductRoute: PUT /products/${productId} - Request started`, { 
         requestId: requestId,
@@ -152,7 +156,7 @@ router.put("/:id", authenticate, async (req, res, next) => {
     });
     
     try {
-        const product = await productService.updateProduct(productId, req.body, companyId, userId);
+        const product = await productService.updateProduct(productId, req.body, companyId, userId, roles);
         logger.info(`ProductRoute: PUT /products/${productId} - Request completed successfully`, { 
             requestId: requestId,
             productId: productId,
@@ -189,6 +193,7 @@ router.delete("/:id", authenticate, async (req, res) => {
     const productId = req.params.id;
     const companyId = req.auth.getPrimaryCompanyId();
     const userId = req.auth.getUserId();
+    const roles = req.auth.roles;
     
     logger.info(`ProductRoute: DELETE /products/${productId} - Request started`, { 
         requestId: requestId,
@@ -198,7 +203,7 @@ router.delete("/:id", authenticate, async (req, res) => {
     });
     
     try {
-        const result = await productService.deleteProduct(productId, companyId, userId);
+        const result = await productService.deleteProduct(productId, companyId, userId, roles);
         logger.info(`ProductRoute: DELETE /products/${productId} - Request completed successfully`, { 
             requestId: requestId,
             productId: productId,

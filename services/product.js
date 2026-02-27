@@ -6,6 +6,7 @@ const { SortBy, SortOrder } = require("../constants/sort");
 const { buildSortOrder } = require("../utils/sort");
 const { generateProductId } = require("../utils/idGenerator");
 const { validateCreate, validateUpdate } = require("../validators/product");
+const { createProductFilterChain } = require("../filters/productFilters");
 
 const MAX_RETRY_ATTEMPTS = 5;
 
@@ -17,6 +18,7 @@ const productService = {
         search = '',
         companyId,
         userId,
+        roles,
         sortBy = SortBy.SEQUENCE,
         sortOrder = SortOrder.DESC
     ) => {
@@ -25,9 +27,13 @@ const productService = {
         try {
             const offset = (page - 1) * validLimit;
             
-            // Build search conditions with company filtering
+            // Apply filter chain based on user roles
+            const filterChain = createProductFilterChain();
+            const baseWhereClause = filterChain.execute({}, { roles, companyId, userId });
+            
+            // Build search conditions
             const whereClause = {
-                companyId: companyId,
+                ...baseWhereClause,
                 ...(search && {
                     [Op.or]: [
                         { productName: { [Op.like]: `%${search}%` } },
@@ -45,7 +51,7 @@ const productService = {
                 offset: offset,
                 order: buildSortOrder(sortBy, sortOrder, 'product_seq', 'Product')
             });
-            logger.info(`ProductService: Successfully retrieved ${rows.length} products out of ${count} total for company ${companyId}`);
+            logger.info(`ProductService: Successfully retrieved ${rows.length} products out of ${count} total`);
             return {
                 items: rows,
                 paging: {
@@ -67,19 +73,17 @@ const productService = {
     },
 
     // Get product by ID
-    getProductById: async (id, companyId, userId) => {
+    getProductById: async (id, companyId, userId, roles) => {
         logger.info(`ProductService: Fetching product with ID: ${id} for company: ${companyId}, user: ${userId}`);
         try {
-            const product = await Product.findOne({
-                where: {
-                    productSequence: id,
-                    companyId: companyId
-                }
-            });
+            const filterChain = createProductFilterChain();
+            const whereClause = filterChain.execute({ productSequence: id }, { roles, companyId, userId });
+            
+            const product = await Product.findOne({ where: whereClause });
             if (product) {
-                logger.info(`ProductService: Successfully retrieved product: ${product.productName} (ID: ${id}) for company: ${companyId}`);
+                logger.info(`ProductService: Successfully retrieved product: ${product.productName} (ID: ${id})`);
             } else {
-                logger.warn(`ProductService: Product not found with ID: ${id} for company: ${companyId}`);
+                logger.warn(`ProductService: Product not found with ID: ${id}`);
             }
             return product;
         } catch (error) {
@@ -152,7 +156,7 @@ const productService = {
     },
 
     // Update product
-    updateProduct: async (id, productData, companyId, userId) => {
+    updateProduct: async (id, productData, companyId, userId, roles) => {
         logger.info(`ProductService: Updating product with ID: ${id} for company: ${companyId}, user: ${userId}`, { updateData: productData });
         try {
             const validatedData = await validateUpdate(id, productData, companyId);
@@ -161,23 +165,17 @@ const productService = {
                 ...safeProductData,
                 updatedAt: new Date()
             };
-            const [updatedRows] = await Product.update(enrichedProductData, {
-                where: { 
-                    productSequence: id,
-                    companyId: companyId
-                }
-            });
+            
+            const filterChain = createProductFilterChain();
+            const whereClause = filterChain.execute({ productSequence: id }, { roles, companyId, userId });
+            
+            const [updatedRows] = await Product.update(enrichedProductData, { where: whereClause });
             if (updatedRows === 0) {
-                logger.warn(`ProductService: No product found to update with ID: ${id} for company: ${companyId}`);
+                logger.warn(`ProductService: No product found to update with ID: ${id}`);
                 throw new Error("Product not found");
             }
-            const updatedProduct = await Product.findOne({
-                where: {
-                    productSequence: id,
-                    companyId: companyId
-                }
-            });
-            logger.info(`ProductService: Successfully updated product: ${updatedProduct.productName} (ID: ${id}) for company: ${companyId}`, {
+            const updatedProduct = await Product.findOne({ where: whereClause });
+            logger.info(`ProductService: Successfully updated product: ${updatedProduct.productName} (ID: ${id})`, {
                 userId: userId
             });
             return updatedProduct;
@@ -194,13 +192,16 @@ const productService = {
     },
 
     // Delete product
-    deleteProduct: async (id) => {
+    deleteProduct: async (id, companyId, userId, roles) => {
         logger.info(`ProductService: Deleting product with ID: ${id}`);
         try {
-            const product = await Product.findByPk(id);
+            const filterChain = createProductFilterChain();
+            const whereClause = filterChain.execute({ productSequence: id, isDeleted: false }, { roles, companyId, userId });
+            
+            const product = await Product.findOne({ where: whereClause });
             const [updatedRows] = await Product.update(
                 { isDeleted: true, isActive: false },
-                { where: { productSequence: id, isDeleted: false } }
+                { where: whereClause }
             );
             if (updatedRows === 0) {
                 logger.warn(`ProductService: No product found to delete with ID: ${id}`);
