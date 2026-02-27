@@ -1,5 +1,6 @@
 // logger.js
 const winston = require('winston');
+const DailyRotateFile = require('winston-daily-rotate-file');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -24,10 +25,15 @@ const prodFormat = winston.format.combine(
 const logger = winston.createLogger({
     level: process.env.LOG_LEVEL || (isProd ? 'info' : 'debug'),
     format: isProd ? prodFormat : devFormat,
-    transports: [
-        new winston.transports.Console(),
-        ...(isProd ? [new winston.transports.File({ filename: 'logs/app.log' })] : [])
-    ]
+    transports: isProd
+        ? [new DailyRotateFile({
+            filename: 'logs/app-%DATE%.log',
+            datePattern: 'YYYY-MM-DD',
+            maxSize: '20m',
+            maxFiles: '14d',
+            zippedArchive: true
+        })]
+        : [new winston.transports.Console()]
 });
 
 module.exports = logger;
