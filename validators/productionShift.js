@@ -126,7 +126,7 @@ const updateShiftSchema = Joi.object({
         "number.base": "operator1 must be a number",
         "number.integer": "operator1 must be an integer"
     }),
-    operator2: Joi.number().integer().optional().invalid(Joi.ref('operator1')).messages({
+    operator2: Joi.number().integer().allow(null).optional().invalid(Joi.ref('operator1')).messages({
         "number.base": "operator2 must be a number",
         "number.integer": "operator2 must be an integer",
         "any.invalid": "operator2 must be different from operator1"
