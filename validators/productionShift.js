@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const { EntryType } = require("../constants/productionShift");
 
 const createShiftSchema = Joi.object({
     orderId: Joi.string().trim().min(1).optional().messages({
@@ -26,23 +27,32 @@ const createShiftSchema = Joi.object({
         "date.base": "shiftEndDate must be a valid date",
         "any.required": "shiftEndDate is required"
     }),
-    entryType: Joi.string().trim().min(1).required().messages({
+    entryType: Joi.string().trim().valid(EntryType.SHIFT, EntryType.HOURS).required().messages({
         "string.base": "entryType must be a string",
-        "string.empty": "entryType cannot be blank",
-        "string.min": "entryType cannot be blank",
+        "any.only": "entryType must be either SHIFT or HOURS",
         "any.required": "entryType is required"
     }),
-    shiftType: Joi.string().trim().min(1).required().messages({
-        "string.base": "shiftType must be a string",
-        "string.empty": "shiftType cannot be blank",
-        "string.min": "shiftType cannot be blank",
-        "any.required": "shiftType is required"
+    shiftType: Joi.when('entryType', {
+        is: EntryType.SHIFT,
+        then: Joi.string().trim().min(1).required().messages({
+            "string.base": "shiftType must be a string",
+            "string.empty": "shiftType is required when entryType is SHIFT",
+            "any.required": "shiftType is required when entryType is SHIFT"
+        }),
+        otherwise: Joi.string().trim().allow('', null).optional().messages({
+            "string.base": "shiftType must be a string"
+        })
     }),
-    shiftHours: Joi.string().trim().min(1).required().messages({
-        "string.base": "shiftHours must be a string",
-        "string.empty": "shiftHours cannot be blank",
-        "string.min": "shiftHours cannot be blank",
-        "any.required": "shiftHours is required"
+    shiftHours: Joi.when('entryType', {
+        is: EntryType.HOURS,
+        then: Joi.string().trim().min(1).required().messages({
+            "string.base": "shiftHours must be a string",
+            "string.empty": "shiftHours is required when entryType is HOURS",
+            "any.required": "shiftHours is required when entryType is HOURS"
+        }),
+        otherwise: Joi.string().trim().allow('', null).optional().messages({
+            "string.base": "shiftHours must be a string"
+        })
     }),
     operator1: Joi.number().integer().required().messages({
         "number.base": "operator1 must be a number",
@@ -78,20 +88,31 @@ const updateShiftSchema = Joi.object({
     shiftEndDate: Joi.date().optional().messages({
         "date.base": "shiftEndDate must be a valid date"
     }),
-    entryType: Joi.string().trim().min(1).optional().messages({
+    entryType: Joi.string().trim().valid(EntryType.SHIFT, EntryType.HOURS).optional().messages({
         "string.base": "entryType must be a string",
-        "string.empty": "entryType cannot be blank",
-        "string.min": "entryType cannot be blank"
+        "any.only": "entryType must be either SHIFT or HOURS"
     }),
-    shiftType: Joi.string().trim().min(1).optional().messages({
-        "string.base": "shiftType must be a string",
-        "string.empty": "shiftType cannot be blank",
-        "string.min": "shiftType cannot be blank"
+    shiftType: Joi.when('entryType', {
+        is: EntryType.SHIFT,
+        then: Joi.string().trim().min(1).required().messages({
+            "string.base": "shiftType must be a string",
+            "string.empty": "shiftType is required when entryType is SHIFT",
+            "any.required": "shiftType is required when entryType is SHIFT"
+        }),
+        otherwise: Joi.string().trim().allow('', null).optional().messages({
+            "string.base": "shiftType must be a string"
+        })
     }),
-    shiftHours: Joi.string().trim().min(1).optional().messages({
-        "string.base": "shiftHours must be a string",
-        "string.empty": "shiftHours cannot be blank",
-        "string.min": "shiftHours cannot be blank"
+    shiftHours: Joi.when('entryType', {
+        is: EntryType.HOURS,
+        then: Joi.string().trim().min(1).required().messages({
+            "string.base": "shiftHours must be a string",
+            "string.empty": "shiftHours is required when entryType is HOURS",
+            "any.required": "shiftHours is required when entryType is HOURS"
+        }),
+        otherwise: Joi.string().trim().allow('', null).optional().messages({
+            "string.base": "shiftHours must be a string"
+        })
     }),
     operator1: Joi.number().integer().optional().messages({
         "number.base": "operator1 must be a number",
