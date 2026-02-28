@@ -9,3 +9,5 @@ storage/uploads/*
 !storage/uploads/seed/
 !storage/uploads/seed/samples/
 !storage/uploads/seed/samples/*
+
+newrelic_agent.log

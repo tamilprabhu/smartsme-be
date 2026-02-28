@@ -1,6 +1,8 @@
 // logger.js
+require('newrelic');
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
+const newrelicFormatter = require('@newrelic/winston-enricher')(winston);
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -19,6 +21,7 @@ const devFormat = winston.format.combine(
 const prodFormat = winston.format.combine(
     winston.format.timestamp(),
     winston.format.errors({ stack: true }),
+    newrelicFormatter(),
     winston.format.json()
 );
 
