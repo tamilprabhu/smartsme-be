@@ -2,7 +2,11 @@ module.exports = {
     apps: [{
         name: "smartsme-dev",
         script: "node",
-        args: "bin/www",
+        args: [
+            "-r",
+            "newrelic",
+            "bin/www"
+        ],
         env: {
             NODE_ENV: "production",
             PORT: 8080,
