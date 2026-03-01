@@ -1,11 +1,11 @@
-const { Op } = require("sequelize");
-const { Asset } = require("../models");
-const logger = require("../config/logger");
-const ItemsPerPage = require("../constants/pagination");
+const { Op } = require('sequelize');
+const { Asset } = require('../models');
+const logger = require('../config/logger');
+const ItemsPerPage = require('../constants/pagination');
 
 const assetsService = {
     createAsset: async (assetData) => {
-        logger.info("AssetsService: Creating asset", {
+        logger.info('AssetsService: Creating asset', {
             module: assetData.module,
             subModule: assetData.subModule,
             identifier: assetData.identifier,
@@ -15,10 +15,10 @@ const assetsService = {
         });
         try {
             const asset = await Asset.create(assetData);
-            logger.info("AssetsService: Asset created", { assetId: asset.id });
+            logger.info('AssetsService: Asset created', { assetId: asset.id });
             return asset;
         } catch (error) {
-            logger.error("AssetsService: Failed to create asset", {
+            logger.error('AssetsService: Failed to create asset', {
                 error: error.message,
                 stack: error.stack,
             });
@@ -26,9 +26,17 @@ const assetsService = {
         }
     },
 
-    listAssets: async ({ module, subModule, identifier, includePrivate, companyId, page = 1, itemsPerPage = ItemsPerPage.TEN }) => {
+    listAssets: async ({
+        module,
+        subModule,
+        identifier,
+        includePrivate,
+        companyId,
+        page = 1,
+        itemsPerPage = ItemsPerPage.TEN,
+    }) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info("AssetsService: Listing assets", {
+        logger.info('AssetsService: Listing assets', {
             module,
             subModule,
             identifier,
@@ -64,10 +72,10 @@ const assetsService = {
                 where: whereClause,
                 limit: validLimit,
                 offset,
-                order: [["id", "DESC"]],
+                order: [['id', 'DESC']],
             });
 
-            logger.info("AssetsService: Assets retrieved", { count: rows.length });
+            logger.info('AssetsService: Assets retrieved', { count: rows.length });
             return {
                 items: rows,
                 paging: {
@@ -75,10 +83,10 @@ const assetsService = {
                     itemsPerPage: validLimit,
                     totalItems: count,
                     totalPages: Math.ceil(count / validLimit),
-                }
+                },
             };
         } catch (error) {
-            logger.error("AssetsService: Failed to list assets", {
+            logger.error('AssetsService: Failed to list assets', {
                 error: error.message,
                 stack: error.stack,
             });
@@ -87,7 +95,7 @@ const assetsService = {
     },
 
     getAssetById: async (id) => {
-        logger.info("AssetsService: Fetching asset", { assetId: id });
+        logger.info('AssetsService: Fetching asset', { assetId: id });
         try {
             return await Asset.findOne({
                 where: {
@@ -96,7 +104,7 @@ const assetsService = {
                 },
             });
         } catch (error) {
-            logger.error("AssetsService: Failed to fetch asset", {
+            logger.error('AssetsService: Failed to fetch asset', {
                 assetId: id,
                 error: error.message,
                 stack: error.stack,
@@ -106,11 +114,11 @@ const assetsService = {
     },
 
     getAssetByIdAny: async (id) => {
-        logger.info("AssetsService: Fetching asset (any)", { assetId: id });
+        logger.info('AssetsService: Fetching asset (any)', { assetId: id });
         try {
             return await Asset.findOne({ where: { id } });
         } catch (error) {
-            logger.error("AssetsService: Failed to fetch asset (any)", {
+            logger.error('AssetsService: Failed to fetch asset (any)', {
                 assetId: id,
                 error: error.message,
                 stack: error.stack,
@@ -120,20 +128,20 @@ const assetsService = {
     },
 
     updateAsset: async (id, updates) => {
-        logger.info("AssetsService: Updating asset", { assetId: id });
+        logger.info('AssetsService: Updating asset', { assetId: id });
         try {
             const [updatedRows] = await Asset.update(updates, {
                 where: {
                     id,
                     isDeleted: false,
-                }
+                },
             });
             if (updatedRows === 0) {
                 return null;
             }
             return await Asset.findOne({ where: { id } });
         } catch (error) {
-            logger.error("AssetsService: Failed to update asset", {
+            logger.error('AssetsService: Failed to update asset', {
                 assetId: id,
                 error: error.message,
                 stack: error.stack,
@@ -143,21 +151,24 @@ const assetsService = {
     },
 
     softDeleteAsset: async (id, updatedBy) => {
-        logger.info("AssetsService: Soft delete asset", { assetId: id });
+        logger.info('AssetsService: Soft delete asset', { assetId: id });
         try {
-            const [updatedRows] = await Asset.update({
-                isDeleted: true,
-                isActive: false,
-                updatedBy,
-            }, {
-                where: {
-                    id,
-                    isDeleted: false,
-                }
-            });
+            const [updatedRows] = await Asset.update(
+                {
+                    isDeleted: true,
+                    isActive: false,
+                    updatedBy,
+                },
+                {
+                    where: {
+                        id,
+                        isDeleted: false,
+                    },
+                },
+            );
             return updatedRows > 0;
         } catch (error) {
-            logger.error("AssetsService: Failed to soft delete asset", {
+            logger.error('AssetsService: Failed to soft delete asset', {
                 assetId: id,
                 error: error.message,
                 stack: error.stack,
@@ -167,7 +178,7 @@ const assetsService = {
     },
 
     hardDeleteAsset: async (id) => {
-        logger.info("AssetsService: Soft delete asset (legacy hard delete)", { assetId: id });
+        logger.info('AssetsService: Soft delete asset (legacy hard delete)', { assetId: id });
         try {
             const asset = await Asset.findOne({ where: { id } });
             if (!asset) {
@@ -175,11 +186,11 @@ const assetsService = {
             }
             await Asset.update(
                 { isDeleted: true, isActive: false },
-                { where: { id, isDeleted: false } }
+                { where: { id, isDeleted: false } },
             );
             return asset;
         } catch (error) {
-            logger.error("AssetsService: Failed to soft delete asset (legacy hard delete)", {
+            logger.error('AssetsService: Failed to soft delete asset (legacy hard delete)', {
                 assetId: id,
                 error: error.message,
                 stack: error.stack,

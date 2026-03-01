@@ -42,7 +42,7 @@ const apiRoutes = [
     ['assets', assetsRouter],
     ['users', usersRouter],
     ['role', roleRouter],
-    ['reference', referenceRouter]
+    ['reference', referenceRouter],
 ];
 
 module.exports = (app) => {

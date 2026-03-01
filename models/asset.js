@@ -1,8 +1,8 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../db/sequelize");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../db/sequelize');
 
 const Asset = sequelize.define(
-    "Asset",
+    'Asset',
     {
         id: {
             type: DataTypes.BIGINT,
@@ -17,20 +17,44 @@ const Asset = sequelize.define(
         mimeType: { type: DataTypes.STRING(100), allowNull: false, field: 'mime_type' },
         sizeBytes: { type: DataTypes.INTEGER, allowNull: false, field: 'size_bytes' },
         storagePath: { type: DataTypes.STRING(500), allowNull: false, field: 'storage_path' },
-        visibility: { type: DataTypes.ENUM('public', 'private'), allowNull: false, defaultValue: 'private' },
+        visibility: {
+            type: DataTypes.ENUM('public', 'private'),
+            allowNull: false,
+            defaultValue: 'private',
+        },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         metadata: { type: DataTypes.JSON, field: 'metadata' },
-        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
-        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
-        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
-        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            field: 'create_date',
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            field: 'update_date',
+        },
+        isActive: {
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: true,
+            field: 'is_active',
+        },
+        isDeleted: {
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: false,
+            field: 'is_deleted',
+        },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "mst_assets",
+        tableName: 'mst_assets',
         timestamps: false,
-    }
+    },
 );
 
 module.exports = Asset;

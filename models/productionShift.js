@@ -1,23 +1,23 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../db/sequelize");
-const Order = require("./order");
-const Product = require("./product");
-const Machine = require("./machine");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../db/sequelize');
+const Order = require('./order');
+const Product = require('./product');
+const Machine = require('./machine');
 
 const hasValue = (value) => {
     if (value === null || value === undefined) return false;
-    if (typeof value === "string" && value.trim() === "") return false;
+    if (typeof value === 'string' && value.trim() === '') return false;
     return true;
 };
 
 const ProductionShift = sequelize.define(
-    "ProductionShift",
+    'ProductionShift',
     {
         shiftSequence: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: 'shift_seq'
+            field: 'shift_seq',
         },
         orderId: {
             type: DataTypes.STRING(20),
@@ -25,8 +25,8 @@ const ProductionShift = sequelize.define(
             validate: {
                 async validOrderId(value) {
                     if (value === null || value === undefined) return;
-                    if (typeof value !== "string" || value.trim() === "") {
-                        throw new Error("Invalid orderId");
+                    if (typeof value !== 'string' || value.trim() === '') {
+                        throw new Error('Invalid orderId');
                     }
                     const where = {
                         orderId: value,
@@ -34,8 +34,8 @@ const ProductionShift = sequelize.define(
                         isActive: true,
                     };
                     if (hasValue(this.companyId)) where.companyId = this.companyId;
-                    const order = await Order.findOne({ where, attributes: ["orderId"] });
-                    if (!order) throw new Error("Invalid orderId");
+                    const order = await Order.findOne({ where, attributes: ['orderId'] });
+                    if (!order) throw new Error('Invalid orderId');
                 },
             },
         },
@@ -46,7 +46,7 @@ const ProductionShift = sequelize.define(
             field: 'product_id',
             allowNull: false,
             validate: {
-                notNull: { msg: "Product is required" },
+                notNull: { msg: 'Product is required' },
                 async validProductId(value) {
                     if (!hasValue(value)) return;
                     const where = {
@@ -55,8 +55,8 @@ const ProductionShift = sequelize.define(
                         isActive: true,
                     };
                     if (hasValue(this.companyId)) where.companyId = this.companyId;
-                    const product = await Product.findOne({ where, attributes: ["productId"] });
-                    if (!product) throw new Error("Invalid productId");
+                    const product = await Product.findOne({ where, attributes: ['productId'] });
+                    if (!product) throw new Error('Invalid productId');
                 },
             },
         },
@@ -65,7 +65,7 @@ const ProductionShift = sequelize.define(
             field: 'machine_id',
             allowNull: false,
             validate: {
-                notNull: { msg: "Machine is required" },
+                notNull: { msg: 'Machine is required' },
                 async validMachineId(value) {
                     if (!hasValue(value)) return;
                     const where = {
@@ -74,8 +74,8 @@ const ProductionShift = sequelize.define(
                         isActive: true,
                     };
                     if (hasValue(this.companyId)) where.companyId = this.companyId;
-                    const machine = await Machine.findOne({ where, attributes: ["machineId"] });
-                    if (!machine) throw new Error("Invalid machineId");
+                    const machine = await Machine.findOne({ where, attributes: ['machineId'] });
+                    if (!machine) throw new Error('Invalid machineId');
                 },
             },
         },
@@ -88,7 +88,7 @@ const ProductionShift = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false,
             validate: {
-                notNull: { msg: "Operator 1 is required" },
+                notNull: { msg: 'Operator 1 is required' },
             },
         },
         operator2: {
@@ -97,12 +97,12 @@ const ProductionShift = sequelize.define(
             validate: {
                 distinctFromOperator1(value) {
                     if (value !== null && value !== undefined && this.operator1 === value) {
-                        throw new Error("Operator 2 must be different from Operator 1");
+                        throw new Error('Operator 2 must be different from Operator 1');
                     }
                 },
                 distinctFromOperator3(value) {
                     if (value !== null && value !== undefined && this.operator3 === value) {
-                        throw new Error("Operator 2 must be different from Operator 3");
+                        throw new Error('Operator 2 must be different from Operator 3');
                     }
                 },
             },
@@ -113,12 +113,12 @@ const ProductionShift = sequelize.define(
             validate: {
                 distinctFromOperator1(value) {
                     if (value !== null && value !== undefined && this.operator1 === value) {
-                        throw new Error("Operator 3 must be different from Operator 1");
+                        throw new Error('Operator 3 must be different from Operator 1');
                     }
                 },
                 distinctFromOperator2(value) {
                     if (value !== null && value !== undefined && this.operator2 === value) {
-                        throw new Error("Operator 3 must be different from Operator 2");
+                        throw new Error('Operator 3 must be different from Operator 2');
                     }
                 },
             },
@@ -127,7 +127,7 @@ const ProductionShift = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false,
             validate: {
-                notNull: { msg: "Supervisor is required" },
+                notNull: { msg: 'Supervisor is required' },
             },
         },
         openingCount: { type: DataTypes.INTEGER, field: 'opening_count' },
@@ -137,17 +137,37 @@ const ProductionShift = sequelize.define(
         netProduction: { type: DataTypes.INTEGER, field: 'net_production' },
         incentive: { type: DataTypes.CHAR(1) },
         less80Reason: { type: DataTypes.STRING(50), field: 'less_80_reason' },
-        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
-        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
-        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
-        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            field: 'create_date',
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            field: 'update_date',
+        },
+        isActive: {
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: true,
+            field: 'is_active',
+        },
+        isDeleted: {
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: false,
+            field: 'is_deleted',
+        },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "txn_production_shift",
+        tableName: 'txn_production_shift',
         timestamps: false,
-    }
+    },
 );
 
 module.exports = ProductionShift;

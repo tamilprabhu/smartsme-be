@@ -1,206 +1,213 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const buyerService = require("../services/buyer");
-const authenticate = require("../middlewares/authenticate");
-const errorHandler = require("../middlewares/errorHandler");
-const logger = require("../config/logger");
-const { SortBy, SortOrder } = require("../constants/sort");
+const buyerService = require('../services/buyer');
+const authenticate = require('../middlewares/authenticate');
+const errorHandler = require('../middlewares/errorHandler');
+const logger = require('../config/logger');
+const { SortBy, SortOrder } = require('../constants/sort');
 
 // GET /buyers - Get all buyers with pagination and search
-router.get("/", authenticate, async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
     const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
     const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
-    
-    logger.info(`BuyerRoute: GET /buyers - Request started`, { 
+
+    logger.info(`BuyerRoute: GET /buyers - Request started`, {
         requestId: requestId,
         page: page,
         itemsPerPage: itemsPerPage,
         search: search,
-        userId: req.auth?.id
+        userId: req.auth?.id,
     });
-    
+
     try {
         const companyId = req.auth.getPrimaryCompanyId();
-        const result = await buyerService.getAllBuyers(page, itemsPerPage, search, companyId, sortBy, sortOrder);
-        logger.info(`BuyerRoute: GET /buyers - Request completed successfully`, { 
+        const result = await buyerService.getAllBuyers(
+            page,
+            itemsPerPage,
+            search,
+            companyId,
+            sortBy,
+            sortOrder,
+        );
+        logger.info(`BuyerRoute: GET /buyers - Request completed successfully`, {
             requestId: requestId,
             buyerCount: result.items.length,
             totalCount: result.paging.totalItems,
             userId: req.auth?.id,
-            companyId: companyId
+            companyId: companyId,
         });
         res.json(result);
     } catch (error) {
-        logger.error(`BuyerRoute: GET /buyers - Request failed`, { 
+        logger.error(`BuyerRoute: GET /buyers - Request failed`, {
             requestId: requestId,
             error: error.message,
             userId: req.auth?.id,
-            stack: error.stack
+            stack: error.stack,
         });
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
 // GET /buyers/:id - Get buyer by ID
-router.get("/:id", authenticate, async (req, res) => {
+router.get('/:id', authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const buyerId = req.params.id;
-    
-    logger.info(`BuyerRoute: GET /buyers/${buyerId} - Request started`, { 
+
+    logger.info(`BuyerRoute: GET /buyers/${buyerId} - Request started`, {
         requestId: requestId,
         buyerId: buyerId,
-        userId: req.auth?.id
+        userId: req.auth?.id,
     });
-    
+
     try {
         const companyId = req.auth.getPrimaryCompanyId();
         const buyer = await buyerService.getBuyerById(buyerId, companyId);
         if (!buyer) {
-            logger.warn(`BuyerRoute: GET /buyers/${buyerId} - Buyer not found`, { 
+            logger.warn(`BuyerRoute: GET /buyers/${buyerId} - Buyer not found`, {
                 requestId: requestId,
                 buyerId: buyerId,
-                userId: req.auth?.id
+                userId: req.auth?.id,
             });
-            return res.status(404).json({ error: "Buyer not found" });
+            return res.status(404).json({ error: 'Buyer not found' });
         }
-        
-        logger.info(`BuyerRoute: GET /buyers/${buyerId} - Request completed successfully`, { 
+
+        logger.info(`BuyerRoute: GET /buyers/${buyerId} - Request completed successfully`, {
             requestId: requestId,
             buyerId: buyerId,
             buyerName: buyer.buyerName,
-            userId: req.auth?.id
+            userId: req.auth?.id,
         });
         res.json(buyer);
     } catch (error) {
-        logger.error(`BuyerRoute: GET /buyers/${buyerId} - Request failed`, { 
+        logger.error(`BuyerRoute: GET /buyers/${buyerId} - Request failed`, {
             requestId: requestId,
             buyerId: buyerId,
             error: error.message,
             userId: req.auth?.id,
-            stack: error.stack
+            stack: error.stack,
         });
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
 // POST /buyers - Create new buyer
-router.post("/", authenticate, async (req, res, next) => {
+router.post('/', authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
-    logger.info(`BuyerRoute: POST /buyers - Request started`, { 
+
+    logger.info(`BuyerRoute: POST /buyers - Request started`, {
         requestId: requestId,
         buyerName: req.body.buyerName,
         companyId: req.body.companyId,
-        userId: req.auth?.id
+        userId: req.auth?.id,
     });
-    
+
     try {
         const companyId = req.auth.getPrimaryCompanyId();
         const userId = req.auth.getUserId();
         const buyer = await buyerService.createBuyer(req.body, companyId, userId);
-        logger.info(`BuyerRoute: POST /buyers - Request completed successfully`, { 
+        logger.info(`BuyerRoute: POST /buyers - Request completed successfully`, {
             requestId: requestId,
             buyerId: buyer.buyerSequence,
             buyerName: buyer.buyerName,
-            userId: req.auth?.id
+            userId: req.auth?.id,
         });
         res.status(201).json(buyer);
     } catch (error) {
-        logger.error(`BuyerRoute: POST /buyers - Request failed`, { 
+        logger.error(`BuyerRoute: POST /buyers - Request failed`, {
             requestId: requestId,
             error: error.message,
             requestBody: req.body,
             userId: req.auth?.id,
-            stack: error.stack
+            stack: error.stack,
         });
         next(error);
     }
 });
 
 // PUT /buyers/:id - Update buyer
-router.put("/:id", authenticate, async (req, res, next) => {
+router.put('/:id', authenticate, async (req, res, next) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const buyerId = req.params.id;
-    
-    logger.info(`BuyerRoute: PUT /buyers/${buyerId} - Request started`, { 
+
+    logger.info(`BuyerRoute: PUT /buyers/${buyerId} - Request started`, {
         requestId: requestId,
         buyerId: buyerId,
         updateFields: Object.keys(req.body),
-        userId: req.auth?.id
+        userId: req.auth?.id,
     });
-    
+
     try {
         const companyId = req.auth.getPrimaryCompanyId();
         const userId = req.auth.getUserId();
         const buyer = await buyerService.updateBuyer(buyerId, req.body, companyId, userId);
-        logger.info(`BuyerRoute: PUT /buyers/${buyerId} - Request completed successfully`, { 
+        logger.info(`BuyerRoute: PUT /buyers/${buyerId} - Request completed successfully`, {
             requestId: requestId,
             buyerId: buyerId,
             buyerName: buyer.buyerName,
-            userId: req.auth?.id
+            userId: req.auth?.id,
         });
         res.json(buyer);
     } catch (error) {
-        if (error.message === "Buyer not found") {
-            logger.warn(`BuyerRoute: PUT /buyers/${buyerId} - Buyer not found`, { 
+        if (error.message === 'Buyer not found') {
+            logger.warn(`BuyerRoute: PUT /buyers/${buyerId} - Buyer not found`, {
                 requestId: requestId,
                 buyerId: buyerId,
-                userId: req.auth?.id
+                userId: req.auth?.id,
             });
             return res.status(404).json({ error: error.message });
         }
-        logger.error(`BuyerRoute: PUT /buyers/${buyerId} - Request failed`, { 
+        logger.error(`BuyerRoute: PUT /buyers/${buyerId} - Request failed`, {
             requestId: requestId,
             buyerId: buyerId,
             error: error.message,
             userId: req.auth?.id,
-            stack: error.stack
+            stack: error.stack,
         });
         next(error);
     }
 });
 
 // DELETE /buyers/:id - Delete buyer
-router.delete("/:id", authenticate, async (req, res) => {
+router.delete('/:id', authenticate, async (req, res) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const buyerId = req.params.id;
-    
-    logger.info(`BuyerRoute: DELETE /buyers/${buyerId} - Request started`, { 
+
+    logger.info(`BuyerRoute: DELETE /buyers/${buyerId} - Request started`, {
         requestId: requestId,
         buyerId: buyerId,
-        userId: req.auth?.id
+        userId: req.auth?.id,
     });
-    
+
     try {
         const companyId = req.auth.getPrimaryCompanyId();
         const result = await buyerService.deleteBuyer(buyerId, companyId);
-        logger.info(`BuyerRoute: DELETE /buyers/${buyerId} - Request completed successfully`, { 
+        logger.info(`BuyerRoute: DELETE /buyers/${buyerId} - Request completed successfully`, {
             requestId: requestId,
             buyerId: buyerId,
-            userId: req.auth?.id
+            userId: req.auth?.id,
         });
         res.json(result);
     } catch (error) {
-        if (error.message === "Buyer not found") {
-            logger.warn(`BuyerRoute: DELETE /buyers/${buyerId} - Buyer not found`, { 
+        if (error.message === 'Buyer not found') {
+            logger.warn(`BuyerRoute: DELETE /buyers/${buyerId} - Buyer not found`, {
                 requestId: requestId,
                 buyerId: buyerId,
-                userId: req.auth?.id
+                userId: req.auth?.id,
             });
             return res.status(404).json({ error: error.message });
         }
-        logger.error(`BuyerRoute: DELETE /buyers/${buyerId} - Request failed`, { 
+        logger.error(`BuyerRoute: DELETE /buyers/${buyerId} - Request failed`, {
             requestId: requestId,
             buyerId: buyerId,
             error: error.message,
             userId: req.auth?.id,
-            stack: error.stack
+            stack: error.stack,
         });
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 

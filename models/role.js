@@ -1,8 +1,8 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../db/sequelize");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../db/sequelize');
 
 const Role = sequelize.define(
-    "Role",
+    'Role',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -11,17 +11,37 @@ const Role = sequelize.define(
         },
         name: { type: DataTypes.STRING(100), unique: true },
         description: { type: DataTypes.TEXT },
-        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
-        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
-        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
-        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            field: 'create_date',
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            field: 'update_date',
+        },
+        isActive: {
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: true,
+            field: 'is_active',
+        },
+        isDeleted: {
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: false,
+            field: 'is_deleted',
+        },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "mst_roles",
+        tableName: 'mst_roles',
         timestamps: false,
-    }
+    },
 );
 
 module.exports = Role;

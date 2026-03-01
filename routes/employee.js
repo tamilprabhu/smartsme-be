@@ -20,7 +20,12 @@ router.get('/', authenticateToken, async (req, res) => {
         const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
         const companyId = req.auth.getPrimaryCompanyId();
         const result = await employeeCreationService.getAllEmployeesWithUser(
-            page, itemsPerPage, search, companyId, sortBy, sortOrder
+            page,
+            itemsPerPage,
+            search,
+            companyId,
+            sortBy,
+            sortOrder,
         );
         res.json(result);
     } catch (error) {
@@ -39,7 +44,7 @@ router.get('/role/:roleName', authenticateToken, async (req, res) => {
         const excludeUserId = req.auth.getUserId();
         const roleNames = req.params.roleName
             .split(',')
-            .map(role => role.trim())
+            .map((role) => role.trim())
             .filter(Boolean);
 
         if (!roleNames.length) {
@@ -55,11 +60,11 @@ router.get('/role/:roleName', authenticateToken, async (req, res) => {
             itemsPerPage,
             search,
             sortBy,
-            sortOrder
+            sortOrder,
         });
         res.json({
             ...result,
-            items: employeeService.toEmployeeDropdownList(result.items)
+            items: employeeService.toEmployeeDropdownList(result.items),
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -90,7 +95,7 @@ router.get('/:employeeId', authenticateToken, async (req, res) => {
         const companyId = req.auth.getPrimaryCompanyId();
         const employee = await employeeCreationService.getEmployeeWithUserByEmployeeSequence(
             employeeId,
-            companyId
+            companyId,
         );
 
         if (!employee) {
@@ -117,7 +122,7 @@ router.patch('/:employeeId', authenticateToken, async (req, res, next) => {
         const result = await employeeCreationService.updateEmployeeWithUser(
             employeeId,
             req.body,
-            context
+            context,
         );
         res.json(result);
     } catch (error) {

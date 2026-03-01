@@ -1,28 +1,37 @@
-const { Employee, User, UserRole, Role } = require("../models");
-const { Op, col, where } = require("sequelize");
-const logger = require("../config/logger");
-const ItemsPerPage = require("../constants/pagination");
-const { SortBy, SortOrder } = require("../constants/sort");
-const { buildSortOrder } = require("../utils/sort");
-const { generateEmployeeId } = require("../utils/idGenerator");
-const { validateCreate, validateUpdate } = require("../validators/employee");
+const { Employee, User, UserRole, Role } = require('../models');
+const { Op, col, where } = require('sequelize');
+const logger = require('../config/logger');
+const ItemsPerPage = require('../constants/pagination');
+const { SortBy, SortOrder } = require('../constants/sort');
+const { buildSortOrder } = require('../utils/sort');
+const { generateEmployeeId } = require('../utils/idGenerator');
+const { validateCreate, validateUpdate } = require('../validators/employee');
 
 const MAX_RETRY_ATTEMPTS = 5;
 
 const employeeService = {
-    getAllEmployees: async (page = 1, itemsPerPage = ItemsPerPage.TEN, search = '', companyId = null, sortBy = SortBy.SEQUENCE, sortOrder = SortOrder.DESC) => {
+    getAllEmployees: async (
+        page = 1,
+        itemsPerPage = ItemsPerPage.TEN,
+        search = '',
+        companyId = null,
+        sortBy = SortBy.SEQUENCE,
+        sortOrder = SortOrder.DESC,
+    ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`EmployeeService: Fetching employees - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
+        logger.info(
+            `EmployeeService: Fetching employees - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`,
+        );
         try {
             const offset = (page - 1) * validLimit;
-            
+
             let whereClause = {};
-            
+
             // Add company filter if provided
             if (companyId) {
                 whereClause.companyId = companyId;
             }
-            
+
             // Add search filter if provided
             if (search) {
                 whereClause[Op.and] = [
@@ -31,32 +40,34 @@ const employeeService = {
                         [Op.or]: [
                             { employeeId: { [Op.like]: `%${search}%` } },
                             { userId: { [Op.like]: `%${search}%` } },
-                            { salary: { [Op.like]: `%${search}%` } }
-                        ]
-                    }
+                            { salary: { [Op.like]: `%${search}%` } },
+                        ],
+                    },
                 ];
             }
-            
+
             const { count, rows } = await Employee.findAndCountAll({
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'employee_seq', 'Employee')
+                order: buildSortOrder(sortBy, sortOrder, 'employee_seq', 'Employee'),
             });
-            logger.info(`EmployeeService: Successfully retrieved ${rows.length} employees out of ${count} total for company: ${companyId}`);
+            logger.info(
+                `EmployeeService: Successfully retrieved ${rows.length} employees out of ${count} total for company: ${companyId}`,
+            );
             return {
                 items: rows,
                 paging: {
                     currentPage: page,
                     totalPages: Math.ceil(count / validLimit),
                     itemsPerPage: validLimit,
-                    totalItems: count
-                }
+                    totalItems: count,
+                },
             };
         } catch (error) {
-            logger.error("EmployeeService: Failed to fetch employees", { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error('EmployeeService: Failed to fetch employees', {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
@@ -69,25 +80,31 @@ const employeeService = {
             if (companyId) {
                 whereClause.companyId = companyId;
             }
-            
+
             const employee = await Employee.findOne({ where: whereClause });
             if (employee) {
-                logger.info(`EmployeeService: Successfully retrieved employee (ID: ${id}) for company: ${companyId}`);
+                logger.info(
+                    `EmployeeService: Successfully retrieved employee (ID: ${id}) for company: ${companyId}`,
+                );
             } else {
-                logger.warn(`EmployeeService: Employee not found with ID: ${id} for company: ${companyId}`);
+                logger.warn(
+                    `EmployeeService: Employee not found with ID: ${id} for company: ${companyId}`,
+                );
             }
             return employee;
         } catch (error) {
-            logger.error(`EmployeeService: Failed to fetch employee with ID: ${id}`, { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error(`EmployeeService: Failed to fetch employee with ID: ${id}`, {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
     },
 
     createEmployee: async (employeeData, companyId, userId) => {
-        logger.info(`EmployeeService: Creating new employee for user: ${employeeData.userId}, company: ${companyId}`);
+        logger.info(
+            `EmployeeService: Creating new employee for user: ${employeeData.userId}, company: ${companyId}`,
+        );
         try {
             const validatedData = await validateCreate(employeeData);
             const baseData = {
@@ -96,7 +113,7 @@ const employeeService = {
                 createdBy: userId,
                 updatedBy: userId,
                 createdAt: new Date(),
-                updatedAt: new Date()
+                updatedAt: new Date(),
             };
 
             let employee;
@@ -105,38 +122,49 @@ const employeeService = {
                 try {
                     employee = await Employee.create({
                         ...baseData,
-                        employeeId: generateEmployeeId()
+                        employeeId: generateEmployeeId(),
                     });
                     break;
                 } catch (error) {
-                    const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
-                        error.errors?.some((e) => e.path === "employee_id" || e.path === "employeeId");
+                    const isUniqueError =
+                        error.name === 'SequelizeUniqueConstraintError' &&
+                        error.errors?.some(
+                            (e) => e.path === 'employee_id' || e.path === 'employeeId',
+                        );
 
                     if (isUniqueError) {
                         attempts++;
                         if (attempts >= MAX_RETRY_ATTEMPTS) {
-                            throw new Error("Failed to generate unique employee_id after maximum retries");
+                            throw new Error(
+                                'Failed to generate unique employee_id after maximum retries',
+                            );
                         }
-                        logger.warn(`EmployeeService: Duplicate employee_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                        logger.warn(
+                            `EmployeeService: Duplicate employee_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`,
+                        );
                     } else {
                         throw error;
                     }
                 }
             }
-            logger.info(`EmployeeService: Successfully created employee (ID: ${employee.employeeSequence}) for company: ${companyId}`);
+            logger.info(
+                `EmployeeService: Successfully created employee (ID: ${employee.employeeSequence}) for company: ${companyId}`,
+            );
             return employee;
         } catch (error) {
-            logger.error(`EmployeeService: Failed to create employee`, { 
-                error: error.message, 
+            logger.error(`EmployeeService: Failed to create employee`, {
+                error: error.message,
                 employeeData: employeeData,
-                stack: error.stack 
+                stack: error.stack,
             });
             throw error;
         }
     },
 
     updateEmployee: async (id, employeeData, companyId, userId) => {
-        logger.info(`EmployeeService: Updating employee with ID: ${id} for company: ${companyId}`, { updateData: employeeData });
+        logger.info(`EmployeeService: Updating employee with ID: ${id} for company: ${companyId}`, {
+            updateData: employeeData,
+        });
         try {
             const validatedData = await validateUpdate(employeeData);
             const { employeeId, ...safeEmployeeData } = validatedData;
@@ -144,26 +172,33 @@ const employeeService = {
             if (companyId) {
                 whereClause.companyId = companyId;
             }
-            
-            const [updatedRows] = await Employee.update({
-                ...safeEmployeeData,
-                updatedBy: userId,
-                updatedAt: new Date()
-            }, {
-                where: whereClause
-            });
+
+            const [updatedRows] = await Employee.update(
+                {
+                    ...safeEmployeeData,
+                    updatedBy: userId,
+                    updatedAt: new Date(),
+                },
+                {
+                    where: whereClause,
+                },
+            );
             if (updatedRows === 0) {
-                logger.warn(`EmployeeService: No employee found to update with ID: ${id} for company: ${companyId}`);
-                throw new Error("Employee not found");
+                logger.warn(
+                    `EmployeeService: No employee found to update with ID: ${id} for company: ${companyId}`,
+                );
+                throw new Error('Employee not found');
             }
             const updatedEmployee = await Employee.findOne({ where: whereClause });
-            logger.info(`EmployeeService: Successfully updated employee (ID: ${id}) for company: ${companyId}`);
+            logger.info(
+                `EmployeeService: Successfully updated employee (ID: ${id}) for company: ${companyId}`,
+            );
             return updatedEmployee;
         } catch (error) {
-            logger.error(`EmployeeService: Failed to update employee with ID: ${id}`, { 
-                error: error.message, 
+            logger.error(`EmployeeService: Failed to update employee with ID: ${id}`, {
+                error: error.message,
                 updateData: employeeData,
-                stack: error.stack 
+                stack: error.stack,
             });
             throw error;
         }
@@ -176,27 +211,33 @@ const employeeService = {
             if (companyId) {
                 whereClause.companyId = companyId;
             }
-            
+
             const employee = await Employee.findOne({ where: whereClause });
             if (!employee) {
-                logger.warn(`EmployeeService: No employee found to delete with ID: ${id} for company: ${companyId}`);
-                throw new Error("Employee not found");
+                logger.warn(
+                    `EmployeeService: No employee found to delete with ID: ${id} for company: ${companyId}`,
+                );
+                throw new Error('Employee not found');
             }
-            
+
             const [updatedRows] = await Employee.update(
                 { isDeleted: true, isActive: false },
-                { where: { ...whereClause, isDeleted: false } }
+                { where: { ...whereClause, isDeleted: false } },
             );
             if (updatedRows === 0) {
-                logger.warn(`EmployeeService: Employee already deleted with ID: ${id} for company: ${companyId}`);
-                throw new Error("Employee not found");
+                logger.warn(
+                    `EmployeeService: Employee already deleted with ID: ${id} for company: ${companyId}`,
+                );
+                throw new Error('Employee not found');
             }
-            logger.info(`EmployeeService: Successfully soft deleted employee (ID: ${id}) for company: ${companyId}`);
-            return { message: "Employee deleted successfully" };
+            logger.info(
+                `EmployeeService: Successfully soft deleted employee (ID: ${id}) for company: ${companyId}`,
+            );
+            return { message: 'Employee deleted successfully' };
         } catch (error) {
-            logger.error(`EmployeeService: Failed to delete employee with ID: ${id}`, { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error(`EmployeeService: Failed to delete employee with ID: ${id}`, {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
@@ -210,18 +251,20 @@ const employeeService = {
             itemsPerPage = ItemsPerPage.TEN,
             search = '',
             sortBy = SortBy.SEQUENCE,
-            sortOrder = SortOrder.DESC
+            sortOrder = SortOrder.DESC,
         } = options;
 
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`EmployeeService: Fetching employees with roles: ${safeRoleNames.join(', ')} for company: ${companyId}`);
+        logger.info(
+            `EmployeeService: Fetching employees with roles: ${safeRoleNames.join(', ')} for company: ${companyId}`,
+        );
         try {
             const offset = (page - 1) * validLimit;
             const employeeWhere = {
                 companyId,
                 isActive: true,
                 isDeleted: false,
-                ...(excludeUserId ? { userId: { [Op.ne]: excludeUserId } } : {})
+                ...(excludeUserId ? { userId: { [Op.ne]: excludeUserId } } : {}),
             };
 
             if (search) {
@@ -233,60 +276,69 @@ const employeeService = {
                     where(col('User.last_name'), { [Op.like]: `%${search}%` }),
                     where(col('User.name'), { [Op.like]: `%${search}%` }),
                     where(col('User.email'), { [Op.like]: `%${search}%` }),
-                    where(col('User.mobile'), { [Op.like]: `%${search}%` })
+                    where(col('User.mobile'), { [Op.like]: `%${search}%` }),
                 ];
             }
 
             const userWhere = {
                 isActive: true,
-                isDeleted: false
+                isDeleted: false,
             };
 
             const { count, rows } = await Employee.findAndCountAll({
                 where: {
-                    ...employeeWhere
+                    ...employeeWhere,
                 },
                 distinct: true,
                 subQuery: false,
                 limit: validLimit,
                 offset,
                 order: buildSortOrder(sortBy, sortOrder, 'employee_seq', 'Employee'),
-                include: [{
-                    model: User,
-                    required: true,
-                    where: userWhere,
-                    include: [{
-                        model: Role,
-                        through: {
-                            model: UserRole,
-                            attributes: [],
-                            where: { isActive: true, isDeleted: false }
-                        },
-                        where: {
-                            name: { [Op.in]: safeRoleNames },
-                            isActive: true,
-                            isDeleted: false
-                        },
-                        required: true
-                    }]
-                }]
+                include: [
+                    {
+                        model: User,
+                        required: true,
+                        where: userWhere,
+                        include: [
+                            {
+                                model: Role,
+                                through: {
+                                    model: UserRole,
+                                    attributes: [],
+                                    where: { isActive: true, isDeleted: false },
+                                },
+                                where: {
+                                    name: { [Op.in]: safeRoleNames },
+                                    isActive: true,
+                                    isDeleted: false,
+                                },
+                                required: true,
+                            },
+                        ],
+                    },
+                ],
             });
 
-            logger.info(`EmployeeService: Successfully retrieved ${rows.length} employees with roles: ${safeRoleNames.join(', ')}`);
+            logger.info(
+                `EmployeeService: Successfully retrieved ${rows.length} employees with roles: ${safeRoleNames.join(', ')}`,
+            );
             return {
                 items: rows,
                 paging: {
                     currentPage: page,
                     totalPages: Math.ceil(count / validLimit),
                     itemsPerPage: validLimit,
-                    totalItems: count
-                }
+                    totalItems: count,
+                },
             };
         } catch (error) {
-            logger.error(`EmployeeService: Failed to fetch employees by roles: ${safeRoleNames.join(', ')}`, {
-                error: error.message,
-                stack: error.stack
-            });
+            logger.error(
+                `EmployeeService: Failed to fetch employees by roles: ${safeRoleNames.join(', ')}`,
+                {
+                    error: error.message,
+                    stack: error.stack,
+                },
+            );
             throw error;
         }
     },
@@ -296,19 +348,20 @@ const employeeService = {
         for (const employee of employees) {
             if (!uniqueByUserId.has(employee.userId)) {
                 const user = employee.User;
-                const displayName = (user?.firstName && user?.lastName)
-                    ? `${user.firstName} ${user.lastName}`
-                    : (user?.name || `User ${employee.userId}`);
+                const displayName =
+                    user?.firstName && user?.lastName
+                        ? `${user.firstName} ${user.lastName}`
+                        : user?.name || `User ${employee.userId}`;
                 uniqueByUserId.set(employee.userId, {
                     value: employee.userId,
                     label: `${displayName} (${employee.employeeSequence})`,
                     userId: employee.userId,
-                    employeeId: employee.employeeSequence
+                    employeeId: employee.employeeSequence,
                 });
             }
         }
         return Array.from(uniqueByUserId.values());
-    }
+    },
 };
 
 module.exports = employeeService;

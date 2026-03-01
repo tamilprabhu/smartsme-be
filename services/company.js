@@ -1,11 +1,11 @@
-const { Company } = require("../models");
-const { Op } = require("sequelize");
-const logger = require("../config/logger");
-const ItemsPerPage = require("../constants/pagination");
-const { SortBy, SortOrder } = require("../constants/sort");
-const { buildSortOrder } = require("../utils/sort");
-const { validateCreate, validateUpdate } = require("../validators/company");
-const { generateCompanyId } = require("../utils/idGenerator");
+const { Company } = require('../models');
+const { Op } = require('sequelize');
+const logger = require('../config/logger');
+const ItemsPerPage = require('../constants/pagination');
+const { SortBy, SortOrder } = require('../constants/sort');
+const { buildSortOrder } = require('../utils/sort');
+const { validateCreate, validateUpdate } = require('../validators/company');
+const { generateCompanyId } = require('../utils/idGenerator');
 
 const MAX_RETRY_ATTEMPTS = 5;
 
@@ -16,115 +16,134 @@ const companyService = {
         search = '',
         sortBy = SortBy.SEQUENCE,
         sortOrder = SortOrder.DESC,
-        activeCompanyId = null
+        activeCompanyId = null,
     ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`CompanyService: Fetching companies - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, activeCompanyId: ${activeCompanyId}`);
+        logger.info(
+            `CompanyService: Fetching companies - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, activeCompanyId: ${activeCompanyId}`,
+        );
         try {
             const offset = (page - 1) * validLimit;
 
             const whereClause = {
                 isDeleted: false,
                 companyId: activeCompanyId,
-                ...(search ? {
-                    [Op.or]: [
-                        { companyId: { [Op.like]: `%${search}%` } },
-                        { companyName: { [Op.like]: `%${search}%` } },
-                        { propName: { [Op.like]: `%${search}%` } },
-                        { mailId: { [Op.like]: `%${search}%` } }
-                    ]
-                } : {})
+                ...(search
+                    ? {
+                          [Op.or]: [
+                              { companyId: { [Op.like]: `%${search}%` } },
+                              { companyName: { [Op.like]: `%${search}%` } },
+                              { propName: { [Op.like]: `%${search}%` } },
+                              { mailId: { [Op.like]: `%${search}%` } },
+                          ],
+                      }
+                    : {}),
             };
-            
+
             const { count, rows } = await Company.findAndCountAll({
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'company_seq', 'Company')
+                order: buildSortOrder(sortBy, sortOrder, 'company_seq', 'Company'),
             });
-            logger.info(`CompanyService: Successfully retrieved ${rows.length} companies out of ${count} total`);
+            logger.info(
+                `CompanyService: Successfully retrieved ${rows.length} companies out of ${count} total`,
+            );
             return {
                 items: rows,
                 paging: {
                     currentPage: page,
                     totalPages: Math.ceil(count / validLimit),
                     itemsPerPage: validLimit,
-                    totalItems: count
-                }
+                    totalItems: count,
+                },
             };
         } catch (error) {
-            logger.error("CompanyService: Failed to fetch companies", { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error('CompanyService: Failed to fetch companies', {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
     },
 
     getCompanyById: async (id, activeCompanyId = null) => {
-        logger.info(`CompanyService: Fetching company with ID: ${id}, activeCompanyId: ${activeCompanyId}`);
+        logger.info(
+            `CompanyService: Fetching company with ID: ${id}, activeCompanyId: ${activeCompanyId}`,
+        );
         try {
             const company = await Company.findOne({
                 where: {
                     companySequence: id,
                     companyId: activeCompanyId,
-                    isDeleted: false
-                }
+                    isDeleted: false,
+                },
             });
             if (company) {
-                logger.info(`CompanyService: Successfully retrieved company: ${company.companyName} (ID: ${id})`);
+                logger.info(
+                    `CompanyService: Successfully retrieved company: ${company.companyName} (ID: ${id})`,
+                );
             } else {
                 logger.warn(`CompanyService: Company not found with ID: ${id}`);
             }
             return company;
         } catch (error) {
-            logger.error(`CompanyService: Failed to fetch company with ID: ${id}`, { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error(`CompanyService: Failed to fetch company with ID: ${id}`, {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
     },
 
     createCompany: async (companyData, context) => {
-        logger.info("CompanyService: Creating new company", { 
+        logger.info('CompanyService: Creating new company', {
             companyName: companyData.companyName,
-            actorId: context.actor?.userId 
+            actorId: context.actor?.userId,
         });
         try {
             const validatedData = await validateCreate(companyData);
-            
+
             let company;
             let attempts = 0;
-            
+
             while (attempts < MAX_RETRY_ATTEMPTS) {
                 try {
                     validatedData.companyId = generateCompanyId();
                     company = await Company.create(validatedData, { context });
                     break;
                 } catch (error) {
-                    const isUniqueError = error.name === 'SequelizeUniqueConstraintError' && 
-                        error.errors?.some(e => e.path === 'company_id' || e.path === 'companyId');
-                    
+                    const isUniqueError =
+                        error.name === 'SequelizeUniqueConstraintError' &&
+                        error.errors?.some(
+                            (e) => e.path === 'company_id' || e.path === 'companyId',
+                        );
+
                     if (isUniqueError) {
                         attempts++;
                         if (attempts >= MAX_RETRY_ATTEMPTS) {
-                            throw new Error('Failed to generate unique company_id after maximum retries');
+                            throw new Error(
+                                'Failed to generate unique company_id after maximum retries',
+                            );
                         }
-                        logger.warn(`CompanyService: Duplicate company_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                        logger.warn(
+                            `CompanyService: Duplicate company_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`,
+                        );
                     } else {
                         throw error;
                     }
                 }
             }
-            
-            logger.info(`CompanyService: Successfully created company: ${company.companyName} (ID: ${company.companySequence}, company_id: ${company.companyId})`);
+
+            logger.info(
+                `CompanyService: Successfully created company: ${company.companyName} (ID: ${company.companySequence}, company_id: ${company.companyId})`,
+            );
             return company;
         } catch (error) {
-            logger.error("CompanyService: Failed to create company", { 
+            logger.error('CompanyService: Failed to create company', {
                 companyName: companyData.companyName,
-                error: error.message, 
-                stack: error.stack 
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
@@ -132,49 +151,51 @@ const companyService = {
 
     updateCompany: async (id, companyData, context) => {
         const activeCompanyId = context?.actor?.companyId || null;
-        logger.info(`CompanyService: Updating company with ID: ${id}`, { 
+        logger.info(`CompanyService: Updating company with ID: ${id}`, {
             updates: Object.keys(companyData),
             actorId: context.actor?.userId,
-            activeCompanyId
+            activeCompanyId,
         });
         try {
             const currentCompany = await Company.findOne({
                 where: {
                     companySequence: id,
                     companyId: activeCompanyId,
-                    isDeleted: false
-                }
+                    isDeleted: false,
+                },
             });
             if (!currentCompany) {
                 logger.warn(`CompanyService: No company found to update with ID: ${id}`);
                 return null;
             }
-            
+
             const validatedData = await validateUpdate(id, companyData);
-            
+
             const [updatedRowsCount] = await Company.update(validatedData, {
                 where: { companySequence: id, companyId: activeCompanyId, isDeleted: false },
-                context
+                context,
             });
-            
+
             if (updatedRowsCount === 0) {
                 logger.warn(`CompanyService: No company found to update with ID: ${id}`);
                 return null;
             }
-            
+
             const updatedCompany = await Company.findOne({
                 where: {
                     companySequence: id,
                     companyId: activeCompanyId,
-                    isDeleted: false
-                }
+                    isDeleted: false,
+                },
             });
-            logger.info(`CompanyService: Successfully updated company: ${updatedCompany.companyName} (ID: ${id})`);
+            logger.info(
+                `CompanyService: Successfully updated company: ${updatedCompany.companyName} (ID: ${id})`,
+            );
             return updatedCompany;
         } catch (error) {
-            logger.error(`CompanyService: Failed to update company with ID: ${id}`, { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error(`CompanyService: Failed to update company with ID: ${id}`, {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
@@ -182,38 +203,46 @@ const companyService = {
 
     deleteCompany: async (id, context) => {
         const activeCompanyId = context?.actor?.companyId || null;
-        logger.info(`CompanyService: Deleting company with ID: ${id}`, { actorId: context.actor?.userId, activeCompanyId });
+        logger.info(`CompanyService: Deleting company with ID: ${id}`, {
+            actorId: context.actor?.userId,
+            activeCompanyId,
+        });
         try {
             const company = await Company.findOne({
                 where: {
                     companySequence: id,
                     companyId: activeCompanyId,
-                    isDeleted: false
-                }
+                    isDeleted: false,
+                },
             });
             if (!company) {
                 logger.warn(`CompanyService: Company not found for deletion with ID: ${id}`);
                 return false;
             }
-            
+
             const [updatedRows] = await Company.update(
                 { isDeleted: true, isActive: false },
-                { where: { companySequence: id, companyId: activeCompanyId, isDeleted: false }, context }
+                {
+                    where: { companySequence: id, companyId: activeCompanyId, isDeleted: false },
+                    context,
+                },
             );
             if (updatedRows === 0) {
                 logger.warn(`CompanyService: Company already deleted with ID: ${id}`);
                 return false;
             }
-            logger.info(`CompanyService: Successfully soft deleted company: ${company.companyName} (ID: ${id})`);
+            logger.info(
+                `CompanyService: Successfully soft deleted company: ${company.companyName} (ID: ${id})`,
+            );
             return true;
         } catch (error) {
-            logger.error(`CompanyService: Failed to delete company with ID: ${id}`, { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error(`CompanyService: Failed to delete company with ID: ${id}`, {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
-    }
+    },
 };
 
 module.exports = companyService;

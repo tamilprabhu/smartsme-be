@@ -22,7 +22,7 @@ app.set('view engine', 'pug');
 const morganStream = {
     write: (message) => {
         logger.info(message.trim());
-    }
+    },
 };
 
 // Morgan logging with Winston integration
@@ -34,13 +34,13 @@ app.use(cookieParser());
 // Serve smartsme-ionic (Angular) static files
 app.use('/web', express.static(path.join(__dirname, 'www/client')));
 app.get('/web/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'www/client/index.html'));
+    res.sendFile(path.join(__dirname, 'www/client/index.html'));
 });
 
 // Serve smartsme-admin (React) static files
 app.use('/admin', express.static(path.join(__dirname, 'www/admin')));
 app.get('/admin/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'www/admin/index.html'));
+    res.sendFile(path.join(__dirname, 'www/admin/index.html'));
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -51,7 +51,7 @@ app.use((req, res, next) => {
         method: req.method,
         url: req.url,
         ip: req.ip,
-        userAgent: req.get('User-Agent')
+        userAgent: req.get('User-Agent'),
     });
     next();
 });
@@ -65,7 +65,7 @@ app.use(function (req, res, next) {
         method: req.method,
         url: req.url,
         ip: req.ip,
-        userAgent: req.get('User-Agent')
+        userAgent: req.get('User-Agent'),
     });
     next(createError(404));
 });
@@ -80,7 +80,7 @@ app.use(function (err, req, res, next) {
         url: req.url,
         ip: req.ip,
         userAgent: req.get('User-Agent'),
-        stack: req.app.get('env') === 'development' ? err.stack : undefined
+        stack: req.app.get('env') === 'development' ? err.stack : undefined,
     });
     // set locals, only providing error in development
     res.locals.message = err.message;
@@ -93,7 +93,7 @@ app.use(function (err, req, res, next) {
 // Log application startup
 logger.info('Express application initialized', {
     environment: process.env.NODE_ENV || 'development',
-    port: process.env.PORT || 3000
+    port: process.env.PORT || 3000,
 });
 
 module.exports = app;

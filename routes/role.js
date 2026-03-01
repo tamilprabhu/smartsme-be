@@ -22,7 +22,7 @@ router.get('/', authenticate, async (req, res) => {
         username,
         page,
         itemsPerPage,
-        search
+        search,
     });
 
     try {
@@ -30,14 +30,14 @@ router.get('/', authenticate, async (req, res) => {
         logger.info(`GET /role - Successfully retrieved ${result.items.length} roles`, {
             requestId,
             username,
-            totalCount: result.paging.totalItems
+            totalCount: result.paging.totalItems,
         });
         res.json(result);
     } catch (error) {
         logger.error('GET /role - Failed to fetch roles', {
             requestId,
             username,
-            error: error.message
+            error: error.message,
         });
         res.status(500).json({ error: 'Failed to fetch roles' });
     }
@@ -58,14 +58,18 @@ router.get('/:id', authenticate, async (req, res) => {
             return res.status(404).json({ error: 'Role not found' });
         }
 
-        logger.info(`GET /role/${id} - Successfully retrieved role`, { requestId, username, roleId: id });
+        logger.info(`GET /role/${id} - Successfully retrieved role`, {
+            requestId,
+            username,
+            roleId: id,
+        });
         res.json(role);
     } catch (error) {
         logger.error(`GET /role/${id} - Failed to fetch role`, {
             requestId,
             username,
             roleId: id,
-            error: error.message
+            error: error.message,
         });
         res.status(500).json({ error: 'Failed to fetch role' });
     }
@@ -81,13 +85,17 @@ router.post('/', authenticate, async (req, res, next) => {
     try {
         const context = fromHttpRequest(req);
         const role = await roleService.createRole(req.body, context);
-        logger.info('POST /role - Successfully created role', { requestId, username, roleId: role.id });
+        logger.info('POST /role - Successfully created role', {
+            requestId,
+            username,
+            roleId: role.id,
+        });
         res.status(201).json(role);
     } catch (error) {
         logger.error('POST /role - Failed to create role', {
             requestId,
             username,
-            error: error.message
+            error: error.message,
         });
         next(error);
     }
@@ -105,18 +113,26 @@ router.put('/:id', authenticate, async (req, res, next) => {
         const context = fromHttpRequest(req);
         const role = await roleService.updateRole(id, req.body, context);
         if (!role) {
-            logger.warn(`PUT /role/${id} - Role not found for update`, { requestId, username, roleId: id });
+            logger.warn(`PUT /role/${id} - Role not found for update`, {
+                requestId,
+                username,
+                roleId: id,
+            });
             return res.status(404).json({ error: 'Role not found' });
         }
 
-        logger.info(`PUT /role/${id} - Successfully updated role`, { requestId, username, roleId: id });
+        logger.info(`PUT /role/${id} - Successfully updated role`, {
+            requestId,
+            username,
+            roleId: id,
+        });
         res.json(role);
     } catch (error) {
         logger.error(`PUT /role/${id} - Failed to update role`, {
             requestId,
             username,
             roleId: id,
-            error: error.message
+            error: error.message,
         });
         next(error);
     }
@@ -134,18 +150,26 @@ router.delete('/:id', authenticate, async (req, res) => {
         const context = fromHttpRequest(req);
         const deleted = await roleService.deleteRole(id, context);
         if (!deleted) {
-            logger.warn(`DELETE /role/${id} - Role not found for deletion`, { requestId, username, roleId: id });
+            logger.warn(`DELETE /role/${id} - Role not found for deletion`, {
+                requestId,
+                username,
+                roleId: id,
+            });
             return res.status(404).json({ error: 'Role not found' });
         }
 
-        logger.info(`DELETE /role/${id} - Successfully deleted role`, { requestId, username, roleId: id });
+        logger.info(`DELETE /role/${id} - Successfully deleted role`, {
+            requestId,
+            username,
+            roleId: id,
+        });
         res.status(204).send();
     } catch (error) {
         logger.error(`DELETE /role/${id} - Failed to delete role`, {
             requestId,
             username,
             roleId: id,
-            error: error.message
+            error: error.message,
         });
         res.status(500).json({ error: 'Failed to delete role' });
     }

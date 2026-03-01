@@ -1,9 +1,9 @@
-const { OrderQuantity } = require("../models");
-const { Op } = require("sequelize");
-const logger = require("../config/logger");
-const ItemsPerPage = require("../constants/pagination");
-const { SortBy, SortOrder } = require("../constants/sort");
-const { buildSortOrder } = require("../utils/sort");
+const { OrderQuantity } = require('../models');
+const { Op } = require('sequelize');
+const logger = require('../config/logger');
+const ItemsPerPage = require('../constants/pagination');
+const { SortBy, SortOrder } = require('../constants/sort');
+const { buildSortOrder } = require('../utils/sort');
 
 const orderQuantityService = {
     getAllOrderQuantities: async (
@@ -12,52 +12,56 @@ const orderQuantityService = {
         search = '',
         companyId,
         sortBy = SortBy.SEQUENCE,
-        sortOrder = SortOrder.DESC
+        sortOrder = SortOrder.DESC,
     ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`OrderQuantityService: Fetching order quantities - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
+        logger.info(
+            `OrderQuantityService: Fetching order quantities - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`,
+        );
         try {
             const offset = (page - 1) * validLimit;
-            
+
             const whereClause = {
                 companyId,
                 ...(search && {
-                    [Op.or]: [
-                        { orderId: { [Op.like]: `%${search}%` } }
-                    ]
-                })
+                    [Op.or]: [{ orderId: { [Op.like]: `%${search}%` } }],
+                }),
             };
-            
+
             const { count, rows } = await OrderQuantity.findAndCountAll({
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'order_id', 'OrderQuantity')
+                order: buildSortOrder(sortBy, sortOrder, 'order_id', 'OrderQuantity'),
             });
-            logger.info(`OrderQuantityService: Successfully retrieved ${rows.length} order quantities out of ${count} total`);
+            logger.info(
+                `OrderQuantityService: Successfully retrieved ${rows.length} order quantities out of ${count} total`,
+            );
             return {
                 items: rows,
                 paging: {
                     currentPage: page,
                     totalPages: Math.ceil(count / validLimit),
                     itemsPerPage: validLimit,
-                    totalItems: count
-                }
+                    totalItems: count,
+                },
             };
         } catch (error) {
-            logger.error("OrderQuantityService: Failed to fetch order quantities", { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error('OrderQuantityService: Failed to fetch order quantities', {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
     },
 
     getOrderQuantityById: async (orderId, companyId) => {
-        logger.info(`OrderQuantityService: Fetching order quantity with orderId: ${orderId}, companyId: ${companyId}`);
+        logger.info(
+            `OrderQuantityService: Fetching order quantity with orderId: ${orderId}, companyId: ${companyId}`,
+        );
         try {
             const orderQuantity = await OrderQuantity.findOne({
-                where: { orderId, companyId }
+                where: { orderId, companyId },
             });
             if (orderQuantity) {
                 logger.info(`OrderQuantityService: Successfully retrieved order quantity`);
@@ -66,16 +70,18 @@ const orderQuantityService = {
             }
             return orderQuantity;
         } catch (error) {
-            logger.error(`OrderQuantityService: Failed to fetch order quantity`, { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error(`OrderQuantityService: Failed to fetch order quantity`, {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
     },
 
     createOrderQuantity: async (orderQuantityData, companyId, userId) => {
-        logger.info(`OrderQuantityService: Creating new order quantity for order: ${orderQuantityData.orderId}, companyId: ${companyId}, userId: ${userId}`);
+        logger.info(
+            `OrderQuantityService: Creating new order quantity for order: ${orderQuantityData.orderId}, companyId: ${companyId}, userId: ${userId}`,
+        );
         try {
             const orderQuantity = await OrderQuantity.create({
                 ...orderQuantityData,
@@ -83,70 +89,79 @@ const orderQuantityService = {
                 createUserId: userId,
                 updateUserId: userId,
                 createdAt: new Date(),
-                updatedAt: new Date()
+                updatedAt: new Date(),
             });
             logger.info(`OrderQuantityService: Successfully created order quantity`);
             return orderQuantity;
         } catch (error) {
-            logger.error(`OrderQuantityService: Failed to create order quantity`, { 
-                error: error.message, 
+            logger.error(`OrderQuantityService: Failed to create order quantity`, {
+                error: error.message,
                 orderQuantityData: orderQuantityData,
-                stack: error.stack 
+                stack: error.stack,
             });
             throw error;
         }
     },
 
     updateOrderQuantity: async (orderId, companyId, orderQuantityData, userId) => {
-        logger.info(`OrderQuantityService: Updating order quantity`, { updateData: orderQuantityData, companyId, userId });
+        logger.info(`OrderQuantityService: Updating order quantity`, {
+            updateData: orderQuantityData,
+            companyId,
+            userId,
+        });
         try {
-            const [updatedRows] = await OrderQuantity.update({
-                ...orderQuantityData,
-                updateUserId: userId,
-                updatedAt: new Date()
-            }, {
-                where: { orderId, companyId }
-            });
+            const [updatedRows] = await OrderQuantity.update(
+                {
+                    ...orderQuantityData,
+                    updateUserId: userId,
+                    updatedAt: new Date(),
+                },
+                {
+                    where: { orderId, companyId },
+                },
+            );
             if (updatedRows === 0) {
                 logger.warn(`OrderQuantityService: No order quantity found to update`);
-                throw new Error("Order quantity not found");
+                throw new Error('Order quantity not found');
             }
             const updatedOrderQuantity = await OrderQuantity.findOne({
-                where: { orderId, companyId }
+                where: { orderId, companyId },
             });
             logger.info(`OrderQuantityService: Successfully updated order quantity`);
             return updatedOrderQuantity;
         } catch (error) {
-            logger.error(`OrderQuantityService: Failed to update order quantity`, { 
-                error: error.message, 
+            logger.error(`OrderQuantityService: Failed to update order quantity`, {
+                error: error.message,
                 updateData: orderQuantityData,
-                stack: error.stack 
+                stack: error.stack,
             });
             throw error;
         }
     },
 
     deleteOrderQuantity: async (orderId, companyId) => {
-        logger.info(`OrderQuantityService: Deleting order quantity for orderId: ${orderId}, companyId: ${companyId}`);
+        logger.info(
+            `OrderQuantityService: Deleting order quantity for orderId: ${orderId}, companyId: ${companyId}`,
+        );
         try {
             const [updatedRows] = await OrderQuantity.update(
                 { isDeleted: true, isActive: false },
-                { where: { orderId, companyId, isDeleted: false } }
+                { where: { orderId, companyId, isDeleted: false } },
             );
             if (updatedRows === 0) {
                 logger.warn(`OrderQuantityService: No order quantity found to delete`);
-                throw new Error("Order quantity not found");
+                throw new Error('Order quantity not found');
             }
             logger.info(`OrderQuantityService: Successfully soft deleted order quantity`);
-            return { message: "Order quantity deleted successfully" };
+            return { message: 'Order quantity deleted successfully' };
         } catch (error) {
-            logger.error(`OrderQuantityService: Failed to delete order quantity`, { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error(`OrderQuantityService: Failed to delete order quantity`, {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
-    }
+    },
 };
 
 module.exports = orderQuantityService;

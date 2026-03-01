@@ -1,26 +1,28 @@
-const bcrypt = require("bcrypt");
-const { Op } = require("sequelize");
-const sequelize = require("../db/sequelize");
-const logger = require("../config/logger");
-const ItemsPerPage = require("../constants/pagination");
-const { SortBy, SortOrder } = require("../constants/sort");
-const { buildSortOrder } = require("../utils/sort");
-const { Company, User, UserRole, Role, Employee } = require("../models");
-const { validateCreate: validateCompanyCreate } = require("../validators/company");
-const { validateCreate: validateUserCreate } = require("../validators/user");
-const { generateCompanyId, generateEmployeeId } = require("../utils/idGenerator");
+const bcrypt = require('bcrypt');
+const { Op } = require('sequelize');
+const sequelize = require('../db/sequelize');
+const logger = require('../config/logger');
+const ItemsPerPage = require('../constants/pagination');
+const { SortBy, SortOrder } = require('../constants/sort');
+const { buildSortOrder } = require('../utils/sort');
+const { Company, User, UserRole, Role, Employee } = require('../models');
+const { validateCreate: validateCompanyCreate } = require('../validators/company');
+const { validateCreate: validateUserCreate } = require('../validators/user');
+const { generateCompanyId, generateEmployeeId } = require('../utils/idGenerator');
 
 const MAX_RETRY_ATTEMPTS = 5;
-const DEFAULT_ADMIN_ROLE_NAME = "OWNER";
+const DEFAULT_ADMIN_ROLE_NAME = 'OWNER';
 const OWNER_ROLE_ID = 1;
 
-const toValidationError = (errors) => ({ name: "ValidationError", errors });
+const toValidationError = (errors) => ({ name: 'ValidationError', errors });
 
 const getRoleId = async (roleUserData = null, transaction = null) => {
     if (roleUserData?.roleId) {
         const requestedRoleId = Number(roleUserData.roleId);
         if (!Number.isInteger(requestedRoleId) || requestedRoleId !== OWNER_ROLE_ID) {
-            throw toValidationError({ roleId: [`roleId must be ${OWNER_ROLE_ID} (${DEFAULT_ADMIN_ROLE_NAME})`] });
+            throw toValidationError({
+                roleId: [`roleId must be ${OWNER_ROLE_ID} (${DEFAULT_ADMIN_ROLE_NAME})`],
+            });
         }
     }
 
@@ -29,9 +31,9 @@ const getRoleId = async (roleUserData = null, transaction = null) => {
             id: OWNER_ROLE_ID,
             name: DEFAULT_ADMIN_ROLE_NAME,
             isDeleted: false,
-            isActive: true
+            isActive: true,
         },
-        transaction
+        transaction,
     });
 
     if (!adminRole) {
@@ -52,14 +54,14 @@ const resolveLinkedUser = async (company, transaction = null) => {
     const employee = await Employee.findOne({
         where: {
             companyId: company.companyId,
-            isDeleted: false
+            isDeleted: false,
         },
         include: [
             {
                 model: User,
                 required: true,
                 where: { isDeleted: false },
-                attributes: { exclude: ["password"] },
+                attributes: { exclude: ['password'] },
                 include: [
                     {
                         model: Role,
@@ -69,14 +71,14 @@ const resolveLinkedUser = async (company, transaction = null) => {
                         through: {
                             model: UserRole,
                             attributes: [],
-                            where: { isDeleted: false }
-                        }
-                    }
-                ]
-            }
+                            where: { isDeleted: false },
+                        },
+                    },
+                ],
+            },
         ],
-        order: [["employeeSequence", "ASC"]],
-        transaction
+        order: [['employeeSequence', 'ASC']],
+        transaction,
     });
 
     return employee?.User || null;
@@ -85,13 +87,15 @@ const resolveLinkedUser = async (company, transaction = null) => {
 const attachUserDetails = async (companies, transaction = null) => {
     const rows = Array.isArray(companies) ? companies : [companies];
 
-    const withUsers = await Promise.all(rows.map(async (item) => {
-        const linkedUser = await resolveLinkedUser(item, transaction);
-        return {
-            ...item.toJSON(),
-            User: sanitizeUserForResponse(linkedUser || null)
-        };
-    }));
+    const withUsers = await Promise.all(
+        rows.map(async (item) => {
+            const linkedUser = await resolveLinkedUser(item, transaction);
+            return {
+                ...item.toJSON(),
+                User: sanitizeUserForResponse(linkedUser || null),
+            };
+        }),
+    );
 
     return withUsers;
 };
@@ -101,17 +105,17 @@ const companyCreationService = {
         const { company: companyData, user: userData, roleUser: roleUserData } = input || {};
 
         if (!companyData) {
-            throw toValidationError({ company: ["company data is required"] });
+            throw toValidationError({ company: ['company data is required'] });
         }
 
         if (!userData) {
-            throw toValidationError({ user: ["user data is required"] });
+            throw toValidationError({ user: ['user data is required'] });
         }
 
-        logger.info("CompanyCreationService: Creating company with user", {
+        logger.info('CompanyCreationService: Creating company with user', {
             companyName: companyData.companyName,
             username: userData.username,
-            actorId: context?.actor?.userId
+            actorId: context?.actor?.userId,
         });
 
         return sequelize.transaction(async (transaction) => {
@@ -126,15 +130,15 @@ const companyCreationService = {
                 {
                     ...validatedUserData,
                     createdBy: actorUserId,
-                    updatedBy: actorUserId
+                    updatedBy: actorUserId,
                 },
-                { transaction, context }
+                { transaction, context },
             );
 
             const companyBase = {
                 ...validatedCompanyData,
                 createdBy: actorUserId,
-                updatedBy: actorUserId
+                updatedBy: actorUserId,
             };
 
             let company;
@@ -144,15 +148,17 @@ const companyCreationService = {
                     company = await Company.create(
                         {
                             ...companyBase,
-                            companyId: generateCompanyId()
+                            companyId: generateCompanyId(),
                         },
-                        { transaction, context }
+                        { transaction, context },
                     );
                     break;
                 } catch (error) {
                     const isUniqueError =
-                        error.name === "SequelizeUniqueConstraintError" &&
-                        error.errors?.some((e) => e.path === "company_id" || e.path === "companyId");
+                        error.name === 'SequelizeUniqueConstraintError' &&
+                        error.errors?.some(
+                            (e) => e.path === 'company_id' || e.path === 'companyId',
+                        );
 
                     if (!isUniqueError) {
                         throw error;
@@ -160,9 +166,13 @@ const companyCreationService = {
 
                     attempts += 1;
                     if (attempts >= MAX_RETRY_ATTEMPTS) {
-                        throw new Error("Failed to generate unique company_id after maximum retries");
+                        throw new Error(
+                            'Failed to generate unique company_id after maximum retries',
+                        );
                     }
-                    logger.warn(`CompanyCreationService: Duplicate company_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    logger.warn(
+                        `CompanyCreationService: Duplicate company_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`,
+                    );
                 }
             }
 
@@ -174,17 +184,19 @@ const companyCreationService = {
                             employeeId: generateEmployeeId(),
                             userId: user.id,
                             companyId: company.companyId,
-                            activeFlag: "Y",
+                            activeFlag: 'Y',
                             createdBy: actorUserId,
-                            updatedBy: actorUserId
+                            updatedBy: actorUserId,
                         },
-                        { transaction, context }
+                        { transaction, context },
                     );
                     break;
                 } catch (error) {
                     const isUniqueError =
-                        error.name === "SequelizeUniqueConstraintError" &&
-                        error.errors?.some((e) => e.path === "employee_id" || e.path === "employeeId");
+                        error.name === 'SequelizeUniqueConstraintError' &&
+                        error.errors?.some(
+                            (e) => e.path === 'employee_id' || e.path === 'employeeId',
+                        );
 
                     if (!isUniqueError) {
                         throw error;
@@ -192,9 +204,13 @@ const companyCreationService = {
 
                     attempts += 1;
                     if (attempts >= MAX_RETRY_ATTEMPTS) {
-                        throw new Error("Failed to generate unique employee_id after maximum retries");
+                        throw new Error(
+                            'Failed to generate unique employee_id after maximum retries',
+                        );
                     }
-                    logger.warn(`CompanyCreationService: Duplicate employee_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                    logger.warn(
+                        `CompanyCreationService: Duplicate employee_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`,
+                    );
                 }
             }
 
@@ -203,17 +219,17 @@ const companyCreationService = {
                     userId: user.id,
                     roleId,
                     createdBy: actorUserId,
-                    updatedBy: actorUserId
+                    updatedBy: actorUserId,
                 },
-                { transaction, context }
+                { transaction, context },
             );
 
             return {
                 ...company.toJSON(),
                 User: {
                     ...sanitizeUserForResponse(user),
-                    UserRoles: [{ roleId, Role: { id: roleId, name: null } }]
-                }
+                    UserRoles: [{ roleId, Role: { id: roleId, name: null } }],
+                },
             };
         });
     },
@@ -221,9 +237,9 @@ const companyCreationService = {
     getAllCompanyCreations: async (
         page = 1,
         itemsPerPage = ItemsPerPage.TEN,
-        search = "",
+        search = '',
         sortBy = SortBy.SEQUENCE,
-        sortOrder = SortOrder.DESC
+        sortOrder = SortOrder.DESC,
     ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
         const offset = (page - 1) * validLimit;
@@ -232,21 +248,21 @@ const companyCreationService = {
             isDeleted: false,
             ...(search
                 ? {
-                    [Op.or]: [
-                        { companyId: { [Op.like]: `%${search}%` } },
-                        { companyName: { [Op.like]: `%${search}%` } },
-                        { mailId: { [Op.like]: `%${search}%` } },
-                        { propName: { [Op.like]: `%${search}%` } }
-                    ]
-                }
-                : {})
+                      [Op.or]: [
+                          { companyId: { [Op.like]: `%${search}%` } },
+                          { companyName: { [Op.like]: `%${search}%` } },
+                          { mailId: { [Op.like]: `%${search}%` } },
+                          { propName: { [Op.like]: `%${search}%` } },
+                      ],
+                  }
+                : {}),
         };
 
         const { count, rows } = await Company.findAndCountAll({
             where: whereClause,
             limit: validLimit,
             offset,
-            order: buildSortOrder(sortBy, sortOrder, "company_seq", "Company")
+            order: buildSortOrder(sortBy, sortOrder, 'company_seq', 'Company'),
         });
 
         const items = await attachUserDetails(rows);
@@ -257,14 +273,14 @@ const companyCreationService = {
                 currentPage: page,
                 totalPages: Math.ceil(count / validLimit),
                 itemsPerPage: validLimit,
-                totalItems: count
-            }
+                totalItems: count,
+            },
         };
     },
 
     getCompanyCreationById: async (id) => {
         const company = await Company.findOne({
-            where: { companySequence: id, isDeleted: false }
+            where: { companySequence: id, isDeleted: false },
         });
 
         if (!company) {
@@ -281,26 +297,27 @@ const companyCreationService = {
         return sequelize.transaction(async (transaction) => {
             const company = await Company.findOne({
                 where: { companySequence: id, isDeleted: false },
-                transaction
+                transaction,
             });
 
             if (!company) {
-                throw new Error("Company not found");
+                throw new Error('Company not found');
             }
 
             if (companyData && Object.keys(companyData).length > 0) {
-                const { companyId, companySequence, createdBy, createdAt, ...safeCompanyData } = companyData;
+                const { companyId, companySequence, createdBy, createdAt, ...safeCompanyData } =
+                    companyData;
 
                 await Company.update(
                     {
                         ...safeCompanyData,
-                        updatedBy: context?.actor?.userId ?? company.updatedBy
+                        updatedBy: context?.actor?.userId ?? company.updatedBy,
                     },
                     {
                         where: { companySequence: id, isDeleted: false },
                         transaction,
-                        context
-                    }
+                        context,
+                    },
                 );
             }
 
@@ -317,13 +334,13 @@ const companyCreationService = {
                 await User.update(
                     {
                         ...updateData,
-                        updatedBy: context?.actor?.userId ?? null
+                        updatedBy: context?.actor?.userId ?? null,
                     },
                     {
                         where: { id: linkedUserId, isDeleted: false },
                         transaction,
-                        context
-                    }
+                        context,
+                    },
                 );
             }
 
@@ -331,20 +348,20 @@ const companyCreationService = {
                 const roleId = await getRoleId(roleUserData, transaction);
                 const existingMapping = await UserRole.findOne({
                     where: { userId: linkedUserId, isDeleted: false },
-                    transaction
+                    transaction,
                 });
 
                 if (existingMapping) {
                     await UserRole.update(
                         {
                             roleId,
-                            updatedBy: context?.actor?.userId ?? null
+                            updatedBy: context?.actor?.userId ?? null,
                         },
                         {
                             where: { userId: linkedUserId, isDeleted: false },
                             transaction,
-                            context
-                        }
+                            context,
+                        },
                     );
                 } else {
                     await UserRole.create(
@@ -352,16 +369,16 @@ const companyCreationService = {
                             userId: linkedUserId,
                             roleId,
                             createdBy: context?.actor?.userId ?? null,
-                            updatedBy: context?.actor?.userId ?? null
+                            updatedBy: context?.actor?.userId ?? null,
                         },
-                        { transaction, context }
+                        { transaction, context },
                     );
                 }
             }
 
             const updatedCompany = await Company.findOne({
                 where: { companySequence: id, isDeleted: false },
-                transaction
+                transaction,
             });
             const [item] = await attachUserDetails(updatedCompany, transaction);
             return item;
@@ -372,24 +389,24 @@ const companyCreationService = {
         return sequelize.transaction(async (transaction) => {
             const company = await Company.findOne({
                 where: { companySequence: id, isDeleted: false },
-                transaction
+                transaction,
             });
 
             if (!company) {
-                throw new Error("Company not found");
+                throw new Error('Company not found');
             }
 
             await Company.update(
                 {
                     isDeleted: true,
                     isActive: false,
-                    updatedBy: context?.actor?.userId ?? company.updatedBy
+                    updatedBy: context?.actor?.userId ?? company.updatedBy,
                 },
                 {
                     where: { companySequence: id, isDeleted: false },
                     transaction,
-                    context
-                }
+                    context,
+                },
             );
 
             const linkedUser = await resolveLinkedUser(company, transaction);
@@ -399,49 +416,49 @@ const companyCreationService = {
                     {
                         isDeleted: true,
                         isActive: false,
-                        updatedBy: context?.actor?.userId ?? null
+                        updatedBy: context?.actor?.userId ?? null,
                     },
                     {
                         where: {
                             userId: linkedUserId,
                             companyId: company.companyId,
-                            isDeleted: false
+                            isDeleted: false,
                         },
                         transaction,
-                        context
-                    }
+                        context,
+                    },
                 );
 
                 await User.update(
                     {
                         isDeleted: true,
                         isActive: false,
-                        updatedBy: context?.actor?.userId ?? null
+                        updatedBy: context?.actor?.userId ?? null,
                     },
                     {
                         where: { id: linkedUserId, isDeleted: false },
                         transaction,
-                        context
-                    }
+                        context,
+                    },
                 );
 
                 await UserRole.update(
                     {
                         isDeleted: true,
                         isActive: false,
-                        updatedBy: context?.actor?.userId ?? null
+                        updatedBy: context?.actor?.userId ?? null,
                     },
                     {
                         where: { userId: linkedUserId, isDeleted: false },
                         transaction,
-                        context
-                    }
+                        context,
+                    },
                 );
             }
 
             return true;
         });
-    }
+    },
 };
 
 module.exports = companyCreationService;

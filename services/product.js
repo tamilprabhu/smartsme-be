@@ -1,12 +1,12 @@
-const { Product } = require("../models");
-const { Op } = require("sequelize");
-const logger = require("../config/logger");
-const ItemsPerPage = require("../constants/pagination");
-const { SortBy, SortOrder } = require("../constants/sort");
-const { buildSortOrder } = require("../utils/sort");
-const { generateProductId } = require("../utils/idGenerator");
-const { validateCreate, validateUpdate } = require("../validators/product");
-const { createProductFilterChain } = require("../filters/productFilters");
+const { Product } = require('../models');
+const { Op } = require('sequelize');
+const logger = require('../config/logger');
+const ItemsPerPage = require('../constants/pagination');
+const { SortBy, SortOrder } = require('../constants/sort');
+const { buildSortOrder } = require('../utils/sort');
+const { generateProductId } = require('../utils/idGenerator');
+const { validateCreate, validateUpdate } = require('../validators/product');
+const { createProductFilterChain } = require('../filters/productFilters');
 
 const MAX_RETRY_ATTEMPTS = 5;
 
@@ -20,17 +20,19 @@ const productService = {
         userId,
         roles,
         sortBy = SortBy.SEQUENCE,
-        sortOrder = SortOrder.DESC
+        sortOrder = SortOrder.DESC,
     ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`ProductService: Fetching products - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}, userId: ${userId}`);
+        logger.info(
+            `ProductService: Fetching products - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}, userId: ${userId}`,
+        );
         try {
             const offset = (page - 1) * validLimit;
-            
+
             // Apply filter chain based on user roles
             const filterChain = createProductFilterChain();
             const baseWhereClause = filterChain.execute({}, { roles, companyId, userId });
-            
+
             // Build search conditions
             const whereClause = {
                 ...baseWhereClause,
@@ -40,33 +42,35 @@ const productService = {
                         { productId: { [Op.like]: `%${search}%` } },
                         { rawMaterial: { [Op.like]: `%${search}%` } },
                         { salesType: { [Op.like]: `%${search}%` } },
-                        { salesCode: { [Op.like]: `%${search}%` } }
-                    ]
-                })
+                        { salesCode: { [Op.like]: `%${search}%` } },
+                    ],
+                }),
             };
-            
+
             const { count, rows } = await Product.findAndCountAll({
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'product_seq', 'Product')
+                order: buildSortOrder(sortBy, sortOrder, 'product_seq', 'Product'),
             });
-            logger.info(`ProductService: Successfully retrieved ${rows.length} products out of ${count} total`);
+            logger.info(
+                `ProductService: Successfully retrieved ${rows.length} products out of ${count} total`,
+            );
             return {
                 items: rows,
                 paging: {
                     currentPage: page,
                     totalPages: Math.ceil(count / validLimit),
                     itemsPerPage: validLimit,
-                    totalItems: count
-                }
+                    totalItems: count,
+                },
             };
         } catch (error) {
-            logger.error("ProductService: Failed to fetch products", { 
-                error: error.message, 
+            logger.error('ProductService: Failed to fetch products', {
+                error: error.message,
                 companyId: companyId,
                 userId: userId,
-                stack: error.stack 
+                stack: error.stack,
             });
             throw error;
         }
@@ -74,24 +78,31 @@ const productService = {
 
     // Get product by ID
     getProductById: async (id, companyId, userId, roles) => {
-        logger.info(`ProductService: Fetching product with ID: ${id} for company: ${companyId}, user: ${userId}`);
+        logger.info(
+            `ProductService: Fetching product with ID: ${id} for company: ${companyId}, user: ${userId}`,
+        );
         try {
             const filterChain = createProductFilterChain();
-            const whereClause = filterChain.execute({ productSequence: id }, { roles, companyId, userId });
-            
+            const whereClause = filterChain.execute(
+                { productSequence: id },
+                { roles, companyId, userId },
+            );
+
             const product = await Product.findOne({ where: whereClause });
             if (product) {
-                logger.info(`ProductService: Successfully retrieved product: ${product.productName} (ID: ${id})`);
+                logger.info(
+                    `ProductService: Successfully retrieved product: ${product.productName} (ID: ${id})`,
+                );
             } else {
                 logger.warn(`ProductService: Product not found with ID: ${id}`);
             }
             return product;
         } catch (error) {
-            logger.error(`ProductService: Failed to fetch product with ID: ${id}`, { 
-                error: error.message, 
+            logger.error(`ProductService: Failed to fetch product with ID: ${id}`, {
+                error: error.message,
                 companyId: companyId,
                 userId: userId,
-                stack: error.stack 
+                stack: error.stack,
             });
             throw error;
         }
@@ -99,16 +110,19 @@ const productService = {
 
     // Create new product
     createProduct: async (productData, companyId, userId) => {
-        logger.info(`ProductService: Creating new product: ${productData.productName} for company: ${companyId}, user: ${userId}`, { 
-            productId: productData.productId 
-        });
+        logger.info(
+            `ProductService: Creating new product: ${productData.productName} for company: ${companyId}, user: ${userId}`,
+            {
+                productId: productData.productId,
+            },
+        );
         try {
             const validatedData = await validateCreate(productData, companyId);
             const baseProductData = {
                 ...validatedData,
                 companyId: companyId,
                 createdAt: new Date(),
-                updatedAt: new Date()
+                updatedAt: new Date(),
             };
 
             let product;
@@ -117,39 +131,49 @@ const productService = {
                 try {
                     const enrichedProductData = {
                         ...baseProductData,
-                        productId: generateProductId()
+                        productId: generateProductId(),
                     };
                     product = await Product.create(enrichedProductData);
                     break;
                 } catch (error) {
-                    const isUniqueError = error.name === 'SequelizeUniqueConstraintError' &&
-                        error.errors?.some(e => e.path === 'product_id' || e.path === 'productId');
+                    const isUniqueError =
+                        error.name === 'SequelizeUniqueConstraintError' &&
+                        error.errors?.some(
+                            (e) => e.path === 'product_id' || e.path === 'productId',
+                        );
 
                     if (isUniqueError) {
                         attempts++;
                         if (attempts >= MAX_RETRY_ATTEMPTS) {
-                            throw new Error('Failed to generate unique product_id after maximum retries');
+                            throw new Error(
+                                'Failed to generate unique product_id after maximum retries',
+                            );
                         }
-                        logger.warn(`ProductService: Duplicate product_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                        logger.warn(
+                            `ProductService: Duplicate product_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`,
+                        );
                     } else {
                         throw error;
                     }
                 }
             }
 
-            logger.info(`ProductService: Successfully created product: ${product.productName} (ID: ${product.productSequence}) for company: ${companyId}`, {
-                productId: product.productId,
-                companyId: product.companyId,
-                userId: userId
-            });
+            logger.info(
+                `ProductService: Successfully created product: ${product.productName} (ID: ${product.productSequence}) for company: ${companyId}`,
+                {
+                    productId: product.productId,
+                    companyId: product.companyId,
+                    userId: userId,
+                },
+            );
             return product;
         } catch (error) {
-            logger.error(`ProductService: Failed to create product: ${productData.productName}`, { 
-                error: error.message, 
+            logger.error(`ProductService: Failed to create product: ${productData.productName}`, {
+                error: error.message,
                 productData: productData,
                 companyId: companyId,
                 userId: userId,
-                stack: error.stack 
+                stack: error.stack,
             });
             throw error;
         }
@@ -157,35 +181,44 @@ const productService = {
 
     // Update product
     updateProduct: async (id, productData, companyId, userId, roles) => {
-        logger.info(`ProductService: Updating product with ID: ${id} for company: ${companyId}, user: ${userId}`, { updateData: productData });
+        logger.info(
+            `ProductService: Updating product with ID: ${id} for company: ${companyId}, user: ${userId}`,
+            { updateData: productData },
+        );
         try {
             const validatedData = await validateUpdate(id, productData, companyId);
             const { productId, ...safeProductData } = validatedData;
             const enrichedProductData = {
                 ...safeProductData,
-                updatedAt: new Date()
+                updatedAt: new Date(),
             };
-            
+
             const filterChain = createProductFilterChain();
-            const whereClause = filterChain.execute({ productSequence: id }, { roles, companyId, userId });
-            
+            const whereClause = filterChain.execute(
+                { productSequence: id },
+                { roles, companyId, userId },
+            );
+
             const [updatedRows] = await Product.update(enrichedProductData, { where: whereClause });
             if (updatedRows === 0) {
                 logger.warn(`ProductService: No product found to update with ID: ${id}`);
-                throw new Error("Product not found");
+                throw new Error('Product not found');
             }
             const updatedProduct = await Product.findOne({ where: whereClause });
-            logger.info(`ProductService: Successfully updated product: ${updatedProduct.productName} (ID: ${id})`, {
-                userId: userId
-            });
+            logger.info(
+                `ProductService: Successfully updated product: ${updatedProduct.productName} (ID: ${id})`,
+                {
+                    userId: userId,
+                },
+            );
             return updatedProduct;
         } catch (error) {
-            logger.error(`ProductService: Failed to update product with ID: ${id}`, { 
-                error: error.message, 
+            logger.error(`ProductService: Failed to update product with ID: ${id}`, {
+                error: error.message,
                 updateData: productData,
                 companyId: companyId,
                 userId: userId,
-                stack: error.stack 
+                stack: error.stack,
             });
             throw error;
         }
@@ -196,27 +229,32 @@ const productService = {
         logger.info(`ProductService: Deleting product with ID: ${id}`);
         try {
             const filterChain = createProductFilterChain();
-            const whereClause = filterChain.execute({ productSequence: id, isDeleted: false }, { roles, companyId, userId });
-            
+            const whereClause = filterChain.execute(
+                { productSequence: id, isDeleted: false },
+                { roles, companyId, userId },
+            );
+
             const product = await Product.findOne({ where: whereClause });
             const [updatedRows] = await Product.update(
                 { isDeleted: true, isActive: false },
-                { where: whereClause }
+                { where: whereClause },
             );
             if (updatedRows === 0) {
                 logger.warn(`ProductService: No product found to delete with ID: ${id}`);
-                throw new Error("Product not found");
+                throw new Error('Product not found');
             }
-            logger.info(`ProductService: Successfully soft deleted product: ${product?.productName || 'Unknown'} (ID: ${id})`);
-            return { message: "Product deleted successfully" };
+            logger.info(
+                `ProductService: Successfully soft deleted product: ${product?.productName || 'Unknown'} (ID: ${id})`,
+            );
+            return { message: 'Product deleted successfully' };
         } catch (error) {
-            logger.error(`ProductService: Failed to delete product with ID: ${id}`, { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error(`ProductService: Failed to delete product with ID: ${id}`, {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
-    }
+    },
 };
 
 module.exports = productService;

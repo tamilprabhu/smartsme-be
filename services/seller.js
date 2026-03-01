@@ -1,11 +1,11 @@
-const { Seller } = require("../models");
-const { Op } = require("sequelize");
-const logger = require("../config/logger");
-const ItemsPerPage = require("../constants/pagination");
-const { SortBy, SortOrder } = require("../constants/sort");
-const { buildSortOrder } = require("../utils/sort");
-const { generateSellerId } = require("../utils/idGenerator");
-const { validateCreate, validateUpdate } = require("../validators/seller");
+const { Seller } = require('../models');
+const { Op } = require('sequelize');
+const logger = require('../config/logger');
+const ItemsPerPage = require('../constants/pagination');
+const { SortBy, SortOrder } = require('../constants/sort');
+const { buildSortOrder } = require('../utils/sort');
+const { generateSellerId } = require('../utils/idGenerator');
+const { validateCreate, validateUpdate } = require('../validators/seller');
 
 const MAX_RETRY_ATTEMPTS = 5;
 
@@ -16,20 +16,22 @@ const sellerService = {
         search = '',
         companyId = null,
         sortBy = SortBy.SEQUENCE,
-        sortOrder = SortOrder.DESC
+        sortOrder = SortOrder.DESC,
     ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`SellerService: Fetching sellers - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`);
+        logger.info(
+            `SellerService: Fetching sellers - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`,
+        );
         try {
             const offset = (page - 1) * validLimit;
-            
+
             let whereClause = {};
-            
+
             // Add company filter if provided
             if (companyId) {
                 whereClause.companyId = companyId;
             }
-            
+
             // Add search filter if provided
             if (search) {
                 whereClause[Op.and] = [
@@ -38,32 +40,34 @@ const sellerService = {
                         [Op.or]: [
                             { sellerName: { [Op.like]: `%${search}%` } },
                             { sellerId: { [Op.like]: `%${search}%` } },
-                            { sellerEmail: { [Op.like]: `%${search}%` } }
-                        ]
-                    }
+                            { sellerEmail: { [Op.like]: `%${search}%` } },
+                        ],
+                    },
                 ];
             }
-            
+
             const { count, rows } = await Seller.findAndCountAll({
                 where: whereClause,
                 limit: validLimit,
                 offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'seller_seq', 'Seller')
+                order: buildSortOrder(sortBy, sortOrder, 'seller_seq', 'Seller'),
             });
-            logger.info(`SellerService: Successfully retrieved ${rows.length} sellers out of ${count} total for company: ${companyId}`);
+            logger.info(
+                `SellerService: Successfully retrieved ${rows.length} sellers out of ${count} total for company: ${companyId}`,
+            );
             return {
                 items: rows,
                 paging: {
                     currentPage: page,
                     totalPages: Math.ceil(count / validLimit),
                     itemsPerPage: validLimit,
-                    totalItems: count
-                }
+                    totalItems: count,
+                },
             };
         } catch (error) {
-            logger.error("SellerService: Failed to fetch sellers", { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error('SellerService: Failed to fetch sellers', {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
@@ -73,21 +77,25 @@ const sellerService = {
         logger.info(`SellerService: Fetching seller with ID: ${id} for company: ${companyId}`);
         try {
             const seller = await Seller.findOne({
-                where: { 
+                where: {
                     sellerSequence: id,
-                    companyId: companyId
-                }
+                    companyId: companyId,
+                },
             });
             if (seller) {
-                logger.info(`SellerService: Successfully retrieved seller: ${seller.sellerName} (ID: ${id})`);
+                logger.info(
+                    `SellerService: Successfully retrieved seller: ${seller.sellerName} (ID: ${id})`,
+                );
             } else {
-                logger.warn(`SellerService: Seller not found with ID: ${id} for company: ${companyId}`);
+                logger.warn(
+                    `SellerService: Seller not found with ID: ${id} for company: ${companyId}`,
+                );
             }
             return seller;
         } catch (error) {
-            logger.error(`SellerService: Failed to fetch seller with ID: ${id}`, { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error(`SellerService: Failed to fetch seller with ID: ${id}`, {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
@@ -97,12 +105,12 @@ const sellerService = {
         const baseData = {
             companyId: companyId,
             createdBy: userId,
-            updatedBy: userId
+            updatedBy: userId,
         };
-        
-        logger.info(`SellerService: Creating new seller: ${sellerData.sellerName}`, { 
+
+        logger.info(`SellerService: Creating new seller: ${sellerData.sellerName}`, {
             companyId: companyId,
-            sellerId: sellerData.sellerId 
+            sellerId: sellerData.sellerId,
         });
         try {
             const validatedData = await validateCreate(sellerData);
@@ -114,70 +122,83 @@ const sellerService = {
                     seller = await Seller.create({
                         ...validatedData,
                         ...baseData,
-                        sellerId: generateSellerId()
+                        sellerId: generateSellerId(),
                     });
                     break;
                 } catch (error) {
-                    const isUniqueError = error.name === "SequelizeUniqueConstraintError" &&
-                        error.errors?.some((e) => e.path === "seller_id" || e.path === "sellerId");
+                    const isUniqueError =
+                        error.name === 'SequelizeUniqueConstraintError' &&
+                        error.errors?.some((e) => e.path === 'seller_id' || e.path === 'sellerId');
 
                     if (isUniqueError) {
                         attempts++;
                         if (attempts >= MAX_RETRY_ATTEMPTS) {
-                            throw new Error("Failed to generate unique seller_id after maximum retries");
+                            throw new Error(
+                                'Failed to generate unique seller_id after maximum retries',
+                            );
                         }
-                        logger.warn(`SellerService: Duplicate seller_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`);
+                        logger.warn(
+                            `SellerService: Duplicate seller_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`,
+                        );
                     } else {
                         throw error;
                     }
                 }
             }
-            logger.info(`SellerService: Successfully created seller: ${seller.sellerName} (ID: ${seller.sellerSequence})`);
+            logger.info(
+                `SellerService: Successfully created seller: ${seller.sellerName} (ID: ${seller.sellerSequence})`,
+            );
             return seller;
         } catch (error) {
-            logger.error(`SellerService: Failed to create seller: ${sellerData.sellerName}`, { 
-                error: error.message, 
+            logger.error(`SellerService: Failed to create seller: ${sellerData.sellerName}`, {
+                error: error.message,
                 sellerData: sellerData,
-                stack: error.stack 
+                stack: error.stack,
             });
             throw error;
         }
     },
 
     updateSeller: async (id, sellerData, companyId, userId) => {
-        logger.info(`SellerService: Updating seller with ID: ${id} for company: ${companyId}`, { updateData: sellerData });
+        logger.info(`SellerService: Updating seller with ID: ${id} for company: ${companyId}`, {
+            updateData: sellerData,
+        });
         let enrichedData;
         try {
             const validatedData = await validateUpdate(sellerData);
             const { sellerId, ...safeSellerData } = validatedData;
             enrichedData = {
                 ...safeSellerData,
-                updatedBy: userId
+                updatedBy: userId,
             };
 
             const [updatedRows] = await Seller.update(enrichedData, {
-                where: { 
+                where: {
                     sellerSequence: id,
-                    companyId: companyId
-                }
+                    companyId: companyId,
+                },
             });
             if (updatedRows === 0) {
-                logger.warn(`SellerService: No seller found to update with ID: ${id} for company: ${companyId}`);
-                throw new Error("Seller not found");
+                logger.warn(
+                    `SellerService: No seller found to update with ID: ${id} for company: ${companyId}`,
+                );
+                throw new Error('Seller not found');
             }
             const updatedSeller = await Seller.findOne({
-                where: { 
+                where: {
                     sellerSequence: id,
-                    companyId: companyId
-                }
+                    companyId: companyId,
+                },
             });
-            logger.info(`SellerService: Successfully updated seller: ${updatedSeller.sellerName} (ID: ${id})`);
+            logger.info(
+                `SellerService: Successfully updated seller: ${updatedSeller.sellerName} (ID: ${id})`,
+            );
             return updatedSeller;
         } catch (error) {
-            logger.error(`SellerService: Failed to update seller with ID: ${id}`, { 
-                error: error.message, 
+            logger.error(`SellerService: Failed to update seller with ID: ${id}`, {
+                error: error.message,
                 updateData: enrichedData,
-                stack: error.stack 
+                stack: error.stack,
             });
             throw error;
         }
@@ -187,10 +208,10 @@ const sellerService = {
         logger.info(`SellerService: Deleting seller with ID: ${id} for company: ${companyId}`);
         try {
             const seller = await Seller.findOne({
-                where: { 
+                where: {
                     sellerSequence: id,
-                    companyId: companyId
-                }
+                    companyId: companyId,
+                },
             });
             const [updatedRows] = await Seller.update(
                 { isDeleted: true, isActive: false },
@@ -198,24 +219,28 @@ const sellerService = {
                     where: {
                         sellerSequence: id,
                         companyId: companyId,
-                        isDeleted: false
-                    }
-                }
+                        isDeleted: false,
+                    },
+                },
             );
             if (updatedRows === 0) {
-                logger.warn(`SellerService: No seller found to delete with ID: ${id} for company: ${companyId}`);
-                throw new Error("Seller not found");
+                logger.warn(
+                    `SellerService: No seller found to delete with ID: ${id} for company: ${companyId}`,
+                );
+                throw new Error('Seller not found');
             }
-            logger.info(`SellerService: Successfully soft deleted seller: ${seller?.sellerName || 'Unknown'} (ID: ${id})`);
-            return { message: "Seller deleted successfully" };
+            logger.info(
+                `SellerService: Successfully soft deleted seller: ${seller?.sellerName || 'Unknown'} (ID: ${id})`,
+            );
+            return { message: 'Seller deleted successfully' };
         } catch (error) {
-            logger.error(`SellerService: Failed to delete seller with ID: ${id}`, { 
-                error: error.message, 
-                stack: error.stack 
+            logger.error(`SellerService: Failed to delete seller with ID: ${id}`, {
+                error: error.message,
+                stack: error.stack,
             });
             throw error;
         }
-    }
+    },
 };
 
 module.exports = sellerService;

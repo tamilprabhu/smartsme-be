@@ -1,16 +1,21 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../db/sequelize");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../db/sequelize');
 
 const Invoice = sequelize.define(
-    "Invoice",
+    'Invoice',
     {
         invoiceSequence: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: 'invoice_seq'
+            field: 'invoice_seq',
         },
-        invoiceId: { type: DataTypes.STRING(20), allowNull: false, unique: true, field: 'invoice_id' },
+        invoiceId: {
+            type: DataTypes.STRING(20),
+            allowNull: false,
+            unique: true,
+            field: 'invoice_id',
+        },
         invoiceDate: { type: DataTypes.DATE, field: 'invoice_date' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
         buyerId: { type: DataTypes.STRING(10), field: 'buyer_id' },
@@ -24,17 +29,37 @@ const Invoice = sequelize.define(
         totalAmount: { type: DataTypes.DECIMAL(10, 2), field: 'total_amount' },
         sacCode: { type: DataTypes.STRING(20), field: 'sac_code' },
         buyrGstin: { type: DataTypes.STRING(20), field: 'buyr_gstin' },
-        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
-        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
-        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
-        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            field: 'create_date',
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            field: 'update_date',
+        },
+        isActive: {
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: true,
+            field: 'is_active',
+        },
+        isDeleted: {
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: false,
+            field: 'is_deleted',
+        },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "txn_invoice",
+        tableName: 'txn_invoice',
         timestamps: false,
-    }
+    },
 );
 
 module.exports = Invoice;

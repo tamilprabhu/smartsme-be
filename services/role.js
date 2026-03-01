@@ -12,10 +12,12 @@ const roleService = {
         itemsPerPage = ItemsPerPage.TEN,
         search = '',
         sortBy = SortBy.SEQUENCE,
-        sortOrder = SortOrder.DESC
+        sortOrder = SortOrder.DESC,
     ) => {
         const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(`RoleService: Fetching roles - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`);
+        logger.info(
+            `RoleService: Fetching roles - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}`,
+        );
 
         try {
             const offset = (page - 1) * validLimit;
@@ -26,33 +28,35 @@ const roleService = {
                     ? {
                           [Op.or]: [
                               { name: { [Op.like]: `%${search}%` } },
-                              { description: { [Op.like]: `%${search}%` } }
-                          ]
+                              { description: { [Op.like]: `%${search}%` } },
+                          ],
                       }
-                    : {})
+                    : {}),
             };
 
             const { count, rows } = await Role.findAndCountAll({
                 where,
                 limit: validLimit,
                 offset,
-                order: buildSortOrder(sortBy, sortOrder, 'id', 'Role')
+                order: buildSortOrder(sortBy, sortOrder, 'id', 'Role'),
             });
 
-            logger.info(`RoleService: Successfully retrieved ${rows.length} roles out of ${count} total`);
+            logger.info(
+                `RoleService: Successfully retrieved ${rows.length} roles out of ${count} total`,
+            );
             return {
                 items: rows,
                 paging: {
                     currentPage: page,
                     totalPages: Math.ceil(count / validLimit),
                     itemsPerPage: validLimit,
-                    totalItems: count
-                }
+                    totalItems: count,
+                },
             };
         } catch (error) {
             logger.error('RoleService: Failed to fetch roles', {
                 error: error.message,
-                stack: error.stack
+                stack: error.stack,
             });
             throw error;
         }
@@ -72,7 +76,7 @@ const roleService = {
         } catch (error) {
             logger.error(`RoleService: Failed to fetch role with ID: ${id}`, {
                 error: error.message,
-                stack: error.stack
+                stack: error.stack,
             });
             throw error;
         }
@@ -81,7 +85,7 @@ const roleService = {
     createRole: async (roleData, context) => {
         logger.info('RoleService: Creating new role', {
             roleName: roleData.name,
-            actorId: context.actor?.userId
+            actorId: context.actor?.userId,
         });
 
         try {
@@ -90,9 +94,9 @@ const roleService = {
                 {
                     ...validatedData,
                     createdBy: context.actor?.userId ?? null,
-                    updatedBy: context.actor?.userId ?? null
+                    updatedBy: context.actor?.userId ?? null,
                 },
-                { context }
+                { context },
             );
 
             logger.info(`RoleService: Successfully created role: ${role.name} (ID: ${role.id})`);
@@ -101,7 +105,7 @@ const roleService = {
             logger.error('RoleService: Failed to create role', {
                 roleName: roleData.name,
                 error: error.message,
-                stack: error.stack
+                stack: error.stack,
             });
             throw error;
         }
@@ -110,7 +114,7 @@ const roleService = {
     updateRole: async (id, roleData, context) => {
         logger.info(`RoleService: Updating role with ID: ${id}`, {
             updates: Object.keys(roleData),
-            actorId: context.actor?.userId
+            actorId: context.actor?.userId,
         });
 
         try {
@@ -124,12 +128,12 @@ const roleService = {
             const [updatedRowsCount] = await Role.update(
                 {
                     ...validatedData,
-                    updatedBy: context.actor?.userId ?? currentRole.updatedBy
+                    updatedBy: context.actor?.userId ?? currentRole.updatedBy,
                 },
                 {
                     where: { id, isDeleted: false },
-                    context
-                }
+                    context,
+                },
             );
 
             if (updatedRowsCount === 0) {
@@ -143,7 +147,7 @@ const roleService = {
         } catch (error) {
             logger.error(`RoleService: Failed to update role with ID: ${id}`, {
                 error: error.message,
-                stack: error.stack
+                stack: error.stack,
             });
             throw error;
         }
@@ -151,7 +155,7 @@ const roleService = {
 
     deleteRole: async (id, context) => {
         logger.info(`RoleService: Deleting role with ID: ${id}`, {
-            actorId: context.actor?.userId
+            actorId: context.actor?.userId,
         });
 
         try {
@@ -165,12 +169,12 @@ const roleService = {
                 {
                     isDeleted: true,
                     isActive: false,
-                    updatedBy: context.actor?.userId ?? role.updatedBy
+                    updatedBy: context.actor?.userId ?? role.updatedBy,
                 },
                 {
                     where: { id, isDeleted: false },
-                    context
-                }
+                    context,
+                },
             );
 
             if (updatedRowsCount === 0) {
@@ -183,11 +187,11 @@ const roleService = {
         } catch (error) {
             logger.error(`RoleService: Failed to delete role with ID: ${id}`, {
                 error: error.message,
-                stack: error.stack
+                stack: error.stack,
             });
             throw error;
         }
-    }
+    },
 };
 
 module.exports = roleService;

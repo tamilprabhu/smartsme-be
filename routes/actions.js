@@ -1,37 +1,37 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const actionsService = require("../services/actions");
-const optionalAuth = require("../middlewares/optionalAuth");
+const actionsService = require('../services/actions');
+const optionalAuth = require('../middlewares/optionalAuth');
 
 // POST /actions/check
-router.post("/check", optionalAuth, async (req, res) => {
+router.post('/check', optionalAuth, async (req, res) => {
     try {
         const { actions } = req.body;
         const userRoles = req.auth.roles || [];
-        
+
         if (!actions || !Array.isArray(actions)) {
-            return res.status(400).json({ error: "actions array required" });
+            return res.status(400).json({ error: 'actions array required' });
         }
 
-        const roleIds = userRoles.map(role => role.id);
+        const roleIds = userRoles.map((role) => role.id);
         const hasActions = await actionsService.checkActions(roleIds, actions);
 
         res.json({ hasActions });
     } catch (err) {
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
 // GET /actions/me
-router.get("/me", optionalAuth, async (req, res) => {
+router.get('/me', optionalAuth, async (req, res) => {
     try {
         const userRoles = req.auth.roles || [];
-        const roleIds = userRoles.map(role => role.id);
-        
+        const roleIds = userRoles.map((role) => role.id);
+
         const actions = await actionsService.getUserActions(roleIds);
         res.json({ actions });
     } catch (err) {
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 

@@ -13,8 +13,15 @@ router.get('/', authenticateToken, async (req, res) => {
         const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
         const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
         const companyId = req.auth.getPrimaryCompanyId();
-        
-        const result = await orderQuantityService.getAllOrderQuantities(page, itemsPerPage, search, companyId, sortBy, sortOrder);
+
+        const result = await orderQuantityService.getAllOrderQuantities(
+            page,
+            itemsPerPage,
+            search,
+            companyId,
+            sortBy,
+            sortOrder,
+        );
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -25,7 +32,10 @@ router.get('/', authenticateToken, async (req, res) => {
 router.get('/:orderId', authenticateToken, async (req, res) => {
     try {
         const companyId = req.auth.getPrimaryCompanyId();
-        const orderQuantity = await orderQuantityService.getOrderQuantityById(req.params.orderId, companyId);
+        const orderQuantity = await orderQuantityService.getOrderQuantityById(
+            req.params.orderId,
+            companyId,
+        );
         if (!orderQuantity) {
             return res.status(404).json({ error: 'Order quantity not found' });
         }
@@ -40,7 +50,11 @@ router.post('/', authenticateToken, async (req, res) => {
     try {
         const companyId = req.auth.getPrimaryCompanyId();
         const userId = req.auth.getUserId();
-        const orderQuantity = await orderQuantityService.createOrderQuantity(req.body, companyId, userId);
+        const orderQuantity = await orderQuantityService.createOrderQuantity(
+            req.body,
+            companyId,
+            userId,
+        );
         res.status(201).json(orderQuantity);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -52,7 +66,12 @@ router.put('/:orderId', authenticateToken, async (req, res) => {
     try {
         const companyId = req.auth.getPrimaryCompanyId();
         const userId = req.auth.getUserId();
-        const orderQuantity = await orderQuantityService.updateOrderQuantity(req.params.orderId, companyId, req.body, userId);
+        const orderQuantity = await orderQuantityService.updateOrderQuantity(
+            req.params.orderId,
+            companyId,
+            req.body,
+            userId,
+        );
         res.json(orderQuantity);
     } catch (error) {
         if (error.message === 'Order quantity not found') {
@@ -66,7 +85,10 @@ router.put('/:orderId', authenticateToken, async (req, res) => {
 router.delete('/:orderId/:companyId', authenticateToken, async (req, res) => {
     try {
         const companyId = req.auth.getPrimaryCompanyId();
-        const result = await orderQuantityService.deleteOrderQuantity(req.params.orderId, companyId);
+        const result = await orderQuantityService.deleteOrderQuantity(
+            req.params.orderId,
+            companyId,
+        );
         res.json(result);
     } catch (error) {
         if (error.message === 'Order quantity not found') {

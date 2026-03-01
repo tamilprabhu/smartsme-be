@@ -1,4 +1,5 @@
 # smartsme-be
+
 Diecast API Backend
 
 ```sh
@@ -40,6 +41,7 @@ docker compose down
 ```
 
 ### All User Logins Added:
+
 1. Tamil - OWNER (Role ID: 1)
 2. Nandha - ADMIN (Role ID: 2)
 3. Alice - PLANT_HEAD (Role ID: 3)
@@ -53,4 +55,3 @@ docker compose down
 11. Ian - ACCOUNTANT (Role ID: 8)
 12. Jasmine - PRODUCTION_EMPLOYEE (Role ID: 6)
 13. Kevin - STORES_INCHARGE (Role ID: 5)
-

@@ -1,9 +1,10 @@
-const { col } = require("sequelize");
-const { SortBy, SortOrder } = require("../constants/sort");
+const { col } = require('sequelize');
+const { SortBy, SortOrder } = require('../constants/sort');
 
 const buildSortOrder = (sortBy, sortOrder, sequenceColumn, tableAlias = null) => {
     const direction = sortOrder === SortOrder.DESC ? 'DESC' : 'ASC';
-    const qualifiedColumn = (columnName) => (tableAlias ? `${tableAlias}.${columnName}` : columnName);
+    const qualifiedColumn = (columnName) =>
+        tableAlias ? `${tableAlias}.${columnName}` : columnName;
 
     switch (sortBy) {
         case SortBy.CREATE_DATE:

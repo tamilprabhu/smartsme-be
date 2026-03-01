@@ -1,20 +1,20 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../db/sequelize");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../db/sequelize');
 
 const Order = sequelize.define(
-    "Order",
+    'Order',
     {
         orderSequence: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
-            field: 'order_seq'
+            field: 'order_seq',
         },
         orderId: {
             type: DataTypes.STRING(20),
             allowNull: false,
             unique: true,
-            field: 'order_id'
+            field: 'order_id',
         },
         orderName: { type: DataTypes.STRING(50), field: 'order_name' },
         companyId: { type: DataTypes.STRING(20), field: 'company_id' },
@@ -27,17 +27,37 @@ const Order = sequelize.define(
         price: { type: DataTypes.DECIMAL(10, 2) },
         discount: { type: DataTypes.DECIMAL(10, 2) },
         totalPrice: { type: DataTypes.DECIMAL(10, 2), field: 'total_price' },
-        createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'create_date' },
-        updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, field: 'update_date' },
-        isActive: { type: DataTypes.TINYINT, allowNull: false, defaultValue: true, field: 'is_active' },
-        isDeleted: { type: DataTypes.TINYINT, allowNull: false, defaultValue: false, field: 'is_deleted' },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            field: 'create_date',
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+            field: 'update_date',
+        },
+        isActive: {
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: true,
+            field: 'is_active',
+        },
+        isDeleted: {
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue: false,
+            field: 'is_deleted',
+        },
         createdBy: { type: DataTypes.INTEGER, allowNull: true, field: 'created_by' },
         updatedBy: { type: DataTypes.INTEGER, allowNull: true, field: 'updated_by' },
     },
     {
-        tableName: "txn_order",
+        tableName: 'txn_order',
         timestamps: false,
-    }
+    },
 );
 
 module.exports = Order;

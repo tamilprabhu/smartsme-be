@@ -1,72 +1,72 @@
-const Joi = require("joi");
+const Joi = require('joi');
 
 const createStockSchema = Joi.object({
     sellerId: Joi.string().trim().min(1).required().messages({
-        "string.base": "sellerId must be a string",
-        "string.empty": "sellerId cannot be blank",
-        "string.min": "sellerId cannot be blank",
-        "any.required": "sellerId is required"
+        'string.base': 'sellerId must be a string',
+        'string.empty': 'sellerId cannot be blank',
+        'string.min': 'sellerId cannot be blank',
+        'any.required': 'sellerId is required',
     }),
     stockDate: Joi.date().required().messages({
-        "date.base": "stockDate must be a valid date",
-        "any.required": "stockDate is required"
+        'date.base': 'stockDate must be a valid date',
+        'any.required': 'stockDate is required',
     }),
     rawMaterial: Joi.string().trim().min(1).required().messages({
-        "string.base": "rawMaterial must be a string",
-        "string.empty": "rawMaterial cannot be blank",
-        "string.min": "rawMaterial cannot be blank",
-        "any.required": "rawMaterial is required"
+        'string.base': 'rawMaterial must be a string',
+        'string.empty': 'rawMaterial cannot be blank',
+        'string.min': 'rawMaterial cannot be blank',
+        'any.required': 'rawMaterial is required',
     }),
     inwardType: Joi.string().trim().min(1).required().messages({
-        "string.base": "inwardType must be a string",
-        "string.empty": "inwardType cannot be blank",
-        "string.min": "inwardType cannot be blank",
-        "any.required": "inwardType is required"
+        'string.base': 'inwardType must be a string',
+        'string.empty': 'inwardType cannot be blank',
+        'string.min': 'inwardType cannot be blank',
+        'any.required': 'inwardType is required',
     }),
     noOfBars: Joi.number().integer().required().messages({
-        "number.base": "noOfBars must be a number",
-        "number.integer": "noOfBars must be an integer",
-        "any.required": "noOfBars is required"
+        'number.base': 'noOfBars must be a number',
+        'number.integer': 'noOfBars must be an integer',
+        'any.required': 'noOfBars is required',
     }),
     weight: Joi.number().required().messages({
-        "number.base": "weight must be a number",
-        "any.required": "weight is required"
+        'number.base': 'weight must be a number',
+        'any.required': 'weight is required',
     }),
     rate: Joi.number().required().messages({
-        "number.base": "rate must be a number",
-        "any.required": "rate is required"
-    })
+        'number.base': 'rate must be a number',
+        'any.required': 'rate is required',
+    }),
 }).unknown(true);
 
 const updateStockSchema = Joi.object({
     sellerId: Joi.string().trim().min(1).optional().messages({
-        "string.base": "sellerId must be a string",
-        "string.empty": "sellerId cannot be blank",
-        "string.min": "sellerId cannot be blank"
+        'string.base': 'sellerId must be a string',
+        'string.empty': 'sellerId cannot be blank',
+        'string.min': 'sellerId cannot be blank',
     }),
     stockDate: Joi.date().optional().messages({
-        "date.base": "stockDate must be a valid date"
+        'date.base': 'stockDate must be a valid date',
     }),
     rawMaterial: Joi.string().trim().min(1).optional().messages({
-        "string.base": "rawMaterial must be a string",
-        "string.empty": "rawMaterial cannot be blank",
-        "string.min": "rawMaterial cannot be blank"
+        'string.base': 'rawMaterial must be a string',
+        'string.empty': 'rawMaterial cannot be blank',
+        'string.min': 'rawMaterial cannot be blank',
     }),
     inwardType: Joi.string().trim().min(1).optional().messages({
-        "string.base": "inwardType must be a string",
-        "string.empty": "inwardType cannot be blank",
-        "string.min": "inwardType cannot be blank"
+        'string.base': 'inwardType must be a string',
+        'string.empty': 'inwardType cannot be blank',
+        'string.min': 'inwardType cannot be blank',
     }),
     noOfBars: Joi.number().integer().optional().messages({
-        "number.base": "noOfBars must be a number",
-        "number.integer": "noOfBars must be an integer"
+        'number.base': 'noOfBars must be a number',
+        'number.integer': 'noOfBars must be an integer',
     }),
     weight: Joi.number().optional().messages({
-        "number.base": "weight must be a number"
+        'number.base': 'weight must be a number',
     }),
     rate: Joi.number().optional().messages({
-        "number.base": "rate must be a number"
-    })
+        'number.base': 'rate must be a number',
+    }),
 }).unknown(true);
 
 const toValidationError = (joiError) => {
@@ -76,7 +76,7 @@ const toValidationError = (joiError) => {
         if (!errors[field]) errors[field] = [];
         errors[field].push(detail.message);
     });
-    return { name: "ValidationError", errors };
+    return { name: 'ValidationError', errors };
 };
 
 const validateCreate = async (payload) => {
