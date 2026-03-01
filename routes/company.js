@@ -11,7 +11,7 @@ const { fromHttpRequest } = require('../utils/context');
 router.get('/', authenticate, async (req, res) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
-    const activeCompanyId = req.auth?.getPrimaryCompanyId?.() || null;
+    const activeCompanyId = req.auth?.getPrimaryCompanyId() || null;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
@@ -60,7 +60,7 @@ router.get('/', authenticate, async (req, res) => {
 router.get('/:id', authenticate, async (req, res) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
-    const activeCompanyId = req.auth?.getPrimaryCompanyId?.() || null;
+    const activeCompanyId = req.auth?.getPrimaryCompanyId() || null;
     const { id } = req.params;
 
     logger.info(`GET /company/${id} - Fetching company`, { requestId, username, companyId: id });
@@ -131,7 +131,7 @@ router.post('/', authenticate, async (req, res, next) => {
 router.put('/:id', authenticate, async (req, res, next) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
-    const activeCompanyId = req.auth?.getPrimaryCompanyId?.() || null;
+    const activeCompanyId = req.auth?.getPrimaryCompanyId() || null;
     const { id } = req.params;
 
     logger.info(`PUT /company/${id} - Updating company`, { requestId, username, companyId: id });
@@ -173,7 +173,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
 router.delete('/:id', authenticate, async (req, res) => {
     const requestId = req.requestId;
     const username = req.auth?.username;
-    const activeCompanyId = req.auth?.getPrimaryCompanyId?.() || null;
+    const activeCompanyId = req.auth?.getPrimaryCompanyId() || null;
     const { id } = req.params;
 
     logger.info(`DELETE /company/${id} - Deleting company`, { requestId, username, companyId: id });

@@ -20,7 +20,7 @@ router.get('/', authenticate, async (req, res) => {
         page: page,
         itemsPerPage: itemsPerPage,
         search: search,
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -37,7 +37,7 @@ router.get('/', authenticate, async (req, res) => {
             requestId: requestId,
             buyerCount: result.items.length,
             totalCount: result.paging.totalItems,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             companyId: companyId,
         });
         res.json(result);
@@ -45,7 +45,7 @@ router.get('/', authenticate, async (req, res) => {
         logger.error(`BuyerRoute: GET /buyers - Request failed`, {
             requestId: requestId,
             error: error.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: error.stack,
         });
         res.status(500).json({ error: 'Internal server error' });
@@ -60,7 +60,7 @@ router.get('/:id', authenticate, async (req, res) => {
     logger.info(`BuyerRoute: GET /buyers/${buyerId} - Request started`, {
         requestId: requestId,
         buyerId: buyerId,
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -70,7 +70,7 @@ router.get('/:id', authenticate, async (req, res) => {
             logger.warn(`BuyerRoute: GET /buyers/${buyerId} - Buyer not found`, {
                 requestId: requestId,
                 buyerId: buyerId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             });
             return res.status(404).json({ error: 'Buyer not found' });
         }
@@ -79,7 +79,7 @@ router.get('/:id', authenticate, async (req, res) => {
             requestId: requestId,
             buyerId: buyerId,
             buyerName: buyer.buyerName,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
         });
         res.json(buyer);
     } catch (error) {
@@ -87,7 +87,7 @@ router.get('/:id', authenticate, async (req, res) => {
             requestId: requestId,
             buyerId: buyerId,
             error: error.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: error.stack,
         });
         res.status(500).json({ error: 'Internal server error' });
@@ -102,7 +102,7 @@ router.post('/', authenticate, async (req, res, next) => {
         requestId: requestId,
         buyerName: req.body.buyerName,
         companyId: req.body.companyId,
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -113,7 +113,7 @@ router.post('/', authenticate, async (req, res, next) => {
             requestId: requestId,
             buyerId: buyer.buyerSequence,
             buyerName: buyer.buyerName,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
         });
         res.status(201).json(buyer);
     } catch (error) {
@@ -121,7 +121,7 @@ router.post('/', authenticate, async (req, res, next) => {
             requestId: requestId,
             error: error.message,
             requestBody: req.body,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: error.stack,
         });
         next(error);
@@ -137,7 +137,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
         requestId: requestId,
         buyerId: buyerId,
         updateFields: Object.keys(req.body),
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -148,7 +148,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
             requestId: requestId,
             buyerId: buyerId,
             buyerName: buyer.buyerName,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
         });
         res.json(buyer);
     } catch (error) {
@@ -156,7 +156,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
             logger.warn(`BuyerRoute: PUT /buyers/${buyerId} - Buyer not found`, {
                 requestId: requestId,
                 buyerId: buyerId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             });
             return res.status(404).json({ error: error.message });
         }
@@ -164,7 +164,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
             requestId: requestId,
             buyerId: buyerId,
             error: error.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: error.stack,
         });
         next(error);
@@ -179,7 +179,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     logger.info(`BuyerRoute: DELETE /buyers/${buyerId} - Request started`, {
         requestId: requestId,
         buyerId: buyerId,
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -188,7 +188,7 @@ router.delete('/:id', authenticate, async (req, res) => {
         logger.info(`BuyerRoute: DELETE /buyers/${buyerId} - Request completed successfully`, {
             requestId: requestId,
             buyerId: buyerId,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
         });
         res.json(result);
     } catch (error) {
@@ -196,7 +196,7 @@ router.delete('/:id', authenticate, async (req, res) => {
             logger.warn(`BuyerRoute: DELETE /buyers/${buyerId} - Buyer not found`, {
                 requestId: requestId,
                 buyerId: buyerId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             });
             return res.status(404).json({ error: error.message });
         }
@@ -204,7 +204,7 @@ router.delete('/:id', authenticate, async (req, res) => {
             requestId: requestId,
             buyerId: buyerId,
             error: error.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: error.stack,
         });
         res.status(500).json({ error: 'Internal server error' });

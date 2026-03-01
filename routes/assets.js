@@ -98,13 +98,11 @@ const createDownloadToken = (asset) => {
 };
 
 const getCompanyId = (req) => {
-    if (req.auth?.getPrimaryCompanyId) return req.auth.getPrimaryCompanyId();
-    return req.auth?.companies?.[0]?.companyId || null;
+    return req.auth?.getPrimaryCompanyId() || null;
 };
 
 const getUserId = (req) => {
-    if (req.auth?.getUserId) return req.auth.getUserId();
-    return req.auth?.sub || req.auth?.id || null;
+    return req.auth?.getUserId() || null;
 };
 
 const parseMetadata = (raw) => {

@@ -51,16 +51,16 @@ router.get('/', authenticate, async (req, res) => {
         page: page,
         itemsPerPage: itemsPerPage,
         search: search,
-        userId: req.auth?.id,
-        userRoles: req.auth?.roles?.map((r) => r.name),
+        userId: req.auth?.getUserId(),
+        userRoles: req.auth?.getRoleNames(),
     });
 
     try {
         if (!hasPermission(req.auth.roles, 'SHIFT_READ')) {
             logger.warn(`ProductionShiftRoute: GET /production-shift - Access denied`, {
                 requestId: requestId,
-                userId: req.auth?.id,
-                userRoles: req.auth?.roles?.map((r) => r.name),
+                userId: req.auth?.getUserId(),
+                userRoles: req.auth?.getRoleNames(),
             });
             return res.status(403).json({ error: 'Insufficient permissions' });
         }
@@ -81,7 +81,7 @@ router.get('/', authenticate, async (req, res) => {
                 shiftsReturned: result.items.length,
                 totalCount: result.paging.totalItems,
                 page: result.paging.currentPage,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             },
         );
         res.json(result);
@@ -89,7 +89,7 @@ router.get('/', authenticate, async (req, res) => {
         logger.error(`ProductionShiftRoute: GET /production-shift - Request failed`, {
             requestId: requestId,
             error: err.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: err.stack,
         });
         res.status(500).json({ error: 'Internal server error' });
@@ -103,7 +103,7 @@ router.get('/:id', authenticate, async (req, res) => {
     logger.info(`ProductionShiftRoute: GET /production-shift/${shiftId} - Request started`, {
         requestId: requestId,
         shiftId: shiftId,
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -111,7 +111,7 @@ router.get('/:id', authenticate, async (req, res) => {
             logger.warn(`ProductionShiftRoute: GET /production-shift/${shiftId} - Access denied`, {
                 requestId: requestId,
                 shiftId: shiftId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             });
             return res.status(403).json({ error: 'Insufficient permissions' });
         }
@@ -124,7 +124,7 @@ router.get('/:id', authenticate, async (req, res) => {
                 {
                     requestId: requestId,
                     shiftId: shiftId,
-                    userId: req.auth?.id,
+                    userId: req.auth?.getUserId(),
                 },
             );
             return res.status(404).json({ error: 'Shift not found' });
@@ -136,7 +136,7 @@ router.get('/:id', authenticate, async (req, res) => {
                 requestId: requestId,
                 shiftId: shiftId,
                 shiftName: shift.shiftId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             },
         );
         res.json(shift);
@@ -145,7 +145,7 @@ router.get('/:id', authenticate, async (req, res) => {
             requestId: requestId,
             shiftId: shiftId,
             error: err.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: err.stack,
         });
         res.status(500).json({ error: 'Internal server error' });
@@ -160,15 +160,15 @@ router.post('/', authenticate, async (req, res, next) => {
         shiftId: req.body.shiftId,
         orderId: req.body.orderId,
         machineId: req.body.machineId,
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
         if (!hasPermission(req.auth.roles, 'SHIFT_CREATE')) {
             logger.warn(`ProductionShiftRoute: POST /production-shift - Access denied`, {
                 requestId: requestId,
-                userId: req.auth?.id,
-                userRoles: req.auth?.roles?.map((r) => r.name),
+                userId: req.auth?.getUserId(),
+                userRoles: req.auth?.getRoleNames(),
             });
             return res.status(403).json({ error: 'Insufficient permissions' });
         }
@@ -186,7 +186,7 @@ router.post('/', authenticate, async (req, res, next) => {
                 requestId: requestId,
                 shiftSequence: shift.shiftSequence,
                 shiftId: shift.shiftId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             },
         );
         res.status(201).json(shift);
@@ -199,7 +199,7 @@ router.post('/', authenticate, async (req, res, next) => {
             requestId: requestId,
             error: validationErrors || err.message,
             requestBody: req.body,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: err.stack,
         });
         if (validationErrors) {
@@ -217,7 +217,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
         requestId: requestId,
         shiftId: shiftId,
         updateFields: Object.keys(req.body),
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -225,7 +225,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
             logger.warn(`ProductionShiftRoute: PUT /production-shift/${shiftId} - Access denied`, {
                 requestId: requestId,
                 shiftId: shiftId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             });
             return res.status(403).json({ error: 'Insufficient permissions' });
         }
@@ -244,7 +244,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
                 requestId: requestId,
                 shiftId: shiftId,
                 shiftName: shift.shiftId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             },
         );
         res.json(shift);
@@ -255,7 +255,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
                 {
                     requestId: requestId,
                     shiftId: shiftId,
-                    userId: req.auth?.id,
+                    userId: req.auth?.getUserId(),
                 },
             );
             return res.status(404).json({ error: err.message });
@@ -268,7 +268,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
             requestId: requestId,
             shiftId: shiftId,
             error: validationErrors || err.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: err.stack,
         });
         if (validationErrors) {
@@ -285,7 +285,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     logger.info(`ProductionShiftRoute: DELETE /production-shift/${shiftId} - Request started`, {
         requestId: requestId,
         shiftId: shiftId,
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -295,7 +295,7 @@ router.delete('/:id', authenticate, async (req, res) => {
                 {
                     requestId: requestId,
                     shiftId: shiftId,
-                    userId: req.auth?.id,
+                    userId: req.auth?.getUserId(),
                 },
             );
             return res.status(403).json({ error: 'Insufficient permissions' });
@@ -308,7 +308,7 @@ router.delete('/:id', authenticate, async (req, res) => {
             {
                 requestId: requestId,
                 shiftId: shiftId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             },
         );
         res.json(result);
@@ -319,7 +319,7 @@ router.delete('/:id', authenticate, async (req, res) => {
                 {
                     requestId: requestId,
                     shiftId: shiftId,
-                    userId: req.auth?.id,
+                    userId: req.auth?.getUserId(),
                 },
             );
             return res.status(404).json({ error: err.message });
@@ -328,7 +328,7 @@ router.delete('/:id', authenticate, async (req, res) => {
             requestId: requestId,
             shiftId: shiftId,
             error: err.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: err.stack,
         });
         res.status(500).json({ error: 'Internal server error' });

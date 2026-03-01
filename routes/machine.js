@@ -20,7 +20,7 @@ router.get('/', authenticate, async (req, res) => {
         page: page,
         itemsPerPage: itemsPerPage,
         search: search,
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -37,7 +37,7 @@ router.get('/', authenticate, async (req, res) => {
             requestId: requestId,
             machineCount: result.items.length,
             totalCount: result.paging.totalItems,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             companyId: companyId,
         });
         res.json(result);
@@ -45,7 +45,7 @@ router.get('/', authenticate, async (req, res) => {
         logger.error(`MachineRoute: GET /machines - Request failed`, {
             requestId: requestId,
             error: error.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: error.stack,
         });
         res.status(500).json({ error: 'Internal server error' });
@@ -60,7 +60,7 @@ router.get('/:id', authenticate, async (req, res) => {
     logger.info(`MachineRoute: GET /machines/${machineId} - Request started`, {
         requestId: requestId,
         machineId: machineId,
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -70,7 +70,7 @@ router.get('/:id', authenticate, async (req, res) => {
             logger.warn(`MachineRoute: GET /machines/${machineId} - Machine not found`, {
                 requestId: requestId,
                 machineId: machineId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             });
             return res.status(404).json({ error: 'Machine not found' });
         }
@@ -79,7 +79,7 @@ router.get('/:id', authenticate, async (req, res) => {
             requestId: requestId,
             machineId: machineId,
             machineName: machine.machineName,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
         });
         res.json(machine);
     } catch (error) {
@@ -87,7 +87,7 @@ router.get('/:id', authenticate, async (req, res) => {
             requestId: requestId,
             machineId: machineId,
             error: error.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: error.stack,
         });
         res.status(500).json({ error: 'Internal server error' });
@@ -102,7 +102,7 @@ router.post('/', authenticate, async (req, res, next) => {
         requestId: requestId,
         machineName: req.body.machineName,
         machineType: req.body.machineType,
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -113,7 +113,7 @@ router.post('/', authenticate, async (req, res, next) => {
             requestId: requestId,
             machineId: machine.machineSequence,
             machineName: machine.machineName,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
         });
         res.status(201).json(machine);
     } catch (error) {
@@ -121,7 +121,7 @@ router.post('/', authenticate, async (req, res, next) => {
             requestId: requestId,
             error: error.message,
             requestBody: req.body,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: error.stack,
         });
         next(error);
@@ -137,7 +137,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
         requestId: requestId,
         machineId: machineId,
         updateFields: Object.keys(req.body),
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -148,7 +148,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
             requestId: requestId,
             machineId: machineId,
             machineName: machine.machineName,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
         });
         res.json(machine);
     } catch (error) {
@@ -156,7 +156,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
             logger.warn(`MachineRoute: PUT /machines/${machineId} - Machine not found`, {
                 requestId: requestId,
                 machineId: machineId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             });
             return res.status(404).json({ error: error.message });
         }
@@ -164,7 +164,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
             requestId: requestId,
             machineId: machineId,
             error: error.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: error.stack,
         });
         next(error);
@@ -179,7 +179,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     logger.info(`MachineRoute: DELETE /machines/${machineId} - Request started`, {
         requestId: requestId,
         machineId: machineId,
-        userId: req.auth?.id,
+        userId: req.auth?.getUserId(),
     });
 
     try {
@@ -190,7 +190,7 @@ router.delete('/:id', authenticate, async (req, res) => {
             {
                 requestId: requestId,
                 machineId: machineId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             },
         );
         res.json(result);
@@ -199,7 +199,7 @@ router.delete('/:id', authenticate, async (req, res) => {
             logger.warn(`MachineRoute: DELETE /machines/${machineId} - Machine not found`, {
                 requestId: requestId,
                 machineId: machineId,
-                userId: req.auth?.id,
+                userId: req.auth?.getUserId(),
             });
             return res.status(404).json({ error: error.message });
         }
@@ -207,7 +207,7 @@ router.delete('/:id', authenticate, async (req, res) => {
             requestId: requestId,
             machineId: machineId,
             error: error.message,
-            userId: req.auth?.id,
+            userId: req.auth?.getUserId(),
             stack: error.stack,
         });
         res.status(500).json({ error: 'Internal server error' });

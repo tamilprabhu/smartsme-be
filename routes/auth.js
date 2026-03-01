@@ -95,14 +95,14 @@ router.post('/logout', (req, res) => {
 // GET /auth/me
 router.get('/me', authenticate, async (req, res) => {
     logger.debug('User info request', {
-        userId: req.auth?.sub,
+        userId: req.auth?.getUserId(),
         username: req.auth?.username,
     });
     try {
-        const user = await authService.getUserById(req.auth.sub);
+        const user = await authService.getUserById(req.auth?.getUserId());
         if (!user) {
             logger.warn('User info request for non-existent user', {
-                requestedUserId: req.auth.sub,
+                requestedUserId: req.auth?.getUserId(),
                 ip: req.ip,
             });
             return res.status(404).json({ error: 'User not found' });
@@ -133,7 +133,7 @@ router.get('/me', authenticate, async (req, res) => {
         });
     } catch (err) {
         logger.error('Error retrieving user info', {
-            userId: req.auth?.sub,
+            userId: req.auth?.getUserId(),
             error: err.message,
             stack: err.stack,
         });
@@ -145,20 +145,20 @@ router.get('/me', authenticate, async (req, res) => {
 router.post('/change-password', authenticate, async (req, res) => {
     const { currentPassword, newPassword } = req.body;
     logger.info('Change password attempt', {
-        userId: req.auth.sub,
+        userId: req.auth?.getUserId(),
         username: req.auth.username,
         ip: req.ip,
     });
     try {
-        await authService.changePassword(req.auth.sub, currentPassword, newPassword);
+        await authService.changePassword(req.auth?.getUserId(), currentPassword, newPassword);
         logger.info('Password changed successfully', {
-            userId: req.auth.sub,
+            userId: req.auth?.getUserId(),
             username: req.auth.username,
         });
         res.json({ message: 'Password changed successfully' });
     } catch (err) {
         logger.warn('Password change failed', {
-            userId: req.auth.sub,
+            userId: req.auth?.getUserId(),
             error: err.message,
             ip: req.ip,
         });
