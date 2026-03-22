@@ -1,4 +1,5 @@
 const logger = require('../config/logger');
+const reportsAgent = require('../agents/reportsAgent');
 
 class AiChatService {
     /**
@@ -9,13 +10,17 @@ class AiChatService {
      */
     async processMessage(message, authClaims) {
         try {
-            // Get user context for personalized responses
             const userContext = this.getUserContext(authClaims);
             
-            // For now, return a simple response
-            // TODO: Integrate with actual AI service (OpenAI, etc.)
-            const response = await this.generateResponse(message, userContext);
+            // Check if this is a reports request
+            if (await this.isReportsRequest(message)) {
+                const response = await reportsAgent.processReportRequest(message, userContext);
+                logger.info(`AI Chat - Reports Agent - User: ${authClaims.username}`);
+                return response;
+            }
             
+            // Fallback to simple responses
+            const response = await this.generateResponse(message, userContext);
             logger.info(`AI Chat - User: ${authClaims.username}, Message: ${message.substring(0, 50)}...`);
             
             return response;
@@ -23,6 +28,24 @@ class AiChatService {
             logger.error('AI Chat Service error:', error);
             throw new Error('Failed to process AI chat message');
         }
+    }
+
+    /**
+     * Check if message is requesting a report
+     * @param {string} message - User message
+     * @returns {boolean} True if reports request
+     */
+    async isReportsRequest(message) {
+        // Let the LLM-powered reports agent handle classification
+        // This is just a quick pre-filter to avoid unnecessary LLM calls
+        const lowerMessage = message.toLowerCase();
+        return lowerMessage.includes('report') || 
+               lowerMessage.includes('summary') || 
+               lowerMessage.includes('analytics') ||
+               lowerMessage.includes('data') ||
+               lowerMessage.includes('production') ||
+               lowerMessage.includes('performance') ||
+               lowerMessage.includes('stats');
     }
 
     /**
