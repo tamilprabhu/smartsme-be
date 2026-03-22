@@ -1,4 +1,4 @@
-const { Ollama } = require('@langchain/ollama');
+const { Ollama, ChatOllama } = require('@langchain/ollama');
 const { ChatOpenAI } = require('@langchain/openai');
 const { ChatAnthropic } = require('@langchain/anthropic');
 const logger = require('../config/logger');
@@ -25,7 +25,8 @@ class LLMFactory {
                 
             case 'ollama':
             default:
-                return new Ollama({
+                // Use ChatOllama for tool support
+                return new ChatOllama({
                     baseUrl: process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
                     model: process.env.OLLAMA_MODEL || 'qwen2.5:7b',
                     temperature: parseFloat(process.env.LLM_TEMPERATURE) || 0.1
@@ -60,6 +61,25 @@ class LLMFactory {
             default:
                 logger.warn(`Unknown LLM provider: ${provider}, falling back to Ollama`);
         }
+    }
+
+    /**
+     * Extract content from LLM response handling different provider formats
+     * @param {*} response - LLM response
+     * @returns {string} - Extracted content
+     */
+    static extractContent(response) {
+        if (typeof response === 'string') {
+            return response.trim();
+        }
+        if (response?.content) {
+            return response.content.trim();
+        }
+        if (response?.text) {
+            return response.text.trim();
+        }
+        logger.warn('Unexpected LLM response format:', response);
+        return '';
     }
 }
 

@@ -1,5 +1,5 @@
 const logger = require('../config/logger');
-const reportsAgent = require('../agents/reportsAgent');
+const agentOrchestrator = require('../services/agentOrchestrator');
 
 class AiChatService {
     /**
@@ -12,17 +12,10 @@ class AiChatService {
         try {
             const userContext = this.getUserContext(authClaims);
             
-            // Check if this is a reports request
-            if (await this.isReportsRequest(message)) {
-                const response = await reportsAgent.processReportRequest(message, userContext);
-                logger.info(`AI Chat - Reports Agent - User: ${authClaims.username}`);
-                return response;
-            }
+            // Use agent orchestrator for intelligent routing
+            const response = await agentOrchestrator.processRequest(message, userContext);
             
-            // Fallback to simple responses
-            const response = await this.generateResponse(message, userContext);
-            logger.info(`AI Chat - User: ${authClaims.username}, Message: ${message.substring(0, 50)}...`);
-            
+            logger.info(`AI Chat - Orchestrated - User: ${authClaims.username}`);
             return response;
         } catch (error) {
             logger.error('AI Chat Service error:', error);
