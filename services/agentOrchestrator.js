@@ -1,14 +1,19 @@
 const logger = require('../config/logger');
 const reportsAgent = require('../agents/reportsAgentWithTools'); // Use tool-based agent
 const productAgent = require('../agents/productAgentWithTools'); // Use tool-based agent
+const { searchProductsTool } = require('../tools/productTools');
+const { productionReportTool } = require('../tools/productionTools');
 const LLMFactory = require('../factories/llmFactory');
 const { PromptTemplate } = require('@langchain/core/prompts');
-const { HumanMessage } = require('@langchain/core/messages');
+const { HumanMessage, ToolMessage } = require('@langchain/core/messages');
 
 class AgentOrchestrator {
     constructor() {
         LLMFactory.validateConfiguration();
         this.orchestratorLLM = LLMFactory.createLLM();
+        this.reportWorkflowLLM = this.orchestratorLLM.bindTools
+            ? this.orchestratorLLM.bindTools([searchProductsTool, productionReportTool])
+            : null;
         
         this.agents = {
             reports: reportsAgent,
@@ -32,7 +37,7 @@ class AgentOrchestrator {
             switch (agentSelection.agent) {
                 case 'reports':
                     logger.debug(`[Orchestrator] Routing to ReportsAgent`);
-                    response = await this.agents.reports.processReportRequest(message, userContext);
+                    response = await this.processReportWorkflow(message, userContext);
                     break;
                     
                 case 'products':
@@ -118,6 +123,109 @@ Keep responses conversational and tailored to their specific message.`).format({
         } catch (error) {
             logger.error('General request error:', error);
             return "Hello! I can help you with production analytics and product search. How can I assist you today?";
+        }
+    }
+
+    async processReportWorkflow(message, userContext) {
+        if (!this.reportWorkflowLLM) {
+            return this.agents.reports.processReportRequest(message, userContext);
+        }
+
+        try {
+            const messages = [
+                new HumanMessage(`You are orchestrating manufacturing report workflows.
+User company: ${userContext.companyId}
+User roles: ${userContext.roles?.join(', ') || 'unknown'}
+
+Available tools:
+- search_products: use this first when the user mentions a product name but not a product ID
+- production_report: use this after you have the productId and date range
+
+Rules:
+- For product-specific production reports, first call search_products with the product name.
+- Read the search_products result and use the returned productId in production_report.
+- Always include companyId in both tool calls.
+- Convert relative dates like "since last Sunday until now" into YYYY-MM-DD values.
+- If search_products returns multiple products, choose the closest name match.
+- After production_report returns, stop calling tools.
+
+User request: ${message}`)
+            ];
+
+            let latestReportResult = null;
+
+            for (let i = 0; i < 4; i += 1) {
+                const response = await this.reportWorkflowLLM.invoke(messages);
+                messages.push(response);
+
+                if (!response.tool_calls || response.tool_calls.length === 0) {
+                    if (latestReportResult) {
+                        return this.formatProductionReportResult(latestReportResult, message);
+                    }
+
+                    const content = LLMFactory.extractContent(response);
+                    if (content) {
+                        return content;
+                    }
+                    break;
+                }
+
+                for (const toolCall of response.tool_calls) {
+                    const result = await this.executeWorkflowTool(toolCall, userContext);
+                    if (toolCall.name === 'production_report') {
+                        latestReportResult = result;
+                    }
+
+                    messages.push(new ToolMessage({
+                        tool_call_id: toolCall.id,
+                        name: toolCall.name,
+                        content: result
+                    }));
+                }
+            }
+
+            if (latestReportResult) {
+                return this.formatProductionReportResult(latestReportResult, message);
+            }
+        } catch (error) {
+            logger.error('[Orchestrator] Report workflow error:', error);
+        }
+
+        return this.agents.reports.processReportRequest(message, userContext);
+    }
+
+    async executeWorkflowTool(toolCall, userContext) {
+        switch (toolCall.name) {
+            case 'search_products':
+                return searchProductsTool.invoke({
+                    ...toolCall.args,
+                    companyId: userContext.companyId
+                });
+            case 'production_report':
+                return productionReportTool.invoke({
+                    ...toolCall.args,
+                    companyId: userContext.companyId
+                });
+            default:
+                logger.warn(`[Orchestrator] Unsupported workflow tool call: ${toolCall.name}`);
+                return JSON.stringify({
+                    error: true,
+                    message: `Unsupported tool call: ${toolCall.name}`
+                });
+        }
+    }
+
+    formatProductionReportResult(reportResult, originalMessage) {
+        try {
+            const reportData = JSON.parse(reportResult);
+            if (reportData.error) {
+                return reportData.message;
+            }
+
+            return this.agents.reports.formatProductionReport(reportData, originalMessage);
+        } catch (error) {
+            logger.error('[Orchestrator] Failed to parse workflow report result:', error);
+            return reportResult;
         }
     }
 

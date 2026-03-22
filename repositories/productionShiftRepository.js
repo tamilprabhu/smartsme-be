@@ -13,9 +13,10 @@ class ProductionShiftRepository {
             },
             include: [{
                 model: Product,
-                attributes: ['productName']
+                attributes: ['productId', 'productName']
             }],
             attributes: [
+                'productId',
                 'production',
                 'rejection', 
                 'netProduction',

@@ -114,9 +114,9 @@ class ProductAgentWithTools {
         let result = `📦 **Found ${products.length} Products:**\n\n`;
         products.forEach((p, i) => {
             result += `${i + 1}. **${p.name}**\n`;
-            if (p.material) result += `   • Material: ${p.material}\n`;
-            if (p.weight) result += `   • Weight: ${p.weight} kg\n`;
-            if (p.rate) result += `   • Rate: ₹${p.rate}\n`;
+            // if (p.material) result += `   • Material: ${p.material}\n`;
+            // if (p.weight) result += `   • Weight: ${p.weight} kg\n`;
+            // if (p.rate) result += `   • Rate: ₹${p.rate}\n`;
             result += '\n';
         });
 

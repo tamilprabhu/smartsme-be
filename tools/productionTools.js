@@ -19,8 +19,9 @@ const productionReportTool = tool(
       let filteredData = productionData;
       if (productId) {
         filteredData = productionData.filter(shift => 
-          shift.Product && shift.Product.productName && 
-          shift.Product.productName.toLowerCase().includes(productId.toLowerCase())
+          shift.productId === productId ||
+          shift.Product?.productId === productId ||
+          shift.Product?.productName?.toLowerCase().includes(productId.toLowerCase())
         );
       }
       
