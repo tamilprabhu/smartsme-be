@@ -18,6 +18,7 @@ const assetsRouter = require('./assets');
 const usersRouter = require('./users');
 const roleRouter = require('./role');
 const referenceRouter = require('./reference');
+const aiChatRouter = require('./aiChat');
 const homeRouter = require('./home'); // your existing index route
 
 const API_BASE = '/api/1.0.0';
@@ -43,6 +44,7 @@ const apiRoutes = [
     ['users', usersRouter],
     ['role', roleRouter],
     ['reference', referenceRouter],
+    ['ai-chat', aiChatRouter],
 ];
 
 module.exports = (app) => {
