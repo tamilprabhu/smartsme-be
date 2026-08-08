@@ -57,6 +57,8 @@ const companySchema = Joi.object({
 
     directPhone: Joi.string()
         .trim()
+        .min(10)
+        .max(15)
         .pattern(/^\d{2,5}-?\d{6,8}$/)
         .required()
         .messages({
@@ -67,6 +69,8 @@ const companySchema = Joi.object({
 
     officePhone: Joi.string()
         .trim()
+        .min(10)
+        .max(15)
         .pattern(/^\d{2,5}-?\d{6,8}$/)
         .required()
         .messages({
