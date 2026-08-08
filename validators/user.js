@@ -21,7 +21,7 @@ const userSchema = Joi.object({
 
     firstName: Joi.string()
         .trim()
-        .min(3)
+        .min(1)
         .max(10)
         .pattern(/^[a-zA-Z]+$/)
         .required()
