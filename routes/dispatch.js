@@ -8,7 +8,7 @@ const { SortBy, SortOrder } = require('../constants/sort');
 
 // GET /dispatches - Get all dispatches with pagination and search
 router.get('/', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
@@ -54,7 +54,7 @@ router.get('/', authenticate, async (req, res) => {
 
 // GET /dispatches/:id - Get dispatch by ID
 router.get('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const dispatchId = req.params.id;
 
     try {
@@ -76,7 +76,7 @@ router.get('/:id', authenticate, async (req, res) => {
 
 // POST /dispatches - Create new dispatch
 router.post('/', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
 
     try {
         const companyId = req.auth.getPrimaryCompanyId();
@@ -95,7 +95,7 @@ router.post('/', authenticate, async (req, res, next) => {
 
 // PUT /dispatches/:id - Update dispatch
 router.put('/:id', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const dispatchId = req.params.id;
 
     try {
@@ -123,7 +123,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
 
 // DELETE /dispatches/:id - Delete dispatch
 router.delete('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const dispatchId = req.params.id;
 
     try {

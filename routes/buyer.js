@@ -8,7 +8,7 @@ const { SortBy, SortOrder } = require('../constants/sort');
 
 // GET /buyers - Get all buyers with pagination and search
 router.get('/', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
@@ -54,7 +54,7 @@ router.get('/', authenticate, async (req, res) => {
 
 // GET /buyers/:id - Get buyer by ID
 router.get('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const buyerId = req.params.id;
 
     logger.info(`BuyerRoute: GET /buyers/${buyerId} - Request started`, {
@@ -96,7 +96,7 @@ router.get('/:id', authenticate, async (req, res) => {
 
 // POST /buyers - Create new buyer
 router.post('/', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
 
     logger.info(`BuyerRoute: POST /buyers - Request started`, {
         requestId: requestId,
@@ -130,7 +130,7 @@ router.post('/', authenticate, async (req, res, next) => {
 
 // PUT /buyers/:id - Update buyer
 router.put('/:id', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const buyerId = req.params.id;
 
     logger.info(`BuyerRoute: PUT /buyers/${buyerId} - Request started`, {
@@ -173,7 +173,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
 
 // DELETE /buyers/:id - Delete buyer
 router.delete('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const buyerId = req.params.id;
 
     logger.info(`BuyerRoute: DELETE /buyers/${buyerId} - Request started`, {

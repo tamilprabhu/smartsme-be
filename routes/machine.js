@@ -8,7 +8,7 @@ const { SortBy, SortOrder } = require('../constants/sort');
 
 // GET /machines - Get all machines with pagination and search
 router.get('/', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
@@ -54,7 +54,7 @@ router.get('/', authenticate, async (req, res) => {
 
 // GET /machines/:id - Get machine by ID
 router.get('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const machineId = req.params.id;
 
     logger.info(`MachineRoute: GET /machines/${machineId} - Request started`, {
@@ -96,7 +96,7 @@ router.get('/:id', authenticate, async (req, res) => {
 
 // POST /machines - Create new machine
 router.post('/', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
 
     logger.info(`MachineRoute: POST /machines - Request started`, {
         requestId: requestId,
@@ -130,7 +130,7 @@ router.post('/', authenticate, async (req, res, next) => {
 
 // PUT /machines/:id - Update machine
 router.put('/:id', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const machineId = req.params.id;
 
     logger.info(`MachineRoute: PUT /machines/${machineId} - Request started`, {
@@ -173,7 +173,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
 
 // DELETE /machines/:id - Delete machine
 router.delete('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const machineId = req.params.id;
 
     logger.info(`MachineRoute: DELETE /machines/${machineId} - Request started`, {
