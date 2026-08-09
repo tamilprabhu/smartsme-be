@@ -14,7 +14,7 @@ async function generalNode(state) {
     const { userContext } = state;
 
     try {
-        const llm = LLMFactory.createLLM();
+        const llm = LLMFactory.getLLM();
 
         const response = await llm.invoke([
             {

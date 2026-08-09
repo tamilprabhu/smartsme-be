@@ -44,7 +44,7 @@ async function supervisorNode(state) {
         .join('\n');
 
     try {
-        const llm = LLMFactory.createLLM();
+        const llm = LLMFactory.getLLM();
         const structuredLLM = llm.withStructuredOutput(routingSchema);
 
         const response = await structuredLLM.invoke([

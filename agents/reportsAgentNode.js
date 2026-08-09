@@ -23,7 +23,7 @@ async function reportsAgentNode(state) {
     const { userContext } = state;
 
     try {
-        const llm = LLMFactory.createLLM();
+        const llm = LLMFactory.getLLM();
         const agentLLM = llm.bindTools([searchProductsTool, productionReportTool]);
 
         const systemPrompt = {

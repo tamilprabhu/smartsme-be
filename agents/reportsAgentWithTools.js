@@ -6,7 +6,7 @@ const LLMFactory = require('../factories/llmFactory');
 class ReportsAgentWithTools {
     constructor() {
         LLMFactory.validateConfiguration();
-        this.llm = LLMFactory.createLLM();
+        this.llm = LLMFactory.getLLM();
 
         // Check if LLM supports tool binding
         if (!this.llm.bindTools) {

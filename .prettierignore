@@ -6,3 +6,4 @@ www/
 public/
 package.json
 package-lock.json
+docker-compose.yml
