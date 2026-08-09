@@ -1,9 +1,11 @@
 const logger = require('../config/logger');
-const agentOrchestrator = require('../services/agentOrchestrator');
+const { processRequest } = require('../services/agentOrchestrator');
 
 class AiChatService {
     /**
-     * Process user message and return AI response
+     * Process user message and return AI response via the LangGraph
+     * multi-agent graph (Supervisor → specialist workers → FINISH).
+     *
      * @param {string} message - User message
      * @param {Object} authClaims - User authentication claims
      * @returns {Promise<string>} AI response
@@ -11,11 +13,10 @@ class AiChatService {
     async processMessage(message, authClaims) {
         try {
             const userContext = this.getUserContext(authClaims);
-            
-            // Use agent orchestrator for intelligent routing
-            const response = await agentOrchestrator.processRequest(message, userContext);
-            
-            logger.info(`AI Chat - Orchestrated - User: ${authClaims.username}`);
+
+            const response = await processRequest(message, userContext);
+
+            logger.info(`[AiChatService] Response delivered – user: ${authClaims.username}`);
             return response;
         } catch (error) {
             logger.error('AI Chat Service error:', error);
