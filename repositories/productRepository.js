@@ -6,19 +6,19 @@ class ProductRepository {
         const where = {
             companyId,
             isActive: true,
-            isDeleted: false
+            isDeleted: false,
         };
 
         // Build dynamic search conditions
         if (searchCriteria.productName) {
             where.productName = {
-                [Op.like]: `%${searchCriteria.productName}%`
+                [Op.like]: `%${searchCriteria.productName}%`,
             };
         }
 
         if (searchCriteria.rawMaterial) {
             where.rawMaterial = {
-                [Op.like]: `%${searchCriteria.rawMaterial}%`
+                [Op.like]: `%${searchCriteria.rawMaterial}%`,
             };
         }
 
@@ -37,15 +37,15 @@ class ProductRepository {
             where,
             attributes: [
                 'productId',
-                'productName', 
+                'productName',
                 'rawMaterial',
                 'weight',
                 'salesType',
                 'perItemRate',
                 'cavity',
-                'shotRate'
+                'shotRate',
             ],
-            order: [['productName', 'ASC']]
+            order: [['productName', 'ASC']],
         });
     }
 
@@ -55,8 +55,8 @@ class ProductRepository {
                 companyId,
                 productId,
                 isActive: true,
-                isDeleted: false
-            }
+                isDeleted: false,
+            },
         });
     }
 
@@ -66,9 +66,9 @@ class ProductRepository {
                 companyId,
                 salesType,
                 isActive: true,
-                isDeleted: false
+                isDeleted: false,
             },
-            order: [['productName', 'ASC']]
+            order: [['productName', 'ASC']],
         });
     }
 }

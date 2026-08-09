@@ -29,7 +29,7 @@ User roles: ${(userContext.roles || []).join(', ')}
 
 Use the search_products tool to find products. Always pass the companyId.
 After you get tool results, respond with a clear, formatted product list.
-Do NOT call tools more than once per user request.`
+Do NOT call tools more than once per user request.`,
         };
 
         const messages = [systemPrompt, ...state.messages];
@@ -41,47 +41,50 @@ Do NOT call tools more than once per user request.`
 
         if (response.tool_calls && response.tool_calls.length > 0) {
             const toolCall = response.tool_calls[0];
-            logger.info(`[ProductAgent] Executing tool: ${toolCall.name}(${JSON.stringify(toolCall.args)})`);
+            logger.info(
+                `[ProductAgent] Executing tool: ${toolCall.name}(${JSON.stringify(toolCall.args)})`,
+            );
 
             // Always inject server-side companyId – never trust what the LLM put in
             const toolResult = await searchProductsTool.invoke({
                 ...toolCall.args,
-                companyId: userContext.companyId
+                companyId: userContext.companyId,
             });
 
             // Feed result back so the LLM can produce a natural language answer
             const toolMessage = new ToolMessage({
                 tool_call_id: toolCall.id,
                 name: toolCall.name,
-                content: toolResult
+                content: toolResult,
             });
 
             const synthesisResponse = await agentLLM.invoke([
                 systemPrompt,
                 ...state.messages,
-                response,       // AIMessage with tool_calls
-                toolMessage     // ToolMessage with results
+                response, // AIMessage with tool_calls
+                toolMessage, // ToolMessage with results
             ]);
 
             finalResponse = synthesisResponse.content || toolResult;
         } else {
-            finalResponse = response.content || 'I can help you search for products. What are you looking for?';
+            finalResponse =
+                response.content || 'I can help you search for products. What are you looking for?';
         }
 
         logger.info(`[ProductAgent] Done – response length: ${finalResponse.length} chars`);
 
         return {
             messages: [{ role: 'assistant', name: 'ProductAgent', content: finalResponse }],
-            finalResponse
+            finalResponse,
         };
-
     } catch (error) {
         logger.error('[ProductAgent] Unhandled error:', error);
 
-        const fallback = "I'm sorry, I encountered an issue while searching for products. Please try again or rephrase your request.";
+        const fallback =
+            "I'm sorry, I encountered an issue while searching for products. Please try again or rephrase your request.";
         return {
             messages: [{ role: 'assistant', name: 'ProductAgent', content: fallback }],
-            finalResponse: fallback
+            finalResponse: fallback,
         };
     }
 }

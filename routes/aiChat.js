@@ -12,18 +12,18 @@ const logger = require('../config/logger');
 router.post('/message', authenticate, async (req, res, next) => {
     try {
         const { message } = req.body;
-        
+
         if (!message || !message.trim()) {
             return res.status(400).json({
-                error: 'Message is required'
+                error: 'Message is required',
             });
         }
 
         const response = await aiChatService.processMessage(message, req.auth);
-        
+
         res.json({
             message: response,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         });
     } catch (error) {
         logger.error('AI Chat error:', error);

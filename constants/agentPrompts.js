@@ -40,7 +40,7 @@ Create a professional report with:
 3. Actionable recommendations
 4. Use appropriate emojis for visual appeal
 
-Keep it concise but informative.`
+Keep it concise but informative.`,
 };
 
 module.exports = { AGENT_PROMPTS };

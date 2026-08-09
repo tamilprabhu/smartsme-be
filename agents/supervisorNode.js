@@ -22,10 +22,10 @@ const routingSchema = z.object({
         .enum(['ProductAgent', 'ReportsAgent', 'GeneralAgent', 'FINISH'])
         .describe(
             "Route to 'ProductAgent' for product search/catalog questions, " +
-            "'ReportsAgent' for production data/analytics/shift reports, " +
-            "'GeneralAgent' for greetings, help, or unclear requests. " +
-            "Choose 'FINISH' only when the last assistant message fully answers the user."
-        )
+                "'ReportsAgent' for production data/analytics/shift reports, " +
+                "'GeneralAgent' for greetings, help, or unclear requests. " +
+                "Choose 'FINISH' only when the last assistant message fully answers the user.",
+        ),
 });
 
 async function supervisorNode(state) {
@@ -35,9 +35,10 @@ async function supervisorNode(state) {
 
     // Build a readable summary of the conversation so far for the supervisor
     const historyText = state.messages
-        .map(msg => {
-            const role = msg.name ? `${msg.name}` : (msg.role === 'human' ? 'User' : 'Assistant');
-            const content = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
+        .map((msg) => {
+            const role = msg.name ? `${msg.name}` : msg.role === 'human' ? 'User' : 'Assistant';
+            const content =
+                typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
             return `${role}: ${content}`;
         })
         .join('\n');
@@ -61,22 +62,24 @@ Rules:
 - If the last message is from a worker agent and it fully answers the user, choose FINISH.
 - If no worker has responded yet, route to the best-fit agent for the user's request.
 - If the last worker's response is incomplete or the user asked multiple things, route to the next needed agent.
-- Never route to the same agent twice in a row.`
+- Never route to the same agent twice in a row.`,
             },
             {
                 role: 'user',
-                content: `Conversation so far:\n${historyText}\n\nWho should act next?`
-            }
+                content: `Conversation so far:\n${historyText}\n\nWho should act next?`,
+            },
         ]);
 
         logger.info(`[Supervisor] Routing decision: ${response.nextWorker}`);
         return { nextWorker: response.nextWorker };
-
     } catch (error) {
         // withStructuredOutput can fail if the LLM returns malformed output or
         // there is a transient network/API error. Fall back to GeneralAgent so
         // the user always gets a response rather than a 500.
-        logger.error('[Supervisor] Structured routing failed, falling back to GeneralAgent:', error);
+        logger.error(
+            '[Supervisor] Structured routing failed, falling back to GeneralAgent:',
+            error,
+        );
         return { nextWorker: 'GeneralAgent' };
     }
 }

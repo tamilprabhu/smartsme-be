@@ -34,16 +34,12 @@ const workflow = new StateGraph(GraphState)
     .addEdge(START, 'Supervisor')
 
     // Supervisor uses conditional edges – routes based on state.nextWorker
-    .addConditionalEdges(
-        'Supervisor',
-        (state) => state.nextWorker,
-        {
-            ProductAgent: 'ProductAgent',
-            ReportsAgent: 'ReportsAgent',
-            GeneralAgent: 'GeneralAgent',
-            FINISH: END
-        }
-    )
+    .addConditionalEdges('Supervisor', (state) => state.nextWorker, {
+        ProductAgent: 'ProductAgent',
+        ReportsAgent: 'ReportsAgent',
+        GeneralAgent: 'GeneralAgent',
+        FINISH: END,
+    })
 
     // Every worker loops back to Supervisor after completing their work
     .addEdge('ProductAgent', 'Supervisor')
@@ -65,22 +61,26 @@ logger.info('[AgentOrchestrator] LangGraph multi-agent graph compiled successful
  */
 async function processRequest(message, userContext) {
     const startTime = Date.now();
-    logger.info(`[AgentOrchestrator] Invoking graph – user: ${userContext.username}, company: ${userContext.companyId}`);
+    logger.info(
+        `[AgentOrchestrator] Invoking graph – user: ${userContext.username}, company: ${userContext.companyId}`,
+    );
 
     try {
         const finalState = await compiledGraph.invoke({
             messages: [{ role: 'human', content: message }],
-            userContext
+            userContext,
         });
 
         const duration = Date.now() - startTime;
-        const response = finalState.finalResponse
-            || finalState.messages[finalState.messages.length - 1]?.content
-            || "I'm sorry, I couldn't process your request. Please try again.";
+        const response =
+            finalState.finalResponse ||
+            finalState.messages[finalState.messages.length - 1]?.content ||
+            "I'm sorry, I couldn't process your request. Please try again.";
 
-        logger.info(`[AgentOrchestrator] Graph completed in ${duration}ms – response length: ${response.length} chars`);
+        logger.info(
+            `[AgentOrchestrator] Graph completed in ${duration}ms – response length: ${response.length} chars`,
+        );
         return response;
-
     } catch (error) {
         const duration = Date.now() - startTime;
         logger.error(`[AgentOrchestrator] Graph failed after ${duration}ms:`, error);

@@ -8,22 +8,24 @@ class ProductionShiftRepository {
             where: {
                 companyId,
                 createdAt: {
-                    [Op.between]: [startDate, endDate]
-                }
+                    [Op.between]: [startDate, endDate],
+                },
             },
-            include: [{
-                model: Product,
-                attributes: ['productId', 'productName']
-            }],
+            include: [
+                {
+                    model: Product,
+                    attributes: ['productId', 'productName'],
+                },
+            ],
             attributes: [
                 'productId',
                 'production',
-                'rejection', 
+                'rejection',
                 'netProduction',
                 'createdAt',
-                'supervisor'
+                'supervisor',
             ],
-            order: [['createdAt', 'DESC']]
+            order: [['createdAt', 'DESC']],
         });
     }
 
@@ -32,21 +34,46 @@ class ProductionShiftRepository {
             where: {
                 companyId,
                 createdAt: {
-                    [Op.between]: [startDate, endDate]
-                }
+                    [Op.between]: [startDate, endDate],
+                },
             },
-            include: [{
-                model: Product,
-                attributes: ['productName']
-            }],
+            include: [
+                {
+                    model: Product,
+                    attributes: ['productName'],
+                },
+            ],
             attributes: [
                 'productId',
-                [ProductionShift.sequelize.fn('SUM', ProductionShift.sequelize.col('production')), 'totalProduction'],
-                [ProductionShift.sequelize.fn('SUM', ProductionShift.sequelize.col('rejection')), 'totalRejection'],
-                [ProductionShift.sequelize.fn('SUM', ProductionShift.sequelize.col('netProduction')), 'totalNetProduction']
+                [
+                    ProductionShift.sequelize.fn(
+                        'SUM',
+                        ProductionShift.sequelize.col('production'),
+                    ),
+                    'totalProduction',
+                ],
+                [
+                    ProductionShift.sequelize.fn('SUM', ProductionShift.sequelize.col('rejection')),
+                    'totalRejection',
+                ],
+                [
+                    ProductionShift.sequelize.fn(
+                        'SUM',
+                        ProductionShift.sequelize.col('netProduction'),
+                    ),
+                    'totalNetProduction',
+                ],
             ],
             group: ['productId', 'Product.productId'],
-            order: [[ProductionShift.sequelize.fn('SUM', ProductionShift.sequelize.col('production')), 'DESC']]
+            order: [
+                [
+                    ProductionShift.sequelize.fn(
+                        'SUM',
+                        ProductionShift.sequelize.col('production'),
+                    ),
+                    'DESC',
+                ],
+            ],
         });
     }
 }

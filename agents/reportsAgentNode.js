@@ -39,7 +39,7 @@ Guidelines:
 - Convert relative dates ("last week", "since Monday") to absolute YYYY-MM-DD values.
 - Always include companyId in every tool call.
 - After production_report returns data, respond with a clear formatted markdown report.
-- Do NOT call production_report more than once.`
+- Do NOT call production_report more than once.`,
         };
 
         // Build the running message list for this node
@@ -57,38 +57,48 @@ Guidelines:
                 break;
             }
 
-            logger.info(`[ReportsAgent] Iteration ${i + 1} – executing ${response.tool_calls.length} tool call(s)`);
+            logger.info(
+                `[ReportsAgent] Iteration ${i + 1} – executing ${response.tool_calls.length} tool call(s)`,
+            );
 
             // Execute all tool calls in this turn
             for (const toolCall of response.tool_calls) {
-                logger.info(`[ReportsAgent] Tool: ${toolCall.name}(${JSON.stringify(toolCall.args)})`);
+                logger.info(
+                    `[ReportsAgent] Tool: ${toolCall.name}(${JSON.stringify(toolCall.args)})`,
+                );
 
                 let toolResult;
                 if (toolCall.name === 'search_products') {
                     toolResult = await searchProductsTool.invoke({
                         ...toolCall.args,
-                        companyId: userContext.companyId
+                        companyId: userContext.companyId,
                     });
                 } else if (toolCall.name === 'production_report') {
                     toolResult = await productionReportTool.invoke({
                         ...toolCall.args,
-                        companyId: userContext.companyId
+                        companyId: userContext.companyId,
                     });
                 } else {
-                    toolResult = JSON.stringify({ error: true, message: `Unknown tool: ${toolCall.name}` });
+                    toolResult = JSON.stringify({
+                        error: true,
+                        message: `Unknown tool: ${toolCall.name}`,
+                    });
                 }
 
-                runMessages.push(new ToolMessage({
-                    tool_call_id: toolCall.id,
-                    name: toolCall.name,
-                    content: toolResult
-                }));
+                runMessages.push(
+                    new ToolMessage({
+                        tool_call_id: toolCall.id,
+                        name: toolCall.name,
+                        content: toolResult,
+                    }),
+                );
             }
         }
 
         // Safety fallback if loop exhausted without a text response
         if (!finalResponse) {
-            finalResponse = 'I was unable to generate the production report. Please try again with more specific dates or product name.';
+            finalResponse =
+                'I was unable to generate the production report. Please try again with more specific dates or product name.';
             logger.warn('[ReportsAgent] Loop exhausted without final text response');
         }
 
@@ -96,16 +106,16 @@ Guidelines:
 
         return {
             messages: [{ role: 'assistant', name: 'ReportsAgent', content: finalResponse }],
-            finalResponse
+            finalResponse,
         };
-
     } catch (error) {
         logger.error('[ReportsAgent] Unhandled error:', error);
 
-        const fallback = "I'm sorry, I encountered an issue while generating the production report. Please try again or rephrase your request.";
+        const fallback =
+            "I'm sorry, I encountered an issue while generating the production report. Please try again or rephrase your request.";
         return {
             messages: [{ role: 'assistant', name: 'ReportsAgent', content: fallback }],
-            finalResponse: fallback
+            finalResponse: fallback,
         };
     }
 }

@@ -38,7 +38,7 @@ Respond naturally and helpfully. Explain your product search capabilities:
 - List products by category/sales type
 - Find products for production planning
 
-Keep responses conversational and tailored to their message.`
+Keep responses conversational and tailored to their message.`,
 };
 
 module.exports = { PRODUCT_PROMPTS };

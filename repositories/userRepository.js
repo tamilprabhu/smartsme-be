@@ -5,11 +5,7 @@ class UserRepository {
     async findByIdentifier(identifier) {
         return User.findOne({
             where: {
-                [Op.or]: [
-                    { email: identifier },
-                    { username: identifier },
-                    { mobile: identifier },
-                ],
+                [Op.or]: [{ email: identifier }, { username: identifier }, { mobile: identifier }],
             },
             include: [
                 {

@@ -11,20 +11,20 @@ const { Annotation } = require('@langchain/langgraph');
 const GraphState = Annotation.Root({
     messages: Annotation({
         reducer: (existing, incoming) => existing.concat(incoming),
-        default: () => []
+        default: () => [],
     }),
     nextWorker: Annotation({
         reducer: (_, incoming) => incoming,
-        default: () => 'Supervisor'
+        default: () => 'Supervisor',
     }),
     userContext: Annotation({
         reducer: (_, incoming) => incoming,
-        default: () => ({})
+        default: () => ({}),
     }),
     finalResponse: Annotation({
         reducer: (_, incoming) => incoming,
-        default: () => null
-    })
+        default: () => null,
+    }),
 });
 
 module.exports = { GraphState };
