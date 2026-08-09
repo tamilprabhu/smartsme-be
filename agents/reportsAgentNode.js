@@ -1,19 +1,30 @@
 const { ToolMessage } = require('@langchain/core/messages');
 const { searchProductsTool } = require('../tools/productTools');
 const { productionReportTool } = require('../tools/productionTools');
+const { extractReportQuery } = require('../extractors/reportQueryExtractor');
 const LLMFactory = require('../factories/llmFactory');
 const logger = require('../config/logger');
 
 /**
  * ReportsAgent – LangGraph node
  *
- * Handles production report requests. Runs a multi-step tool loop:
- *   1. LLM may call search_products to resolve a product name → productId
- *   2. LLM then calls production_report with the resolved productId + dates
- *   3. LLM synthesises a final markdown report from the raw data
+ * Flow:
+ *   1. extractReportQuery() – structured LLM call with ReportQuerySchema.
+ *      Validates the message is a report request and resolves all dates
+ *      to concrete YYYY-MM-DD values (presets resolved server-side).
+ *      If the message is not a valid report query, returns a rejection
+ *      message immediately without touching any tools.
  *
- * Loops up to MAX_ITERATIONS tool rounds then writes finalResponse into state.
- * All errors are caught and returned as graceful user-facing messages.
+ *   2. Tool loop (up to MAX_ITERATIONS):
+ *      a. If a productName was extracted, LLM calls search_products first
+ *         to resolve it to a productId.
+ *      b. LLM calls production_report with the pre-validated dates and
+ *         resolved productId.
+ *      c. LLM synthesises a formatted markdown report from the tool result.
+ *
+ * Dates are NEVER left to the tool-calling LLM to calculate – they are
+ * extracted, validated by Zod, and injected into the prompt as concrete
+ * values. This eliminates the primary source of fragility in date handling.
  */
 const MAX_ITERATIONS = 4;
 
@@ -23,6 +34,33 @@ async function reportsAgentNode(state) {
     const { userContext } = state;
 
     try {
+        // ------------------------------------------------------------------
+        // Step 1: Structured date extraction
+        // ------------------------------------------------------------------
+        const userMessage = state.messages[state.messages.length - 1]?.content || '';
+
+        const queryInfo = await extractReportQuery(userMessage);
+
+        // If the message is not a valid report request, short-circuit
+        if (queryInfo.isValidReportQuery === 'NO') {
+            logger.info(`[ReportsAgent] Query rejected – ${queryInfo.rejectionReason}`);
+            const rejection = `I can help with production reports and shift analytics. ${queryInfo.rejectionReason || 'Please ask about production data, shift summaries, or performance metrics.'}`;
+            return {
+                messages: [{ role: 'assistant', name: 'ReportsAgent', content: rejection }],
+                finalResponse: rejection,
+            };
+        }
+
+        const { startDate, endDate, productName } = queryInfo;
+
+        logger.info(
+            `[ReportsAgent] Query valid – product: ${productName || 'all'}, ` +
+                `range: ${startDate} to ${endDate}, explanation: ${queryInfo.explanation}`,
+        );
+
+        // ------------------------------------------------------------------
+        // Step 2: Tool loop with pre-validated dates injected into prompt
+        // ------------------------------------------------------------------
         const llm = LLMFactory.getLLM();
         const agentLLM = llm.bindTools([searchProductsTool, productionReportTool]);
 
@@ -31,27 +69,31 @@ async function reportsAgentNode(state) {
             content: `You are a manufacturing production reports analyst for SmartSME.
 User company: ${userContext.companyId}
 User roles: ${(userContext.roles || []).join(', ')}
-Today's date: ${new Date().toISOString().split('T')[0]}
 
-Guidelines:
-- If the user mentions a product name, FIRST call search_products to get its productId.
-- Then call production_report using that productId and the date range from the user's request.
-- Convert relative dates ("last week", "since Monday") to absolute YYYY-MM-DD values.
-- Always include companyId in every tool call.
-- After production_report returns data, respond with a clear formatted markdown report.
-- Do NOT call production_report more than once.`,
+The report parameters have already been validated and resolved:
+- Start date: ${startDate}
+- End date:   ${endDate}
+- Product:    ${productName || 'all products'}
+
+Instructions:
+${
+    productName
+        ? `1. Call search_products with productName "${productName}" to get its productId.
+2. Then call production_report with that productId, startDate "${startDate}", endDate "${endDate}".`
+        : `1. Call production_report directly with startDate "${startDate}", endDate "${endDate}".`
+}
+3. After production_report returns data, respond with a clear formatted markdown report.
+DO NOT recalculate dates. Use exactly the dates provided above.`,
         };
 
-        // Build the running message list for this node
         const runMessages = [systemPrompt, ...state.messages];
-
         let finalResponse = null;
 
         for (let i = 0; i < MAX_ITERATIONS; i++) {
             const response = await agentLLM.invoke(runMessages);
             runMessages.push(response);
 
-            // No tool calls – LLM produced a final answer
+            // No tool calls – LLM produced the final narrative response
             if (!response.tool_calls || response.tool_calls.length === 0) {
                 finalResponse = response.content;
                 break;
@@ -61,22 +103,25 @@ Guidelines:
                 `[ReportsAgent] Iteration ${i + 1} – executing ${response.tool_calls.length} tool call(s)`,
             );
 
-            // Execute all tool calls in this turn
             for (const toolCall of response.tool_calls) {
                 logger.info(
                     `[ReportsAgent] Tool: ${toolCall.name}(${JSON.stringify(toolCall.args)})`,
                 );
 
                 let toolResult;
+
                 if (toolCall.name === 'search_products') {
                     toolResult = await searchProductsTool.invoke({
                         ...toolCall.args,
                         companyId: userContext.companyId,
                     });
                 } else if (toolCall.name === 'production_report') {
+                    // Always enforce the validated dates – never let the LLM override them
                     toolResult = await productionReportTool.invoke({
                         ...toolCall.args,
                         companyId: userContext.companyId,
+                        startDate,
+                        endDate,
                     });
                 } else {
                     toolResult = JSON.stringify({
@@ -95,7 +140,6 @@ Guidelines:
             }
         }
 
-        // Safety fallback if loop exhausted without a text response
         if (!finalResponse) {
             finalResponse =
                 'I was unable to generate the production report. Please try again with more specific dates or product name.';
