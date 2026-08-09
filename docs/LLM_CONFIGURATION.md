@@ -8,6 +8,7 @@
 LLM_PROVIDER=ollama          # Local development (default)
 LLM_PROVIDER=openai          # OpenAI GPT models
 LLM_PROVIDER=claude          # Anthropic Claude models
+LLM_PROVIDER=gemini          # Google Gemini models
 ```
 
 ### Common Settings
@@ -36,6 +37,13 @@ ANTHROPIC_API_KEY=sk-ant-your-key-here
 ANTHROPIC_MODEL=claude-3-sonnet-20240229
 ```
 
+### Google Gemini (Production)
+```bash
+LLM_PROVIDER=gemini
+GOOGLE_API_KEY=your-google-api-key-here
+GEMINI_MODEL=gemini-1.5-flash   # or gemini-1.5-pro, gemini-2.0-flash
+```
+
 ## Usage Examples
 
 ### Development
@@ -56,6 +64,11 @@ npm start
 export LLM_PROVIDER=claude
 export ANTHROPIC_API_KEY=sk-ant-your-key-here
 npm start
+
+# Use Gemini
+export LLM_PROVIDER=gemini
+export GOOGLE_API_KEY=your-google-api-key-here
+npm start
 ```
 
 ## Model Recommendations
@@ -67,3 +80,6 @@ npm start
 | OpenAI | gpt-4-turbo | Production, highest quality |
 | Anthropic | claude-3-sonnet | Production, balanced performance |
 | Anthropic | claude-3-opus | Production, highest quality |
+| Gemini | gemini-1.5-flash | Production, fast & cost-effective |
+| Gemini | gemini-1.5-pro | Production, high quality |
+| Gemini | gemini-2.0-flash | Production, latest fast model |

@@ -1,6 +1,7 @@
 const { Ollama, ChatOllama } = require('@langchain/ollama');
 const { ChatOpenAI } = require('@langchain/openai');
 const { ChatAnthropic } = require('@langchain/anthropic');
+const { ChatGoogleGenerativeAI } = require('@langchain/google-genai');
 const logger = require('../config/logger');
 
 class LLMFactory {
@@ -20,6 +21,14 @@ class LLMFactory {
                 return new ChatAnthropic({
                     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
                     modelName: process.env.ANTHROPIC_MODEL || 'claude-3-sonnet-20240229',
+                    temperature: parseFloat(process.env.LLM_TEMPERATURE) || 0.1
+                });
+
+            case 'gemini':
+            case 'google':
+                return new ChatGoogleGenerativeAI({
+                    apiKey: process.env.GOOGLE_API_KEY,
+                    model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
                     temperature: parseFloat(process.env.LLM_TEMPERATURE) || 0.1
                 });
                 
@@ -48,6 +57,13 @@ class LLMFactory {
             case 'anthropic':
                 if (!process.env.ANTHROPIC_API_KEY) {
                     throw new Error('ANTHROPIC_API_KEY is required for Anthropic provider');
+                }
+                break;
+
+            case 'gemini':
+            case 'google':
+                if (!process.env.GOOGLE_API_KEY) {
+                    throw new Error('GOOGLE_API_KEY is required for Gemini provider');
                 }
                 break;
                 
