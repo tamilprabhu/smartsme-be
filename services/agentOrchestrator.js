@@ -1,8 +1,8 @@
-const { StateGraph, START, END } = require('@langchain/langgraph');
+const { StateGraph, START, END, MemorySaver } = require('@langchain/langgraph');
 const { GraphState } = require('../agents/graphState');
 const { supervisorNode } = require('../agents/supervisorNode');
 const { productAgentNode } = require('../agents/productAgentNode');
-const { reportsAgentNode } = require('../agents/reportsAgentNode');
+const { reportsWizardNode } = require('../agents/reportsWizardNode');
 const { generalNode } = require('../agents/generalNode');
 const logger = require('../config/logger');
 
@@ -13,63 +13,66 @@ const logger = require('../config/logger');
  *
  *   START
  *     └─▶ Supervisor  (withStructuredOutput routing)
- *              ├─▶ ProductAgent  ──┐
- *              ├─▶ ReportsAgent  ──┤ all loop back to Supervisor
- *              ├─▶ GeneralAgent  ──┘
+ *              ├─▶ ProductAgent    ──┐
+ *              ├─▶ ReportsWizard   ──┤ all loop back to Supervisor
+ *              ├─▶ GeneralAgent    ──┘
  *              └─▶ FINISH ──▶ END
  *
- * The Supervisor sees the full message history on every pass, so it knows
- * whether a worker already answered and whether to route to another agent
- * or declare FINISH. This matches the reference implementation pattern
- * from multi-agent-orchestration/index.js.
+ * MemorySaver checkpointer: persists full graph state (including reportConfig)
+ * across HTTP requests using thread_id as the session key. This enables the
+ * ReportsWizardNode to accumulate report parameters across multiple turns.
  */
+const checkpointer = new MemorySaver();
+
 const workflow = new StateGraph(GraphState)
-    // Register all nodes
     .addNode('Supervisor', supervisorNode)
     .addNode('ProductAgent', productAgentNode)
-    .addNode('ReportsAgent', reportsAgentNode)
+    .addNode('ReportsWizard', reportsWizardNode)
     .addNode('GeneralAgent', generalNode)
 
-    // Graph always starts at Supervisor
     .addEdge(START, 'Supervisor')
 
-    // Supervisor uses conditional edges – routes based on state.nextWorker
     .addConditionalEdges('Supervisor', (state) => state.nextWorker, {
         ProductAgent: 'ProductAgent',
-        ReportsAgent: 'ReportsAgent',
+        ReportsWizard: 'ReportsWizard',
         GeneralAgent: 'GeneralAgent',
         FINISH: END,
     })
 
-    // Every worker loops back to Supervisor after completing their work
     .addEdge('ProductAgent', 'Supervisor')
-    .addEdge('ReportsAgent', 'Supervisor')
+    .addEdge('ReportsWizard', 'Supervisor')
     .addEdge('GeneralAgent', 'Supervisor');
 
-const compiledGraph = workflow.compile();
+// Compile with MemorySaver — state is checkpointed after every node
+const compiledGraph = workflow.compile({ checkpointer });
 
-logger.info('[AgentOrchestrator] LangGraph multi-agent graph compiled successfully');
+logger.info('[AgentOrchestrator] LangGraph multi-agent graph compiled with MemorySaver');
 
 /**
  * Entry point used by aiChatService.
- * Injects userContext into the initial state so every node can access
- * tenant/auth data without it being part of the messages array.
  *
- * @param {string} message  - Raw user message text
+ * @param {string} message     - Raw user message text
  * @param {Object} userContext - { username, companyId, roles, isOwner, isAdmin }
- * @returns {Promise<string>} - Final response string
+ * @param {string} threadId    - Unique session ID per user/conversation.
+ *                               MemorySaver uses this to restore and persist state.
+ * @returns {Promise<string>}  - Final response string
  */
-async function processRequest(message, userContext) {
+async function processRequest(message, userContext, threadId) {
     const startTime = Date.now();
     logger.info(
-        `[AgentOrchestrator] Invoking graph – user: ${userContext.username}, company: ${userContext.companyId}`,
+        `[AgentOrchestrator] Invoking graph – user: ${userContext.username}, ` +
+            `company: ${userContext.companyId}, thread: ${threadId}`,
     );
 
     try {
-        const finalState = await compiledGraph.invoke({
-            messages: [{ role: 'human', content: message }],
-            userContext,
-        });
+        const finalState = await compiledGraph.invoke(
+            {
+                messages: [{ role: 'human', content: message }],
+                userContext,
+            },
+            // thread_id ties this invocation to the persisted checkpoint
+            { configurable: { thread_id: threadId } },
+        );
 
         const duration = Date.now() - startTime;
         const response =
@@ -85,9 +88,6 @@ async function processRequest(message, userContext) {
         const duration = Date.now() - startTime;
         logger.error(`[AgentOrchestrator] Graph failed after ${duration}ms:`, error);
 
-        // Return a graceful message to the HTTP layer instead of propagating the error.
-        // The route's next(error) path will never be hit for AI failures – users get
-        // a friendly message while the full error is captured in logs.
         return "I'm sorry, I'm having trouble processing your request right now. Please try again in a moment.";
     }
 }

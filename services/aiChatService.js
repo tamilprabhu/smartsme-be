@@ -6,17 +6,20 @@ class AiChatService {
      * Process user message and return AI response via the LangGraph
      * multi-agent graph (Supervisor → specialist workers → FINISH).
      *
-     * @param {string} message - User message
+     * @param {string} message   - User message
      * @param {Object} authClaims - User authentication claims
+     * @param {string} threadId  - Session thread ID for MemorySaver persistence
      * @returns {Promise<string>} AI response
      */
-    async processMessage(message, authClaims) {
+    async processMessage(message, authClaims, threadId) {
         try {
             const userContext = this.getUserContext(authClaims);
 
-            const response = await processRequest(message, userContext);
+            const response = await processRequest(message, userContext, threadId);
 
-            logger.info(`[AiChatService] Response delivered – user: ${authClaims.username}`);
+            logger.info(
+                `[AiChatService] Response delivered – user: ${authClaims.username}, thread: ${threadId}`,
+            );
             return response;
         } catch (error) {
             logger.error('AI Chat Service error:', error);

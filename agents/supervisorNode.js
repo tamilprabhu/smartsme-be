@@ -19,10 +19,10 @@ const logger = require('../config/logger');
 
 const routingSchema = z.object({
     nextWorker: z
-        .enum(['ProductAgent', 'ReportsAgent', 'GeneralAgent', 'FINISH'])
+        .enum(['ProductAgent', 'ReportsWizard', 'GeneralAgent', 'FINISH'])
         .describe(
             "Route to 'ProductAgent' for product search/catalog questions, " +
-                "'ReportsAgent' for production data/analytics/shift reports, " +
+                "'ReportsWizard' for production data/analytics/shift reports, " +
                 "'GeneralAgent' for greetings, help, or unclear requests. " +
                 "Choose 'FINISH' only when the last assistant message fully answers the user.",
         ),
@@ -52,9 +52,9 @@ async function supervisorNode(state) {
                 role: 'system',
                 content: `You are the Orchestrator Supervisor for SmartSME, a manufacturing management system.
 You manage three specialist agents:
-1. ProductAgent  – handles product search, catalog browsing, product specifications, material info
-2. ReportsAgent  – handles production reports, analytics, shift data, performance metrics, rejection rates
-3. GeneralAgent  – handles greetings, general help, capability questions, anything else
+1. ProductAgent   – handles product search, catalog browsing, product specifications, material info
+2. ReportsWizard  – handles production reports, analytics, shift data, performance metrics, rejection rates. Collects missing parameters (product, dates) one question at a time before generating the report.
+3. GeneralAgent   – handles greetings, general help, capability questions, anything else
 
 User context: Roles: ${(userContext.roles || []).join(', ')}, Company: ${userContext.companyId}
 
@@ -62,7 +62,8 @@ Rules:
 - If the last message is from a worker agent and it fully answers the user, choose FINISH.
 - If no worker has responded yet, route to the best-fit agent for the user's request.
 - If the last worker's response is incomplete or the user asked multiple things, route to the next needed agent.
-- Never route to the same agent twice in a row.`,
+- Never route to the same agent twice in a row.
+- If ReportsWizard asked a follow-up question (e.g. asking for a date or product), route back to ReportsWizard on the user's next reply.`,
             },
             {
                 role: 'user',
