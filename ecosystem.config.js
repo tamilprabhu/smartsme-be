@@ -1,13 +1,13 @@
 module.exports = {
     apps: [
         {
-            name: 'smartsme-dev',
+            name: 'smartsme-be/do',
             script: 'node',
             args: ['-r', 'newrelic', 'bin/www'],
             env: {
                 NODE_ENV: 'production',
-                PORT: 8080,
-                DB_HOST: '172.17.0.2',
+                PORT: 80,
+                DB_HOST: '127.0.0.1',
                 DB_NAME: 'smartsme',
                 DB_USER: 'smartsmeusr',
                 DB_PASS: 'sm@rtsmepwd',
