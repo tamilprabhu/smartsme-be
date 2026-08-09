@@ -12,12 +12,14 @@ async function generalNode(state) {
     logger.info('[GeneralAgent] Node activated');
 
     const { userContext } = state;
-    const llm = LLMFactory.createLLM();
 
-    const response = await llm.invoke([
-        {
-            role: 'system',
-            content: `You are a helpful AI assistant for SmartSME, a manufacturing management platform.
+    try {
+        const llm = LLMFactory.createLLM();
+
+        const response = await llm.invoke([
+            {
+                role: 'system',
+                content: `You are a helpful AI assistant for SmartSME, a manufacturing management platform.
 User: ${userContext.username || 'User'}
 Roles: ${(userContext.roles || []).join(', ')}
 Company: ${userContext.companyId}
@@ -28,18 +30,28 @@ You can help with:
 
 Respond naturally and warmly. If the user is asking what you can do, explain the above capabilities.
 Keep responses concise and relevant to manufacturing.`
-        },
-        ...state.messages
-    ]);
+            },
+            ...state.messages
+        ]);
 
-    const finalResponse = response.content || "Hello! I'm your SmartSME assistant. How can I help you today?";
+        const finalResponse = response.content || "Hello! I'm your SmartSME assistant. How can I help you today?";
 
-    logger.info(`[GeneralAgent] Done – response length: ${finalResponse.length} chars`);
+        logger.info(`[GeneralAgent] Done – response length: ${finalResponse.length} chars`);
 
-    return {
-        messages: [{ role: 'assistant', name: 'GeneralAgent', content: finalResponse }],
-        finalResponse
-    };
+        return {
+            messages: [{ role: 'assistant', name: 'GeneralAgent', content: finalResponse }],
+            finalResponse
+        };
+
+    } catch (error) {
+        logger.error('[GeneralAgent] Unhandled error:', error);
+
+        const fallback = "Hello! I'm your SmartSME assistant. I can help with product search and production reports. How can I assist you today?";
+        return {
+            messages: [{ role: 'assistant', name: 'GeneralAgent', content: fallback }],
+            finalResponse: fallback
+        };
+    }
 }
 
 module.exports = { generalNode };

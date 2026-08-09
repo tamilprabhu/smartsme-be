@@ -76,8 +76,12 @@ const searchProductsTool = tool(
         })
       );
     } catch (error) {
-      logger.error('Search products tool error:', error);
-      return "Error searching products. Please try again.";
+      logger.error('[Tool:search_products] Error:', error);
+      return JSON.stringify({
+        error: true,
+        message: 'Failed to search products. Please try again.',
+        detail: error.message
+      });
     }
   },
   {

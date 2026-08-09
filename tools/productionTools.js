@@ -63,10 +63,11 @@ const productionReportTool = tool(
       });
       
     } catch (error) {
-      logger.error('Production report tool error:', error);
+      logger.error('[Tool:production_report] Error:', error);
       return JSON.stringify({
         error: true,
-        message: "Error generating production report. Please try again."
+        message: 'Failed to generate production report. Please try again.',
+        detail: error.message
       });
     }
   },

@@ -67,18 +67,29 @@ async function processRequest(message, userContext) {
     const startTime = Date.now();
     logger.info(`[AgentOrchestrator] Invoking graph – user: ${userContext.username}, company: ${userContext.companyId}`);
 
-    const finalState = await compiledGraph.invoke({
-        messages: [{ role: 'human', content: message }],
-        userContext
-    });
+    try {
+        const finalState = await compiledGraph.invoke({
+            messages: [{ role: 'human', content: message }],
+            userContext
+        });
 
-    const duration = Date.now() - startTime;
-    const response = finalState.finalResponse
-        || finalState.messages[finalState.messages.length - 1]?.content
-        || "I'm sorry, I couldn't process your request. Please try again.";
+        const duration = Date.now() - startTime;
+        const response = finalState.finalResponse
+            || finalState.messages[finalState.messages.length - 1]?.content
+            || "I'm sorry, I couldn't process your request. Please try again.";
 
-    logger.info(`[AgentOrchestrator] Graph completed in ${duration}ms – response length: ${response.length} chars`);
-    return response;
+        logger.info(`[AgentOrchestrator] Graph completed in ${duration}ms – response length: ${response.length} chars`);
+        return response;
+
+    } catch (error) {
+        const duration = Date.now() - startTime;
+        logger.error(`[AgentOrchestrator] Graph failed after ${duration}ms:`, error);
+
+        // Return a graceful message to the HTTP layer instead of propagating the error.
+        // The route's next(error) path will never be hit for AI failures – users get
+        // a friendly message while the full error is captured in logs.
+        return "I'm sorry, I'm having trouble processing your request right now. Please try again in a moment.";
+    }
 }
 
 module.exports = { processRequest };
