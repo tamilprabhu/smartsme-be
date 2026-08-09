@@ -121,7 +121,7 @@ const ensureCompanyAccess = (asset, companyId) => {
 };
 
 const handleUpload = async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const companyId = getCompanyId(req);
     const userId = getUserId(req);
 
@@ -224,7 +224,7 @@ router.post('/', authenticate, upload.single('file'), handleUpload);
 
 // GET /assets - List assets with filters
 router.get('/', optionalAuth, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const companyId = getCompanyId(req);
     const userId = getUserId(req);
 
@@ -288,7 +288,7 @@ router.get('/', optionalAuth, async (req, res) => {
 
 // GET /assets/download/:id - Download asset
 router.get('/download/:id', async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     logger.info('AssetsRoute: GET /assets/download/:id - Request started', {
         requestId,
         assetId: req.params.id,
@@ -374,7 +374,7 @@ router.get('/download/:id', async (req, res) => {
 
 // GET /assets/:module/:subModule/:identifier - List assets by reference
 router.get('/:module/:subModule/:identifier', optionalAuth, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const companyId = getCompanyId(req);
     const userId = getUserId(req);
 
@@ -438,7 +438,7 @@ router.get('/:module/:subModule/:identifier', optionalAuth, async (req, res) => 
 
 // GET /assets/:id - Get asset metadata
 router.get('/:id', optionalAuth, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const companyId = getCompanyId(req);
     const userId = getUserId(req);
 
@@ -480,7 +480,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
 
 // PUT /assets/:id - Update asset metadata/visibility/status
 router.put('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const companyId = getCompanyId(req);
     const userId = getUserId(req);
 
@@ -559,7 +559,7 @@ router.put('/:id', authenticate, async (req, res) => {
 
 // DELETE /assets/:id/hard - Hard delete (file + row)
 router.delete('/:id/hard', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const companyId = getCompanyId(req);
     const userId = getUserId(req);
 
@@ -608,7 +608,7 @@ router.delete('/:id/hard', authenticate, async (req, res) => {
 
 // DELETE /assets/:id - Soft delete
 router.delete('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const companyId = getCompanyId(req);
     const userId = getUserId(req);
 

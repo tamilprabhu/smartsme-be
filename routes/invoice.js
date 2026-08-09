@@ -8,7 +8,7 @@ const { SortBy, SortOrder } = require('../constants/sort');
 
 // GET /invoices - Get all invoices with pagination and search
 router.get('/', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
@@ -54,7 +54,7 @@ router.get('/', authenticate, async (req, res) => {
 
 // GET /invoices/:id - Get invoice by ID
 router.get('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const invoiceId = req.params.id;
 
     logger.info(`InvoiceRoute: GET /invoices/${invoiceId} - Request started`, {
@@ -96,7 +96,7 @@ router.get('/:id', authenticate, async (req, res) => {
 
 // POST /invoices - Create new invoice
 router.post('/', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
 
     logger.info(`InvoiceRoute: POST /invoices - Request started`, {
         requestId: requestId,
@@ -130,7 +130,7 @@ router.post('/', authenticate, async (req, res, next) => {
 
 // PUT /invoices/:id - Update invoice
 router.put('/:id', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const invoiceId = req.params.id;
 
     logger.info(`InvoiceRoute: PUT /invoices/${invoiceId} - Request started`, {
@@ -173,7 +173,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
 
 // DELETE /invoices/:id - Delete invoice
 router.delete('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const invoiceId = req.params.id;
 
     logger.info(`InvoiceRoute: DELETE /invoices/${invoiceId} - Request started`, {

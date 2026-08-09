@@ -8,7 +8,7 @@ const { SortBy, SortOrder } = require('../constants/sort');
 
 // GET /products - Get all products with pagination and search
 router.get('/', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
@@ -65,7 +65,7 @@ router.get('/', authenticate, async (req, res) => {
 
 // GET /products/:id - Get product by ID
 router.get('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const productId = req.params.id;
     const companyId = req.auth.getPrimaryCompanyId();
     const userId = req.auth.getUserId();
@@ -113,7 +113,7 @@ router.get('/:id', authenticate, async (req, res) => {
 
 // POST /products - Create new product
 router.post('/', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const companyId = req.auth.getPrimaryCompanyId();
     const userId = req.auth.getUserId();
 
@@ -150,7 +150,7 @@ router.post('/', authenticate, async (req, res, next) => {
 
 // PUT /products/:id - Update product
 router.put('/:id', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const productId = req.params.id;
     const companyId = req.auth.getPrimaryCompanyId();
     const userId = req.auth.getUserId();
@@ -204,7 +204,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
 
 // DELETE /products/:id - Delete product
 router.delete('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const productId = req.params.id;
     const companyId = req.auth.getPrimaryCompanyId();
     const userId = req.auth.getUserId();

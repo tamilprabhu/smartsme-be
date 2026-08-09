@@ -39,7 +39,7 @@ const hasPermission = (userRoles, requiredPermission) => {
 };
 
 router.get('/', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
     const search = req.query.search || '';
@@ -97,7 +97,7 @@ router.get('/', authenticate, async (req, res) => {
 });
 
 router.get('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const shiftId = req.params.id;
 
     logger.info(`ProductionShiftRoute: GET /production-shift/${shiftId} - Request started`, {
@@ -153,7 +153,7 @@ router.get('/:id', authenticate, async (req, res) => {
 });
 
 router.post('/', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
 
     logger.info(`ProductionShiftRoute: POST /production-shift - Request started`, {
         requestId: requestId,
@@ -210,7 +210,7 @@ router.post('/', authenticate, async (req, res, next) => {
 });
 
 router.put('/:id', authenticate, async (req, res, next) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const shiftId = req.params.id;
 
     logger.info(`ProductionShiftRoute: PUT /production-shift/${shiftId} - Request started`, {
@@ -279,7 +279,7 @@ router.put('/:id', authenticate, async (req, res, next) => {
 });
 
 router.delete('/:id', authenticate, async (req, res) => {
-    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const requestId = req.requestId;
     const shiftId = req.params.id;
 
     logger.info(`ProductionShiftRoute: DELETE /production-shift/${shiftId} - Request started`, {
