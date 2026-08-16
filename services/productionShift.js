@@ -1,260 +1,227 @@
-const { ProductionShift, Product, Machine, Order } = require('../models');
-const { Op, col, where, fn } = require('sequelize');
-const logger = require('../config/logger');
-const ItemsPerPage = require('../constants/pagination');
-const { SortBy, SortOrder } = require('../constants/sort');
-const { buildSortOrder } = require('../utils/sort');
-const { generateShiftId } = require('../utils/idGenerator');
-const { validateCreate, validateUpdate } = require('../validators/productionShift');
+'use strict';
 
+/**
+ * productionShiftService
+ *
+ * Application service — orchestrates the ProductionShift bounded context.
+ *
+ * Responsibilities:
+ *   1. Referential existence checks (product / machine / order must exist)
+ *   2. Construct / mutate the domain entity, which enforces business invariants
+ *   3. Delegate persistence to the repository (infrastructure)
+ *
+ * Does NOT contain:
+ *   - HTTP concerns (no req / res)
+ *   - Joi validation (done in the route middleware before reaching here)
+ *   - Direct Sequelize calls (all go through the repository)
+ */
+
+const logger = require('../config/logger');
+const { generateShiftId } = require('../utils/idGenerator');
+
+// ── Domain ────────────────────────────────────────────────────────────────────
+const ProductionShiftEntity = require('../domain/ProductionShiftEntity');
+const {
+    ProductionShiftNotFoundError,
+    InvalidProductError,
+    InvalidMachineError,
+    InvalidOrderError,
+} = require('../domain/ProductionShiftErrors');
+
+// ── Infrastructure ────────────────────────────────────────────────────────────
+const { SequelizeProductionShiftRepository } = require('../repositories/SequelizeProductionShiftRepository');
+const productRepository = require('../repositories/SequelizeProductRepository');
+const machineRepository = require('../repositories/SequelizeMachineRepository');
+const orderRepository   = require('../repositories/SequelizeOrderRepository');
+
+// Load models through models/index.js so all associations are registered
+const { ProductionShift, Product, Machine, Order } = require('../models');
+
+const productionShiftRepository = new SequelizeProductionShiftRepository({
+    ProductionShiftModel: ProductionShift,
+    ProductModel:         Product,
+    MachineModel:         Machine,
+    OrderModel:           Order,
+});
+
+// ── Constants ─────────────────────────────────────────────────────────────────
 const MAX_RETRY_ATTEMPTS = 5;
 
+// ── Service ───────────────────────────────────────────────────────────────────
+
 const productionShiftService = {
-    // Get all production shifts with pagination and search
-    getAllProductionShifts: async (
-        page = 1,
-        itemsPerPage = ItemsPerPage.TEN,
-        search = '',
-        companyId = null,
-        sortBy = SortBy.SEQUENCE,
-        sortOrder = SortOrder.DESC,
-    ) => {
-        const validLimit = ItemsPerPage.isValid(itemsPerPage) ? itemsPerPage : ItemsPerPage.TEN;
-        logger.info(
-            `ProductionShiftService: Fetching shifts - page: ${page}, itemsPerPage: ${validLimit}, search: ${search}, companyId: ${companyId}`,
-        );
-        try {
-            const offset = (page - 1) * validLimit;
 
-            const whereClause = {};
-            const trimmedSearch = (search || '').trim();
-
-            if (companyId) {
-                whereClause.companyId = companyId;
-            }
-
-            const include = [
-                {
-                    model: Product,
-                    attributes: [],
-                    required: false,
-                },
-                {
-                    model: Machine,
-                    attributes: [],
-                    required: false,
-                },
-                {
-                    model: Order,
-                    attributes: [],
-                    required: false,
-                },
-            ];
-
-            if (trimmedSearch) {
-                const likeValue = `%${trimmedSearch.toLowerCase()}%`;
-                whereClause[Op.or] = [
-                    where(fn('LOWER', col('ProductionShift.order_id')), { [Op.like]: likeValue }),
-                    where(fn('LOWER', col('ProductionShift.shift_id')), { [Op.like]: likeValue }),
-                    where(fn('LOWER', col('ProductionShift.product_id')), { [Op.like]: likeValue }),
-                    where(fn('LOWER', col('ProductionShift.machine_id')), { [Op.like]: likeValue }),
-                    where(fn('LOWER', col('ProductionShift.shift_type')), { [Op.like]: likeValue }),
-                    where(fn('LOWER', col('Product.product_name')), { [Op.like]: likeValue }),
-                    where(fn('LOWER', col('Machine.machine_name')), { [Op.like]: likeValue }),
-                    where(fn('LOWER', col('Order.order_name')), { [Op.like]: likeValue }),
-                ];
-            }
-
-            const { count, rows } = await ProductionShift.findAndCountAll({
-                where: whereClause,
-                limit: validLimit,
-                offset: offset,
-                order: buildSortOrder(sortBy, sortOrder, 'shift_seq', 'ProductionShift'),
-                include,
-            });
-            logger.info(
-                `ProductionShiftService: Successfully retrieved ${rows.length} shifts out of ${count} total`,
-            );
-            return {
-                items: rows,
-                paging: {
-                    currentPage: page,
-                    totalPages: Math.ceil(count / validLimit),
-                    itemsPerPage: validLimit,
-                    totalItems: count,
-                },
-            };
-        } catch (error) {
-            logger.error('ProductionShiftService: Failed to fetch shifts', {
-                error: error.message,
-                stack: error.stack,
-            });
-            throw error;
-        }
+    /**
+     * Paginated list of shifts for a company.
+     */
+    getAllProductionShifts: async (page, itemsPerPage, search, companyId, sortBy, sortOrder) => {
+        logger.info('ProductionShiftService: getAllProductionShifts', {
+            page, itemsPerPage, search, companyId,
+        });
+        return productionShiftRepository.findAll({
+            page, itemsPerPage, search, companyId, sortBy, sortOrder,
+        });
     },
 
-    getProductionShiftById: async (id, companyId) => {
-        logger.info(
-            `ProductionShiftService: Fetching shift with ID: ${id}, companyId: ${companyId}`,
-        );
-        try {
-            const whereClause = { shiftSequence: id };
-            if (companyId) {
-                whereClause.companyId = companyId;
-            }
-
-            const shift = await ProductionShift.findOne({ where: whereClause });
-            if (shift) {
-                logger.info(
-                    `ProductionShiftService: Successfully retrieved shift: ${shift.shiftId} (ID: ${id})`,
-                );
-            } else {
-                logger.warn(
-                    `ProductionShiftService: Shift not found with ID: ${id}, companyId: ${companyId}`,
-                );
-            }
-            return shift;
-        } catch (error) {
-            logger.error(`ProductionShiftService: Failed to fetch shift with ID: ${id}`, {
-                error: error.message,
-                stack: error.stack,
-            });
-            throw error;
-        }
+    /**
+     * Single shift by its auto-increment PK.
+     * Returns the domain entity, or null if not found.
+     */
+    getProductionShiftById: async (shiftSequence, companyId) => {
+        logger.info('ProductionShiftService: getProductionShiftById', { shiftSequence, companyId });
+        return productionShiftRepository.findBySequence(shiftSequence, companyId);
     },
 
+    /**
+     * Create a new production shift.
+     *
+     * Flow:
+     *   1. Check product / machine / order exist (application-layer concern)
+     *   2. Construct domain entity — enforces operator-distinctness invariant
+     *   3. Persist with shiftId uniqueness retry
+     *
+     * @param {object} shiftData   - validated payload from Joi
+     * @param {string} companyId
+     * @param {number} userId
+     * @returns {Promise<ProductionShiftEntity>}
+     */
     createProductionShift: async (shiftData, companyId, userId) => {
-        logger.info(
-            `ProductionShiftService: Creating new shift: ${shiftData.shiftId}, companyId: ${companyId}, userId: ${userId}`,
-        );
-        try {
-            const validatedData = await validateCreate(shiftData);
-            const baseData = {
-                ...validatedData,
-                companyId: companyId,
-                createdBy: userId,
-                updatedBy: userId,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            };
+        logger.info('ProductionShiftService: createProductionShift', { companyId, userId });
 
-            let shift;
-            let attempts = 0;
-            while (attempts < MAX_RETRY_ATTEMPTS) {
-                try {
-                    shift = await ProductionShift.create({
-                        ...baseData,
-                        shiftId: generateShiftId(),
+        const { productId, machineId, orderId } = shiftData;
+
+        // ── Referential existence checks ──────────────────────────────────────
+        const product = await productRepository.findById(productId, companyId);
+        if (!product) throw new InvalidProductError(productId);
+
+        const machine = await machineRepository.findById(machineId, companyId);
+        if (!machine) throw new InvalidMachineError(machineId);
+
+        if (orderId) {
+            const order = await orderRepository.findById(orderId, companyId);
+            if (!order) throw new InvalidOrderError(orderId);
+        }
+
+        // ── Build domain entity (invariants asserted on construction) ─────────
+        const now = new Date();
+        const entity = new ProductionShiftEntity({
+            ...shiftData,
+            companyId,
+            createdBy:  userId,
+            updatedBy:  userId,
+            createdAt:  now,
+            updatedAt:  now,
+        });
+
+        // ── Persist with unique shiftId retry ─────────────────────────────────
+        let attempts = 0;
+        while (attempts < MAX_RETRY_ATTEMPTS) {
+            entity.shiftId = generateShiftId();
+            try {
+                return await productionShiftRepository.save(entity);
+            } catch (err) {
+                const isShiftIdCollision =
+                    err.name === 'SequelizeUniqueConstraintError' &&
+                    err.errors?.some((e) => e.path === 'shift_id' || e.path === 'shiftId');
+
+                if (isShiftIdCollision && ++attempts < MAX_RETRY_ATTEMPTS) {
+                    logger.warn('ProductionShiftService: shiftId collision, retrying', {
+                        attempt: attempts,
                     });
-                    break;
-                } catch (error) {
-                    const isUniqueError =
-                        error.name === 'SequelizeUniqueConstraintError' &&
-                        error.errors?.some((e) => e.path === 'shift_id' || e.path === 'shiftId');
-
-                    if (isUniqueError) {
-                        attempts++;
-                        if (attempts >= MAX_RETRY_ATTEMPTS) {
-                            throw new Error(
-                                'Failed to generate unique shift_id after maximum retries',
-                            );
-                        }
-                        logger.warn(
-                            `ProductionShiftService: Duplicate shift_id, retrying (${attempts}/${MAX_RETRY_ATTEMPTS})`,
-                        );
-                    } else {
-                        throw error;
-                    }
+                } else {
+                    throw isShiftIdCollision
+                        ? new Error('Failed to generate a unique shift ID after maximum retries')
+                        : err;
                 }
             }
-            logger.info(
-                `ProductionShiftService: Successfully created shift: ${shift.shiftId} (ID: ${shift.shiftSequence})`,
-            );
-            return shift;
-        } catch (error) {
-            logger.error(`ProductionShiftService: Failed to create shift: ${shiftData.shiftId}`, {
-                error: error.message,
-                shiftData: shiftData,
-                stack: error.stack,
-            });
-            throw error;
         }
     },
 
-    updateProductionShift: async (id, shiftData, companyId, userId) => {
-        logger.info(
-            `ProductionShiftService: Updating shift with ID: ${id}, companyId: ${companyId}, userId: ${userId}`,
-            { updateData: shiftData },
-        );
-        try {
-            const validatedData = await validateUpdate(shiftData);
-            const { shiftId, ...safeShiftData } = validatedData;
-            const whereClause = { shiftSequence: id };
-            if (companyId) {
-                whereClause.companyId = companyId;
-            }
+    /**
+     * Update an existing shift.
+     *
+     * Flow:
+     *   1. Load entity — throws ProductionShiftNotFoundError if missing
+     *   2. Re-check referential integrity only for changed fields
+     *   3. Delegate mutation to entity.applyUpdate() — re-asserts invariants
+     *   4. Persist
+     *
+     * @param {number} shiftSequence
+     * @param {object} shiftData     - validated partial payload from Joi
+     * @param {string} companyId
+     * @param {number} userId
+     * @returns {Promise<ProductionShiftEntity>}
+     */
+    updateProductionShift: async (shiftSequence, shiftData, companyId, userId) => {
+        logger.info('ProductionShiftService: updateProductionShift', { shiftSequence, companyId, userId });
 
-            const shift = await ProductionShift.findOne({ where: whereClause });
-            if (!shift) {
-                logger.warn(
-                    `ProductionShiftService: No shift found to update with ID: ${id}, companyId: ${companyId}`,
-                );
-                throw new Error('Shift not found');
-            }
+        // ── Load existing entity ───────────────────────────────────────────────
+        const entity = await productionShiftRepository.findBySequence(shiftSequence, companyId);
+        if (!entity) throw new ProductionShiftNotFoundError(shiftSequence);
 
-            shift.set({
-                ...safeShiftData,
-                updatedBy: userId,
-                updatedAt: new Date(),
-            });
+        // ── Referential checks — only for fields being changed ─────────────────
+        let incentiveLimit = null;
 
-            await shift.save();
-            logger.info(
-                `ProductionShiftService: Successfully updated shift: ${shift.shiftId} (ID: ${id})`,
-            );
-            return shift;
-        } catch (error) {
-            logger.error(`ProductionShiftService: Failed to update shift with ID: ${id}`, {
-                error: error.message,
-                updateData: shiftData,
-                stack: error.stack,
-            });
-            throw error;
+        if (shiftData.productId !== undefined) {
+            const product = await productRepository.findById(shiftData.productId, companyId);
+            if (!product) throw new InvalidProductError(shiftData.productId);
+            incentiveLimit = product.incentiveLimit;
         }
+
+        if (shiftData.machineId !== undefined) {
+            const machine = await machineRepository.findById(shiftData.machineId, companyId);
+            if (!machine) throw new InvalidMachineError(shiftData.machineId);
+        }
+
+        if (shiftData.orderId !== undefined && shiftData.orderId !== null && shiftData.orderId !== '') {
+            const order = await orderRepository.findById(shiftData.orderId, companyId);
+            if (!order) throw new InvalidOrderError(shiftData.orderId);
+        }
+
+        // If production counts are being updated but productId is not changing,
+        // fetch the current product's incentiveLimit to validate against.
+        const isUpdatingCounts = ['openingCount', 'closingCount', 'rejection', 'netProduction']
+            .some((f) => shiftData[f] !== undefined);
+
+        if (isUpdatingCounts && incentiveLimit === null) {
+            const currentProductId = shiftData.productId ?? entity.productId;
+            const product = await productRepository.findById(currentProductId, companyId);
+            if (product) incentiveLimit = product.incentiveLimit;
+        }
+
+        // ── Mutate via domain entity (re-asserts all invariants) ──────────────
+        entity.applyUpdate(shiftData, userId, incentiveLimit);
+
+        // ── Persist ────────────────────────────────────────────────────────────
+        return productionShiftRepository.update(entity);
     },
 
-    deleteProductionShift: async (id, companyId) => {
-        logger.info(
-            `ProductionShiftService: Deleting shift with ID: ${id}, companyId: ${companyId}`,
-        );
-        try {
-            const whereClause = { shiftSequence: id };
-            if (companyId) {
-                whereClause.companyId = companyId;
-            }
+    // Records production counts on an existing shift.
+    // Derives production, netProduction and incentive via the domain entity.
+    // incentiveLimit is fetched from the product (cross-aggregate lookup).
+    recordProductionShift: async (shiftSequence, counts, companyId, userId) => {
+        logger.info('ProductionShiftService: recordProductionShift', { shiftSequence, companyId, userId });
 
-            const shift = await ProductionShift.findOne({ where: whereClause });
-            const [updatedRows] = await ProductionShift.update(
-                { isDeleted: true, isActive: false },
-                { where: { ...whereClause, isDeleted: false } },
-            );
-            if (updatedRows === 0) {
-                logger.warn(
-                    `ProductionShiftService: No shift found to delete with ID: ${id}, companyId: ${companyId}`,
-                );
-                throw new Error('Shift not found');
-            }
-            logger.info(
-                `ProductionShiftService: Successfully soft deleted shift: ${shift?.shiftId || 'Unknown'} (ID: ${id})`,
-            );
-            return { message: 'Production shift deleted successfully' };
-        } catch (error) {
-            logger.error(`ProductionShiftService: Failed to delete shift with ID: ${id}`, {
-                error: error.message,
-                stack: error.stack,
-            });
-            throw error;
-        }
+        const entity = await productionShiftRepository.findBySequence(shiftSequence, companyId);
+        if (!entity) throw new ProductionShiftNotFoundError(shiftSequence);
+
+        const product = await productRepository.findById(entity.productId, companyId);
+        if (!product) throw new InvalidProductError(entity.productId);
+
+        entity.recordProduction(counts, product.incentiveLimit);
+        entity.updatedBy = userId;
+        entity.updatedAt = new Date();
+
+        return productionShiftRepository.update(entity);
+    },
+
+    deleteProductionShift: async (shiftSequence, companyId) => {
+        logger.info('ProductionShiftService: deleteProductionShift', { shiftSequence, companyId });
+
+        const deleted = await productionShiftRepository.softDelete(shiftSequence, companyId);
+        if (!deleted) throw new ProductionShiftNotFoundError(shiftSequence);
+
+        return { message: 'Production shift deleted successfully' };
     },
 };
 

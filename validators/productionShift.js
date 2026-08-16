@@ -184,4 +184,35 @@ const validateUpdate = async (payload) => {
     return value;
 };
 
-module.exports = { validateCreate, validateUpdate };
+const recordProductionSchema = Joi.object({
+    openingCount: Joi.number().integer().min(0).required().messages({
+        'number.base':    'openingCount must be a number',
+        'number.integer': 'openingCount must be an integer',
+        'number.min':     'openingCount cannot be negative',
+        'any.required':   'openingCount is required',
+    }),
+    closingCount: Joi.number().integer().min(0).required().messages({
+        'number.base':    'closingCount must be a number',
+        'number.integer': 'closingCount must be an integer',
+        'number.min':     'closingCount cannot be negative',
+        'any.required':   'closingCount is required',
+    }),
+    rejection: Joi.number().integer().min(0).required().messages({
+        'number.base':    'rejection must be a number',
+        'number.integer': 'rejection must be an integer',
+        'number.min':     'rejection cannot be negative',
+        'any.required':   'rejection is required',
+    }),
+    less80Reason: Joi.string().trim().max(50).allow('', null).optional().messages({
+        'string.base': 'less80Reason must be a string',
+        'string.max':  'less80Reason cannot exceed 50 characters',
+    }),
+}).unknown(false);
+
+const validateRecordProduction = async (payload) => {
+    const { error, value } = recordProductionSchema.validate(payload, { abortEarly: false });
+    if (error) throw toValidationError(error);
+    return value;
+};
+
+module.exports = { validateCreate, validateUpdate, validateRecordProduction };

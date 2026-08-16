@@ -1,340 +1,297 @@
+'use strict';
+
+/**
+ * Production Shift Routes
+ *
+ * Responsibilities of this file:
+ *   1. Define HTTP endpoints
+ *   2. Run middleware chain: authenticate → authorize → Joi validation → service call
+ *   3. Map service results / domain errors to HTTP responses
+ *   4. Forward unexpected errors to the global errorHandler via next(err)
+ *
+ * This file does NOT contain:
+ *   - Business logic (belongs in use-cases / domain entity)
+ *   - RBAC logic (belongs in authorizeProductionShift middleware)
+ *   - Sequelize error parsing (domain errors are named classes now)
+ *   - Direct model/repository imports
+ */
+
 const express = require('express');
 const router = express.Router();
+
+const authenticate        = require('../middlewares/authenticate');
+const authorize           = require('../middlewares/authorizeProductionShift');
+const errorHandler        = require('../middlewares/errorHandler');
 const productionShiftService = require('../services/productionShift');
-const optionalAuth = require('../middlewares/optionalAuth');
-const authenticate = require('../middlewares/authenticate');
-const errorHandler = require('../middlewares/errorHandler');
-const { SYSTEM_ROLES } = require('../constants/roles');
+const { validateCreate, validateUpdate, validateRecordProduction } = require('../validators/productionShift');
+
+const {
+    ProductionShiftNotFoundError,
+    InvalidProductError,
+    InvalidMachineError,
+    InvalidOrderError,
+    DuplicateOperatorError,
+    NegativeCountError,
+    ProductionMismatchError,
+    RejectionExceedsProductionError,
+    NetProductionMismatchError,
+    MissingIncentiveReasonError,
+} = require('../domain/ProductionShiftErrors');
+
 const { SortBy, SortOrder } = require('../constants/sort');
 const logger = require('../config/logger');
 
-const getFieldwiseValidationErrors = (err) => {
-    if (err?.name === 'SequelizeValidationError' && Array.isArray(err.errors)) {
-        const fieldErrors = {};
+// ── GET /production-shift ─────────────────────────────────────────────────────
 
-        err.errors.forEach((validationError) => {
-            const field = validationError?.path || 'base';
-            const message = validationError?.message;
-
-            if (!message) return;
-            if (!fieldErrors[field]) fieldErrors[field] = [];
-            if (!fieldErrors[field].includes(message)) fieldErrors[field].push(message);
-        });
-
-        if (Object.keys(fieldErrors).length > 0) return fieldErrors;
-    }
-
-    return null;
-};
-
-const hasPermission = (userRoles, requiredPermission) => {
-    if (userRoles.some((role) => role.id === SYSTEM_ROLES.GUEST.id)) {
-        return requiredPermission.includes('READ'); // If it is a guest, allow only READ
-    }
-    return userRoles.some((role) =>
-        ['OWNER', 'ADMIN', 'PLANT_HEAD', 'SHIFT_INCHARGE', 'PRODUCTION_EMPLOYEE'].includes(
-            role.name,
-        ),
-    );
-};
-
-router.get('/', authenticate, async (req, res) => {
+router.get('/', authenticate, authorize.read, async (req, res, next) => {
     const requestId = req.requestId;
-    const page = parseInt(req.query.page) || 1;
+    const page         = parseInt(req.query.page)         || 1;
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 10;
-    const search = req.query.search || '';
-    const sortBy = SortBy[`${req.query.sortBy || ''}`] || SortBy.SEQUENCE;
-    const sortOrder = SortOrder[`${req.query.sortOrder || ''}`] || SortOrder.DESC;
+    const search       = req.query.search    || '';
+    const sortBy       = SortBy[req.query.sortBy   || ''] || SortBy.SEQUENCE;
+    const sortOrder    = SortOrder[req.query.sortOrder || ''] || SortOrder.DESC;
 
-    logger.info(`ProductionShiftRoute: GET /production-shift - Request started`, {
-        requestId: requestId,
-        page: page,
-        itemsPerPage: itemsPerPage,
-        search: search,
+    logger.info('ProductionShiftRoute: GET / - started', {
+        requestId, page, itemsPerPage, search,
         userId: req.auth?.getUserId(),
-        userRoles: req.auth?.getRoleNames(),
     });
 
     try {
-        if (!hasPermission(req.auth.roles, 'SHIFT_READ')) {
-            logger.warn(`ProductionShiftRoute: GET /production-shift - Access denied`, {
-                requestId: requestId,
-                userId: req.auth?.getUserId(),
-                userRoles: req.auth?.getRoleNames(),
-            });
-            return res.status(403).json({ error: 'Insufficient permissions' });
-        }
-
         const companyId = req.auth.getPrimaryCompanyId();
         const result = await productionShiftService.getAllProductionShifts(
-            page,
-            itemsPerPage,
-            search,
-            companyId,
-            sortBy,
-            sortOrder,
+            page, itemsPerPage, search, companyId, sortBy, sortOrder,
         );
-        logger.info(
-            `ProductionShiftRoute: GET /production-shift - Request completed successfully`,
-            {
-                requestId: requestId,
-                shiftsReturned: result.items.length,
-                totalCount: result.paging.totalItems,
-                page: result.paging.currentPage,
-                userId: req.auth?.getUserId(),
-            },
-        );
+
+        logger.info('ProductionShiftRoute: GET / - completed', {
+            requestId,
+            shiftsReturned: result.items.length,
+            totalItems:     result.paging.totalItems,
+        });
+
         res.json(result);
     } catch (err) {
-        logger.error(`ProductionShiftRoute: GET /production-shift - Request failed`, {
-            requestId: requestId,
-            error: err.message,
-            userId: req.auth?.getUserId(),
-            stack: err.stack,
+        logger.error('ProductionShiftRoute: GET / - failed', {
+            requestId, error: err.message, stack: err.stack,
         });
-        res.status(500).json({ error: 'Internal server error' });
+        next(err);
     }
 });
 
-router.get('/:id', authenticate, async (req, res) => {
-    const requestId = req.requestId;
-    const shiftId = req.params.id;
+// ── GET /production-shift/:id ─────────────────────────────────────────────────
 
-    logger.info(`ProductionShiftRoute: GET /production-shift/${shiftId} - Request started`, {
-        requestId: requestId,
-        shiftId: shiftId,
-        userId: req.auth?.getUserId(),
+router.get('/:id', authenticate, authorize.read, async (req, res, next) => {
+    const requestId = req.requestId;
+    const shiftSequence = req.params.id;
+
+    logger.info(`ProductionShiftRoute: GET /${shiftSequence} - started`, {
+        requestId, shiftSequence, userId: req.auth?.getUserId(),
     });
 
     try {
-        if (!hasPermission(req.auth.roles, 'SHIFT_READ')) {
-            logger.warn(`ProductionShiftRoute: GET /production-shift/${shiftId} - Access denied`, {
-                requestId: requestId,
-                shiftId: shiftId,
-                userId: req.auth?.getUserId(),
-            });
-            return res.status(403).json({ error: 'Insufficient permissions' });
-        }
-
         const companyId = req.auth.getPrimaryCompanyId();
-        const shift = await productionShiftService.getProductionShiftById(shiftId, companyId);
+        const shift = await productionShiftService.getProductionShiftById(shiftSequence, companyId);
+
         if (!shift) {
-            logger.warn(
-                `ProductionShiftRoute: GET /production-shift/${shiftId} - Shift not found`,
-                {
-                    requestId: requestId,
-                    shiftId: shiftId,
-                    userId: req.auth?.getUserId(),
-                },
-            );
+            logger.warn(`ProductionShiftRoute: GET /${shiftSequence} - not found`, { requestId });
             return res.status(404).json({ error: 'Shift not found' });
         }
 
-        logger.info(
-            `ProductionShiftRoute: GET /production-shift/${shiftId} - Request completed successfully`,
-            {
-                requestId: requestId,
-                shiftId: shiftId,
-                shiftName: shift.shiftId,
-                userId: req.auth?.getUserId(),
-            },
-        );
+        logger.info(`ProductionShiftRoute: GET /${shiftSequence} - completed`, { requestId });
         res.json(shift);
     } catch (err) {
-        logger.error(`ProductionShiftRoute: GET /production-shift/${shiftId} - Request failed`, {
-            requestId: requestId,
-            shiftId: shiftId,
-            error: err.message,
-            userId: req.auth?.getUserId(),
-            stack: err.stack,
+        logger.error(`ProductionShiftRoute: GET /${shiftSequence} - failed`, {
+            requestId, error: err.message, stack: err.stack,
         });
-        res.status(500).json({ error: 'Internal server error' });
+        next(err);
     }
 });
 
-router.post('/', authenticate, async (req, res, next) => {
+// ── POST /production-shift ────────────────────────────────────────────────────
+
+router.post('/', authenticate, authorize.create, async (req, res, next) => {
     const requestId = req.requestId;
 
-    logger.info(`ProductionShiftRoute: POST /production-shift - Request started`, {
-        requestId: requestId,
-        shiftId: req.body.shiftId,
-        orderId: req.body.orderId,
-        machineId: req.body.machineId,
-        userId: req.auth?.getUserId(),
+    logger.info('ProductionShiftRoute: POST / - started', {
+        requestId, userId: req.auth?.getUserId(),
     });
 
     try {
-        if (!hasPermission(req.auth.roles, 'SHIFT_CREATE')) {
-            logger.warn(`ProductionShiftRoute: POST /production-shift - Access denied`, {
-                requestId: requestId,
-                userId: req.auth?.getUserId(),
-                userRoles: req.auth?.getRoleNames(),
-            });
-            return res.status(403).json({ error: 'Insufficient permissions' });
-        }
+        // Joi boundary validation — throws ValidationError with named 'errors' map
+        const validatedData = await validateCreate(req.body);
 
         const companyId = req.auth.getPrimaryCompanyId();
-        const userId = req.auth.getUserId();
+        const userId    = req.auth.getUserId();
+
         const shift = await productionShiftService.createProductionShift(
-            req.body,
-            companyId,
-            userId,
+            validatedData, companyId, userId,
         );
-        logger.info(
-            `ProductionShiftRoute: POST /production-shift - Request completed successfully`,
-            {
-                requestId: requestId,
-                shiftSequence: shift.shiftSequence,
-                shiftId: shift.shiftId,
-                userId: req.auth?.getUserId(),
-            },
-        );
+
+        logger.info('ProductionShiftRoute: POST / - completed', {
+            requestId, shiftId: shift.shiftId,
+        });
+
         res.status(201).json(shift);
     } catch (err) {
-        if (err.name === 'ValidationError') {
-            return next(err);
-        }
-        const validationErrors = getFieldwiseValidationErrors(err);
-        logger.error(`ProductionShiftRoute: POST /production-shift - Request failed`, {
-            requestId: requestId,
-            error: validationErrors || err.message,
-            requestBody: req.body,
-            userId: req.auth?.getUserId(),
-            stack: err.stack,
-        });
-        if (validationErrors) {
-            return res.status(400).json({ errors: validationErrors });
-        }
-        res.status(400).json({ error: err.message });
+        _handleMutationError(err, requestId, req, res, next, 'POST /');
     }
 });
 
-router.put('/:id', authenticate, async (req, res, next) => {
-    const requestId = req.requestId;
-    const shiftId = req.params.id;
+// ── PUT /production-shift/:id ─────────────────────────────────────────────────
 
-    logger.info(`ProductionShiftRoute: PUT /production-shift/${shiftId} - Request started`, {
-        requestId: requestId,
-        shiftId: shiftId,
-        updateFields: Object.keys(req.body),
-        userId: req.auth?.getUserId(),
+router.put('/:id', authenticate, authorize.update, async (req, res, next) => {
+    const requestId     = req.requestId;
+    const shiftSequence = req.params.id;
+
+    logger.info(`ProductionShiftRoute: PUT /${shiftSequence} - started`, {
+        requestId, shiftSequence, userId: req.auth?.getUserId(),
     });
 
     try {
-        if (!hasPermission(req.auth.roles, 'SHIFT_UPDATE')) {
-            logger.warn(`ProductionShiftRoute: PUT /production-shift/${shiftId} - Access denied`, {
-                requestId: requestId,
-                shiftId: shiftId,
-                userId: req.auth?.getUserId(),
-            });
-            return res.status(403).json({ error: 'Insufficient permissions' });
-        }
+        // Joi boundary validation
+        const validatedData = await validateUpdate(req.body);
 
         const companyId = req.auth.getPrimaryCompanyId();
-        const userId = req.auth.getUserId();
+        const userId    = req.auth.getUserId();
+
         const shift = await productionShiftService.updateProductionShift(
-            shiftId,
-            req.body,
-            companyId,
-            userId,
+            shiftSequence, validatedData, companyId, userId,
         );
-        logger.info(
-            `ProductionShiftRoute: PUT /production-shift/${shiftId} - Request completed successfully`,
-            {
-                requestId: requestId,
-                shiftId: shiftId,
-                shiftName: shift.shiftId,
-                userId: req.auth?.getUserId(),
-            },
-        );
+
+        logger.info(`ProductionShiftRoute: PUT /${shiftSequence} - completed`, { requestId });
         res.json(shift);
     } catch (err) {
-        if (err.message === 'Shift not found') {
-            logger.warn(
-                `ProductionShiftRoute: PUT /production-shift/${shiftId} - Shift not found`,
-                {
-                    requestId: requestId,
-                    shiftId: shiftId,
-                    userId: req.auth?.getUserId(),
-                },
-            );
-            return res.status(404).json({ error: err.message });
-        }
-        if (err.name === 'ValidationError') {
-            return next(err);
-        }
-        const validationErrors = getFieldwiseValidationErrors(err);
-        logger.error(`ProductionShiftRoute: PUT /production-shift/${shiftId} - Request failed`, {
-            requestId: requestId,
-            shiftId: shiftId,
-            error: validationErrors || err.message,
-            userId: req.auth?.getUserId(),
-            stack: err.stack,
-        });
-        if (validationErrors) {
-            return res.status(400).json({ errors: validationErrors });
-        }
-        res.status(400).json({ error: err.message });
+        _handleMutationError(err, requestId, req, res, next, `PUT /${shiftSequence}`);
     }
 });
 
-router.delete('/:id', authenticate, async (req, res) => {
-    const requestId = req.requestId;
-    const shiftId = req.params.id;
+// ── POST /production-shift/:id/production ────────────────────────────────────
 
-    logger.info(`ProductionShiftRoute: DELETE /production-shift/${shiftId} - Request started`, {
-        requestId: requestId,
-        shiftId: shiftId,
-        userId: req.auth?.getUserId(),
+router.post('/:id/production', authenticate, authorize.update, async (req, res, next) => {
+    const requestId     = req.requestId;
+    const shiftSequence = req.params.id;
+
+    logger.info(`ProductionShiftRoute: POST /${shiftSequence}/production - started`, {
+        requestId, shiftSequence, userId: req.auth?.getUserId(),
     });
 
     try {
-        if (!hasPermission(req.auth.roles, 'SHIFT_DELETE')) {
-            logger.warn(
-                `ProductionShiftRoute: DELETE /production-shift/${shiftId} - Access denied`,
-                {
-                    requestId: requestId,
-                    shiftId: shiftId,
-                    userId: req.auth?.getUserId(),
-                },
-            );
-            return res.status(403).json({ error: 'Insufficient permissions' });
-        }
+        const validatedData = await validateRecordProduction(req.body);
+        const companyId     = req.auth.getPrimaryCompanyId();
+        const userId        = req.auth.getUserId();
 
-        const companyId = req.auth.getPrimaryCompanyId();
-        const result = await productionShiftService.deleteProductionShift(shiftId, companyId);
-        logger.info(
-            `ProductionShiftRoute: DELETE /production-shift/${shiftId} - Request completed successfully`,
-            {
-                requestId: requestId,
-                shiftId: shiftId,
-                userId: req.auth?.getUserId(),
-            },
+        const shift = await productionShiftService.recordProductionShift(
+            shiftSequence, validatedData, companyId, userId,
         );
-        res.json(result);
+
+        logger.info(`ProductionShiftRoute: POST /${shiftSequence}/production - completed`, { requestId });
+        res.json(shift);
     } catch (err) {
-        if (err.message === 'Shift not found') {
-            logger.warn(
-                `ProductionShiftRoute: DELETE /production-shift/${shiftId} - Shift not found`,
-                {
-                    requestId: requestId,
-                    shiftId: shiftId,
-                    userId: req.auth?.getUserId(),
-                },
-            );
-            return res.status(404).json({ error: err.message });
-        }
-        logger.error(`ProductionShiftRoute: DELETE /production-shift/${shiftId} - Request failed`, {
-            requestId: requestId,
-            shiftId: shiftId,
-            error: err.message,
-            userId: req.auth?.getUserId(),
-            stack: err.stack,
-        });
-        res.status(500).json({ error: 'Internal server error' });
+        _handleMutationError(err, requestId, req, res, next, `POST /${shiftSequence}/production`);
     }
 });
 
+// ── DELETE /production-shift/:id ──────────────────────────────────────────────
+
+router.delete('/:id', authenticate, authorize.delete, async (req, res, next) => {
+    const requestId     = req.requestId;
+    const shiftSequence = req.params.id;
+
+    logger.info(`ProductionShiftRoute: DELETE /${shiftSequence} - started`, {
+        requestId, shiftSequence, userId: req.auth?.getUserId(),
+    });
+
+    try {
+        const companyId = req.auth.getPrimaryCompanyId();
+        const result    = await productionShiftService.deleteProductionShift(shiftSequence, companyId);
+
+        logger.info(`ProductionShiftRoute: DELETE /${shiftSequence} - completed`, { requestId });
+        res.json(result);
+    } catch (err) {
+        if (err instanceof ProductionShiftNotFoundError) {
+            logger.warn(`ProductionShiftRoute: DELETE /${shiftSequence} - not found`, { requestId });
+            return res.status(404).json({ error: err.message });
+        }
+        logger.error(`ProductionShiftRoute: DELETE /${shiftSequence} - failed`, {
+            requestId, error: err.message, stack: err.stack,
+        });
+        next(err);
+    }
+});
+
+// ── Error handler ─────────────────────────────────────────────────────────────
+
 router.use(errorHandler);
+
+// ── Shared mutation error handler ─────────────────────────────────────────────
+
+/**
+ * Centralised handler for POST / PUT errors.
+ * Maps named domain errors to appropriate HTTP status codes.
+ * Falls through to the global errorHandler for anything unexpected.
+ *
+ * @param {Error}  err
+ * @param {string} requestId
+ * @param {object} req
+ * @param {object} res
+ * @param {Function} next
+ * @param {string} label  - for logging
+ */
+function _handleMutationError(err, requestId, req, res, next, label) {
+    // Joi validation error (shape/type problems)
+    if (err.name === 'ValidationError') {
+        logger.warn(`ProductionShiftRoute: ${label} - validation error`, {
+            requestId, errors: err.errors,
+        });
+        return next(err); // errorHandler formats this as 400
+    }
+
+    // Domain errors — known invalid references or invariant violations
+    if (
+        err instanceof InvalidProductError             ||
+        err instanceof InvalidMachineError             ||
+        err instanceof InvalidOrderError               ||
+        err instanceof DuplicateOperatorError          ||
+        err instanceof NegativeCountError              ||
+        err instanceof ProductionMismatchError         ||
+        err instanceof RejectionExceedsProductionError ||
+        err instanceof NetProductionMismatchError      ||
+        err instanceof MissingIncentiveReasonError
+    ) {
+        logger.warn(`ProductionShiftRoute: ${label} - domain error`, {
+            requestId, error: err.message,
+        });
+        return res.status(422).json({
+            status: 422,
+            message: 'Unprocessable Entity',
+            errors: [{ field: _domainErrorField(err), message: err.message }],
+        });
+    }
+
+    // Not-found (e.g. update on a deleted shift)
+    if (err instanceof ProductionShiftNotFoundError) {
+        logger.warn(`ProductionShiftRoute: ${label} - not found`, { requestId });
+        return res.status(404).json({ error: err.message });
+    }
+
+    // Unexpected — let the global errorHandler return 500
+    logger.error(`ProductionShiftRoute: ${label} - unexpected error`, {
+        requestId, error: err.message, stack: err.stack,
+    });
+    next(err);
+}
+
+/** Map a domain error instance to the relevant field name for the response body. */
+function _domainErrorField(err) {
+    if (err instanceof InvalidProductError)             return 'productId';
+    if (err instanceof InvalidMachineError)             return 'machineId';
+    if (err instanceof InvalidOrderError)               return 'orderId';
+    if (err instanceof DuplicateOperatorError)          return err.field;
+    if (err instanceof NegativeCountError)              return err.field;
+    if (err instanceof ProductionMismatchError)         return 'production';
+    if (err instanceof RejectionExceedsProductionError) return 'rejection';
+    if (err instanceof NetProductionMismatchError)      return 'netProduction';
+    if (err instanceof MissingIncentiveReasonError)     return 'less80Reason';
+    return 'base';
+}
 
 module.exports = router;
