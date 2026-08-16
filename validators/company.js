@@ -141,10 +141,21 @@ const companySchema = Joi.object({
 });
 
 const updateCompanySchema = Joi.object({
+    // Identity fields — immutable, silently stripped via stripUnknown
+    // (companyId, companySequence, createdAt, updatedAt, isActive, isDeleted, createdBy, updatedBy)
+
+    // Editable fields — all optional for partial updates
+    companyName: companySchema.extract('companyName').optional(),
+    businessCons: companySchema.extract('businessCons').optional(),
+    companyType: companySchema.extract('companyType').optional(),
+    address: companySchema.extract('address').optional(),
+    pincode: companySchema.extract('pincode').optional(),
+    propName: companySchema.extract('propName').optional(),
     directPhone: companySchema.extract('directPhone').optional(),
     officePhone: companySchema.extract('officePhone').optional(),
     mgmtPhone: companySchema.extract('mgmtPhone').optional(),
     mailId: companySchema.extract('mailId').optional(),
+    natureOfBusiness: companySchema.extract('natureOfBusiness').optional(),
     authPerson: companySchema.extract('authPerson').optional(),
     mobileNo: companySchema.extract('mobileNo').optional(),
 });
@@ -181,7 +192,10 @@ const validateCreate = async (companyData) => {
 };
 
 const validateUpdate = async (id, companyData) => {
-    const { error, value } = updateCompanySchema.validate(companyData, { abortEarly: false });
+    const { error, value } = updateCompanySchema.validate(companyData, {
+        abortEarly: false,
+        stripUnknown: true, // silently discard immutable fields (companyId, companySequence, createdAt, etc.)
+    });
 
     if (error) {
         const errors = {};
