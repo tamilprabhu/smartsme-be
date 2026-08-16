@@ -31,7 +31,10 @@ const productService = {
 
             // Apply filter chain based on user roles
             const filterChain = createProductFilterChain();
-            const baseWhereClause = filterChain.execute({}, { roles, companyId, userId });
+            const baseWhereClause = filterChain.execute(
+                { isDeleted: false },
+                { roles, companyId, userId },
+            );
 
             // Build search conditions
             const whereClause = {
@@ -84,7 +87,7 @@ const productService = {
         try {
             const filterChain = createProductFilterChain();
             const whereClause = filterChain.execute(
-                { productSequence: id },
+                { productSequence: id, isDeleted: false },
                 { roles, companyId, userId },
             );
 
@@ -195,7 +198,7 @@ const productService = {
 
             const filterChain = createProductFilterChain();
             const whereClause = filterChain.execute(
-                { productSequence: id },
+                { productSequence: id, isDeleted: false },
                 { roles, companyId, userId },
             );
 
