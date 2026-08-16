@@ -1,4 +1,5 @@
 const logger = require('../config/logger');
+const DuplicateBuyerError = require('../domain/DuplicateBuyerError');
 
 const errorHandler = (err, req, res, next) => {
     if (err.name === 'ValidationError') {
@@ -16,6 +17,26 @@ const errorHandler = (err, req, res, next) => {
             status: 400,
             message: 'Validation failed',
             errors,
+        });
+    }
+
+    if (err instanceof DuplicateBuyerError) {
+        logger.warn('Duplicate buyer conflict', {
+            requestId: req.requestId,
+            username: req.auth?.username,
+            buyerName: err.buyerName,
+            companyId: err.companyId,
+        });
+
+        return res.status(409).json({
+            status: 409,
+            message: 'Conflict',
+            errors: [
+                {
+                    field: 'buyerName',
+                    message: err.message,
+                },
+            ],
         });
     }
 

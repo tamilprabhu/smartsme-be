@@ -6,6 +6,7 @@ const { SortBy, SortOrder } = require('../constants/sort');
 const { buildSortOrder } = require('../utils/sort');
 const { generateBuyerId } = require('../utils/idGenerator');
 const { validateCreate, validateUpdate } = require('../validators/buyer');
+const DuplicateBuyerError = require('../domain/DuplicateBuyerError');
 
 const MAX_RETRY_ATTEMPTS = 5;
 
@@ -108,7 +109,27 @@ const buyerService = {
             buyerId: buyerData.buyerId,
         });
         try {
-            const validatedData = await validateCreate(buyerData);
+            // --- Format + uniqueness validation (companyId-scoped) ---
+            const validatedData = await validateCreate(buyerData, companyId);
+
+            // --- Idempotency guard (DDD invariant) ---
+            // Prevent duplicate creation when the same request is submitted more
+            // than once (network retry, double-tap). A buyer is considered a
+            // duplicate when an active record with the same name already exists
+            // within the same company.
+            const existingBuyer = await Buyer.findOne({
+                where: {
+                    buyerName: validatedData.buyerName,
+                    companyId,
+                    isDeleted: false,
+                },
+            });
+            if (existingBuyer) {
+                logger.warn(
+                    `BuyerService: Duplicate buyer creation blocked — "${validatedData.buyerName}" already exists for company ${companyId}`,
+                );
+                throw new DuplicateBuyerError(validatedData.buyerName, companyId);
+            }
             const baseData = {
                 ...validatedData,
                 companyId: companyId,
@@ -164,7 +185,7 @@ const buyerService = {
             updateData: buyerData,
         });
         try {
-            const validatedData = await validateUpdate(buyerData);
+            const validatedData = await validateUpdate(buyerData, companyId, id);
             const { buyerId, ...safeBuyerData } = validatedData;
             const buyerWithUpdatedBy = {
                 ...safeBuyerData,
