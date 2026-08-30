@@ -22,27 +22,27 @@ const userSchema = Joi.object({
     firstName: Joi.string()
         .trim()
         .min(1)
-        .max(10)
-        .pattern(/^[a-zA-Z]+$/)
+        .max(15)
+        .pattern(/^[a-zA-Z ]+$/)
         .required()
         .messages({
             'string.empty': 'firstName cannot be blank',
             'string.min': 'firstName must be at least 3 characters',
-            'string.max': 'firstName must not exceed 10 characters',
-            'string.pattern.base': 'firstName must contain only alphabets, no spaces allowed',
+            'string.max': 'firstName must not exceed 15 characters',
+            'string.pattern.base': 'firstName must contain only alphabets and spaces',
             'any.required': 'firstName is required',
         }),
 
     lastName: Joi.string()
         .trim()
         .min(3)
-        .max(10)
+        .max(15)
         .pattern(/^[a-zA-Z]+$/)
         .required()
         .messages({
             'string.empty': 'lastName cannot be blank',
             'string.min': 'lastName must be at least 3 characters',
-            'string.max': 'lastName must not exceed 10 characters',
+            'string.max': 'lastName must not exceed 15 characters',
             'string.pattern.base': 'lastName must contain only alphabets, no spaces allowed',
             'any.required': 'lastName is required',
         }),
@@ -50,14 +50,14 @@ const userSchema = Joi.object({
     name: Joi.string()
         .trim()
         .min(8)
-        .max(20)
-        .pattern(/^[a-zA-Z\s]+$/)
+        .max(30)
+        .pattern(/^[a-zA-Z ]+$/)
         .required()
         .messages({
             'string.empty': 'name cannot be blank',
             'string.min': 'name must be at least 8 characters',
-            'string.max': 'name must not exceed 20 characters',
-            'string.pattern.base': 'name must contain only alphabets',
+            'string.max': 'name must not exceed 30 characters',
+            'string.pattern.base': 'name must contain only alphabets and spaces',
             'any.required': 'name is required',
         }),
 
