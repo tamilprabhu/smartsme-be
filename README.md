@@ -15,6 +15,7 @@ docker build -f mysql.Dockerfile -t smartsme-mysql:8.0.23 .
 docker run -d --name smartsme-mysql \
   -e MYSQL_DATABASE=smartsme \
   -e MYSQL_ROOT_PASSWORD=root \
+  -p 3306:3306 \
   smartsme-mysql:8.0.23
 
 # Build app image
